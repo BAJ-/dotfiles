@@ -46,9 +46,9 @@ function setup_linux() {
     info "Prepare for init.lua"
     mkdir -p "${HOME}/.config/nvim"
     info "Symlink init.lua"
-    ln -s "${DOTFILES_DIR}/init.lua" "${HOME}/.config/nvim/init.lua"
+    ln -s "${DOTFILES_DIR}/dotfiles/init.lua" "${HOME}/.config/nvim/init.lua"
     info "Symlink .vimrc"
-    ln -s "${DOTFILES_DIR}/vimrc" "${HOME}/.vimrc"
+    ln -s "${DOTFILES_DIR}/dotfiles/vimrc" "${HOME}/.vimrc"
     info "Install Plug"
     curl -fLo "${HOME}/.vim/autoload/plug.vim" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   fi
