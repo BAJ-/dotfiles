@@ -5,7 +5,7 @@ function setup_linux() {
   if [ -f /bin/zsh ]; then
     info "Setting default shell to ZSH"
     # Change default shell to ZSH
-    chsh -s /bin/zsh $(whoami)
+    sudo chsh -s /bin/zsh $(whoami)
   else
     info "Installing ZSH..."
     # Install ZSH
