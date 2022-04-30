@@ -37,7 +37,10 @@ function setup_linux() {
     note "${version} is already installed"
   else
     info "Installing neovim..."
-    sudo apt-get install -y neovim
+    curl -fsSL https://github.com/neovim/neovim/releases/latest/download/nvim.appimage -o nvim.appimage
+    chmod u+x nvim.appimage
+    ./nvim.appimage --appimage-extract
+    sudo ln -s "${DOTFILES_DIR}/dotfiles/squashfs-root/AppRun" "/usr/bin/nvim"
     info "neovim installed"
     info "Setup .vim folders"
     mkdir -p "${HOME}/.vim" "${HOME}/.vim/autoload" "${HOME}/.vim/backup" "${HOME}/.vim/colors" "${HOME}/.vim/plugged"
