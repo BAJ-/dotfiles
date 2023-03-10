@@ -56,6 +56,15 @@ function setup_linux() {
     curl -fLo "${HOME}/.vim/autoload/plug.vim" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   fi
 
+  if [ -f /usr/local/bin/starship ]; then
+    version=$(starship --version | grep "starship")
+    note "${version} is already installed"
+  else
+    info "Installing starship..."
+    # Do something
+    info "Starship installed"
+  fi
+
   
   info "Installing less and vim..."
   # Install less and vim

@@ -29,11 +29,17 @@ function setup_osx() {
     curl -o "${HOME}/.vim/colors/zengarden.vim" https://raw.githubusercontent.com/tobi-wan-kenobi/zengarden/main/colors/zengarden.vim
     info "Prepare for init.lua"
     mkdir -p "${HOME}/.config/nvim"
-    info "Symlink init.lua"
-    ln -s "${DOTFILES_DIR}/init.lua" "${HOME}/.config/nvim/init.lua"
-    info "Symlink .vimrc"
-    ln -s "${DOTFILES_DIR}/vimrc" "${HOME}/.vimrc"
     info "Install Plug"
     curl -fLo "${HOME}/.vim/autoload/plug.vim" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   fi
+
+  if [ -f /usr/local/bin/starship ]; then
+    version=$(starship --version | grep "starship")
+    note "${version} is already installed"
+  else
+    info "Installing starship..."
+    brew install starship
+    info "Starship installed"
+  fi
+
 }

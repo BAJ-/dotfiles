@@ -1,12 +1,13 @@
 vim.cmd([[
-  set runtimepath^=~/.vim runtimepath+=~/.vim/after
-  let &packpath = &runtimepath
-  source ~/.vimrc
+set runtimepath^=~/.vim runtimepath+=~/.vim/after
+let &packpath = &runtimepath
+source ~/.vimrc
 ]])
 vim.opt.termguicolors = true
 
 -- Run setup for Hop
 require'hop'.setup()
+
 
 require'nvim-web-devicons'.setup {
   default = true;
@@ -42,3 +43,11 @@ require'nvim-treesitter.configs'.setup {
     additional_vim_regex_highlighting = false,
   },
 }
+
+require('telescope').setup{  defaults = { file_ignore_patterns = { "node_modules" }} }
+
+-- DEBUGGING ---
+-- Run setup for Mason
+require("mason").setup()
+-- Setup Dap
+require('dap.setup').setup()

@@ -6,6 +6,9 @@
 " Disable compatibility with vi which can cause unexpected issues
 set nocompatible
 
+" Copy to clipboard
+set clipboard+=unnamedplus
+
 " Enable type file detection
 filetype on
 
@@ -125,6 +128,9 @@ set splitright
 :set autowriteall
 :au FocusLost * silent! wa
 
+" When insetting comments, align them to the left
+let g:NERDDefaultAlign = 'left'
+
 " PLUGINS ---------------------------------------------------------------- {{{
 
 " Install Plug if it's not already
@@ -152,6 +158,19 @@ Plug 'kyazdani42/nvim-tree.lua'
 Plug 'phaazon/hop.nvim'
 " Go plugin
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+" Mason, portalbe package manager for NVIM
+Plug 'williamboman/mason.nvim'
+" Mason Nvim Dap bridge
+Plug 'mfussenegger/nvim-dap'
+Plug 'jay-babu/mason-nvim-dap.nvim'
+" Nice debugging UI
+Plug 'rcarriga/nvim-dap-ui'
+" Notify, a nice tool to send notifications in Nvim
+Plug 'rcarriga/nvim-notify'
+" Nvim Dap VSCode for good frontend debugging
+Plug 'mxsdev/nvim-dap-vscode-js'
+" NERD Comment
+Plug 'preservim/nerdcommenter'
 
 call plug#end()
 
@@ -198,6 +217,16 @@ nnoremap <leader>n :NvimTreeFindFile<CR>
 " Hop mappings
 nnoremap <leader>ja :HopAnywhere<CR>
 nnoremap <leader>jw :HopWord<CR>
+
+" Buffer mappings
+nnoremap <leader>bn :bnext<CR>
+nnoremap <leader>bp :bprevious<CR>
+nnoremap <leader>bl :ls<CR>
+
+" Tabs
+nnoremap <leader>tc :tabnew<CR>
+nnoremap <leader>tn :tabnext<CR>
+nnoremap <leader>tp :tabprev<CR>
 " }}}
 
 
