@@ -171,6 +171,8 @@ Plug 'rcarriga/nvim-notify'
 Plug 'mxsdev/nvim-dap-vscode-js'
 " NERD Comment
 Plug 'preservim/nerdcommenter'
+" Copilot
+Plug 'github/copilot.vim'
 
 call plug#end()
 
