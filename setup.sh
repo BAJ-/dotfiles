@@ -30,6 +30,10 @@ info "Installing nvm"
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 info "nvm installed"
 
+info "Installing gvm"
+zsh < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+info "gvm installed"
+
 info "Symlink init.lua"
 ln -s "${DOTFILES_DIR}/dotfiles/init.lua" "${HOME}/.config/nvim/init.lua"
 info "Symlink lua/"
