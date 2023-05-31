@@ -11,7 +11,7 @@ trim_at = ".companyname.com"
 disabled = false
 
 [directory]
-style = "fg:black"
+style = "fg:blue"
 truncation_length = 8
 truncation_symbol = "…"
 format = "[$path]($style) "
