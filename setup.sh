@@ -18,6 +18,9 @@ if [[ $OSTYPE == "darwin"* ]]; then
 
   info "Symlink Starship config"
   ln -s "${DOTFILES_DIR}/dotfiles/config/starship.toml" "${HOME}/.config/starship.toml"
+
+  info "Symlink .zshrc"
+  ln -s "${DOTFILES_DIR}/dotfiles/zshrc" "${HOME}/.zshrc"
 fi
 
 info "Installing nvm"
