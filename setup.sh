@@ -32,7 +32,7 @@ info "nvm installed"
 
 info "Symlink init.lua"
 ln -s "${DOTFILES_DIR}/dotfiles/init.lua" "${HOME}/.config/nvim/init.lua"
-inro "Symlink lua/"
+info "Symlink lua/"
 ln -s "${DOTFILES_DIR}/dotfiles/lua" "${HOME}/.config/nvim/lua"
 info "Symlink .vimrc"
 ln -s "${DOTFILES_DIR}/dotfiles/vimrc" "${HOME}/.vimrc"
