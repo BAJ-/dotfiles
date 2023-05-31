@@ -40,6 +40,14 @@ function setup_osx() {
     info "Installing starship..."
     brew install starship
     info "Starship installed"
+
+    info "Installing Nerd Font"
+    brew tap homebrew/cask-fonts
+    brew install --cask font-hack-nerd-font
+    note "Open iterm2 profiles > Text and select Hack Nerd Font"
   fi
 
+  info "Installing tokyonight-storm color theme for iTerm"
+  curl -o "${HOME}/Documents" https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/schemes/tokyonight-storm.itermcolors
+  note "Open iterm2 profiles > Colors > Color Presets... and click import. The theme is in the /Documents folder"
 }
