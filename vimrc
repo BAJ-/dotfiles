@@ -216,6 +216,10 @@ nnoremap <leader>tt :NvimTreeToggle<CR>
 nnoremap <leader>r :NvimTreeRefresh<CR>
 nnoremap <leader>n :NvimTreeFindFile<CR>
 
+" Terminal
+nnoremap <leader>t :terminal<CR>
+nnoremap <leader>h :hide<CR>
+
 " Hop mappings
 nnoremap <leader>ja :HopAnywhere<CR>
 nnoremap <leader>jw :HopWord<CR>
