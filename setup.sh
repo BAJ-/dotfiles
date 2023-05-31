@@ -15,6 +15,9 @@ fi
 
 if [[ $OSTYPE == "darwin"* ]]; then
   setup_osx
+
+  info "Symlink Starship config"
+  ln -s "${DOTFILES_DIR}/dotfiles/config/starship.toml" "${HOME}/.config/starship.toml"
 fi
 
 info "Installing nvm"
@@ -27,4 +30,4 @@ inro "Symlink lua/"
 ln -s "${DOTFILES_DIR}/dotfiles/lua" "${HOME}/.config/nvim/lua"
 info "Symlink .vimrc"
 ln -s "${DOTFILES_DIR}/dotfiles/vimrc" "${HOME}/.vimrc"
-ln -s "${DOTFILES_DIR}/dotfiles/config/starship.toml" "${HOME}/.config/starship.toml"
+
