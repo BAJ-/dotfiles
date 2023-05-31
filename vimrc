@@ -66,8 +66,6 @@ set showmode
 " Set command history
 set history=1000
 
-colorscheme zengarden
-
 " Nvim tree
 let g:nvim_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
 let g:nvim_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
@@ -173,6 +171,8 @@ Plug 'mxsdev/nvim-dap-vscode-js'
 Plug 'preservim/nerdcommenter'
 " Copilot
 Plug 'github/copilot.vim'
+" Color
+Plug 'folke/tokyonight.nvim'
 
 call plug#end()
 

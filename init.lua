@@ -51,3 +51,15 @@ require('telescope').setup{  defaults = { file_ignore_patterns = { "node_modules
 require("mason").setup()
 -- Setup Dap
 require('dap.setup').setup()
+
+-- Get iterm profile
+local iterm_profile = os.getenv('ITERM_PROFILE')
+if(iterm_profile == 'tokyonight-storm')
+then
+  colorSchemeName = 'tokyonight-storm'
+else
+  colorSchemeName = 'zengarden'
+end
+
+-- Set colorscheme
+vim.cmd.colorscheme(colorSchemeName)
