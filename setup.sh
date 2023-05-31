@@ -17,6 +17,10 @@ if [[ $OSTYPE == "darwin"* ]]; then
   setup_osx
 fi
 
+info "Installing nvm"
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+info "nvm installed"
+
 info "Symlink init.lua"
 ln -s "${DOTFILES_DIR}/dotfiles/init.lua" "${HOME}/.config/nvim/init.lua"
 inro "Symlink lua/"
