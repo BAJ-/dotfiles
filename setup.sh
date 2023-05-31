@@ -21,6 +21,9 @@ if [[ $OSTYPE == "darwin"* ]]; then
 
   info "Symlink .zshrc"
   ln -s "${DOTFILES_DIR}/dotfiles/zshrc" "${HOME}/.zshrc"
+
+  info "Symlink z folder jumper"
+  ln -s "${DOTFILES_DIR}/dotfiles/z.sh" "${HOME}/z.sh"
 fi
 
 info "Installing nvm"
