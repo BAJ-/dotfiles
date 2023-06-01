@@ -218,7 +218,8 @@ nnoremap <leader>n :NvimTreeFindFile<CR>
 
 " Terminal
 nnoremap <leader>t :terminal<CR>
-nnoremap <leader>h :hide<CR>
+nnoremap <leader>th :hide<CR>
+:tnoremap <Esc> <C-\><C-n>
 
 " Hop mappings
 nnoremap <leader>ja :HopAnywhere<CR>
