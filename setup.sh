@@ -15,15 +15,6 @@ fi
 
 if [[ $OSTYPE == "darwin"* ]]; then
   setup_osx
-
-  info "Symlink Starship config"
-  ln -s "${DOTFILES_DIR}/dotfiles/config/starship.toml" "${HOME}/.config/starship.toml"
-
-  info "Symlink .zshrc"
-  ln -s "${DOTFILES_DIR}/dotfiles/zshrc" "${HOME}/.zshrc"
-
-  info "Symlink z folder jumper"
-  ln -s "${DOTFILES_DIR}/dotfiles/z.sh" "${HOME}/z.sh"
 fi
 
 info "Installing nvm"

@@ -41,11 +41,20 @@ function setup_osx() {
     brew install starship
     info "Starship installed"
 
+    info "Symlink Starship config"
+    ln -s "${DOTFILES_DIR}/dotfiles/config/starship.toml" "${HOME}/.config/starship.toml"
+
     info "Installing Nerd Font"
     brew tap homebrew/cask-fonts
     brew install --cask font-hack-nerd-font
     note "Open iterm2 profiles > Text and select Hack Nerd Font"
   fi
+
+  info "Symlink .zshrc"
+  ln -s "${DOTFILES_DIR}/dotfiles/zshrc" "${HOME}/.zshrc"
+
+  info "Symlink z folder jumper"
+  ln -s "${DOTFILES_DIR}/dotfiles/z.sh" "${HOME}/z.sh"
 
   info "Installing mercurial for gvm..."
   brew install mercurial
