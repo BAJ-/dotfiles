@@ -47,6 +47,12 @@ function setup_osx() {
     note "Open iterm2 profiles > Text and select Hack Nerd Font"
   fi
 
+  info "Installing mercurial for gvm..."
+  brew install mercurial
+
+  info "Installing go using brew to get around gvm bootstrapping problem..."
+  brew install go
+
   info "Installing tokyonight-storm color theme for iTerm"
   curl -o "${HOME}/Documents" https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/schemes/tokyonight-storm.itermcolors
   note "Open iterm2 profiles > Colors > Color Presets... and click import. The theme is in the /Documents folder"
