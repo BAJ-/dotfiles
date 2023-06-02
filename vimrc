@@ -214,8 +214,7 @@ nnoremap <leader>r :NvimTreeRefresh<CR>
 nnoremap <leader>n :NvimTreeFindFile<CR>
 
 " Terminal
-nnoremap <leader>t :terminal<CR>
-nnoremap <leader>th :hide<CR>
+nnoremap <leader>tm :terminal<CR>
 :tnoremap <Esc> <C-\><C-n>
 
 " Hop mappings
