@@ -50,6 +50,15 @@ function setup_osx() {
     note "Open iterm2 profiles > Text and select Hack Nerd Font"
   fi
 
+  if [ -f /usr/local/bin/tig ]; then
+    version=$(tig --version | grep "tig")
+    note "${version} is already installed"
+  else
+    info "Installing tig..."
+    brew install tig
+    info "tig installed"
+  fi
+
   info "Symlink .zshrc"
   ln -s "${DOTFILES_DIR}/dotfiles/zshrc" "${HOME}/.zshrc"
 
