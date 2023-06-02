@@ -140,7 +140,6 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'preservim/nerdtree'
 " Linting while you type
 Plug 'dense-analysis/ale'
 " Better syntax highlighting
@@ -175,8 +174,6 @@ Plug 'github/copilot.vim'
 Plug 'folke/tokyonight.nvim'
 
 call plug#end()
-
-let NERDTreeShowHidden=1
 
 " }}}
 
