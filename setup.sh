@@ -9,14 +9,6 @@ mkdir -p "${HOME}/.config"
 DOTFILES_DIR=$(cd $(dirname "$0")/.. && pwd)
 info "Dotfiles directory: ${DOTFILES_DIR}"
 
-if [ $CODESPACES ]; then
-  setup_linux
-fi
-
-if [[ $OSTYPE == "darwin"* ]]; then
-  setup_osx
-fi
-
 info "Installing nvm"
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 info "nvm installed"
@@ -31,4 +23,12 @@ info "Symlink lua/"
 ln -s "${DOTFILES_DIR}/dotfiles/lua" "${HOME}/.config/nvim/lua"
 info "Symlink .vimrc"
 ln -s "${DOTFILES_DIR}/dotfiles/vimrc" "${HOME}/.vimrc"
+
+if [ $CODESPACES ]; then
+  setup_linux
+fi
+
+if [[ $OSTYPE == "darwin"* ]]; then
+  setup_osx
+fi
 

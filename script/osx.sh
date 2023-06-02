@@ -73,5 +73,8 @@ function setup_osx() {
 
   info "Installing tokyonight-storm color theme for iTerm"
   curl -o "${HOME}/Documents" https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/schemes/tokyonight-storm.itermcolors
-  note "Open iterm2 profiles > Colors > Color Presets... and click import. The theme is in the /Documents folder"
+
+  echo ""
+  note "*** --->>> Import iTerm2 settings from Dropbox <<<--- ***"
+  echo ""
 }
