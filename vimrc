@@ -222,9 +222,8 @@ nnoremap <leader>ja :HopAnywhere<CR>
 nnoremap <leader>jw :HopWord<CR>
 
 " Buffer mappings
-nnoremap <leader>bn :bnext<CR>
-nnoremap <leader>bp :bprevious<CR>
-nnoremap <leader>bl :ls<CR>
+nnoremap <leader>bk :bp\|bd! #<CR>
+nnoremap <leader>bh :hide<CR>
 
 " Tabs
 nnoremap <leader>tc :tabnew<CR>
