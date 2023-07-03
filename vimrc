@@ -231,6 +231,15 @@ nnoremap <leader>tn :tabnext<CR>
 nnoremap <leader>tp :tabprev<CR>
 " }}}
 
+" ALE Linting
+nnoremap <leader>en :ALENextWrap<CR>zz
+nnoremap <leader>ep :ALEPreviousWrap<CR>zz
+nnoremap <leader>ed :ALEDetail<CR>
+" ALE code
+nnoremap <leader>cr :ALEFindReferences<CR>
+nnoremap <leader>cd :ALEGoToDefinition<CR>
+nnoremap <leader>ct :ALEGoToTypeDefinition<CR>
+
 
 
 " VIMSCRIPT -------------------------------------------------------------- {{{
