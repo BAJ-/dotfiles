@@ -47,6 +47,9 @@ function setup_osx() {
     info "Installing Nerd Font"
     brew tap homebrew/cask-fonts
     brew install --cask font-hack-nerd-font
+
+    info "Installing iTerm2 shell integration"
+    curl -L https://iterm2.com/shell_integration/zsh -o ~/.iterm2_shell_integration.zsh
     note "Open iterm2 profiles > Text and select Hack Nerd Font"
   fi
 
