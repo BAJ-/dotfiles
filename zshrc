@@ -15,3 +15,5 @@ run_test_on_file() {
 }
 
 alias testfile=run_test_on_file
+
+source ~/.iterm2_shell_integration.zsh
