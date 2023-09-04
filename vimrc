@@ -240,7 +240,7 @@ nnoremap <leader>cr :ALEFindReferences<CR>
 nnoremap <leader>cd :ALEGoToDefinition<CR>
 nnoremap <leader>ct :ALEGoToTypeDefinition<CR>
 
-
+nnoremap <leader>fn :let @+ = expand('%:t')<CR>
 
 " VIMSCRIPT -------------------------------------------------------------- {{{
 
