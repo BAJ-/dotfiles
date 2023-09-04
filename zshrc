@@ -29,4 +29,4 @@ run_test_on_file() {
 
 alias testfile=run_test_on_file
 
-source ~/.iterm2_shell_integration.zsh
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
