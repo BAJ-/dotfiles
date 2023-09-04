@@ -42,7 +42,7 @@ function setup_osx() {
     info "Starship installed"
 
     info "Symlink Starship config"
-    ln -s "${DOTFILES_DIR}/dotfiles/config/starship.toml" "${HOME}/.config/starship.toml"
+    ln -sf "${DOTFILES_DIR}/dotfiles/config/starship.toml" "${HOME}/.config/starship.toml"
 
     info "Installing Nerd Font"
     brew tap homebrew/cask-fonts
@@ -63,10 +63,10 @@ function setup_osx() {
   fi
 
   info "Symlink .zshrc"
-  ln -s "${DOTFILES_DIR}/dotfiles/zshrc" "${HOME}/.zshrc"
+  ln -sf "${DOTFILES_DIR}/dotfiles/zshrc" "${HOME}/.zshrc"
 
   info "Symlink z folder jumper"
-  ln -s "${DOTFILES_DIR}/dotfiles/z.sh" "${HOME}/z.sh"
+  ln -sf "${DOTFILES_DIR}/dotfiles/z.sh" "${HOME}/z.sh"
 
   info "Installing mercurial for gvm..."
   brew install mercurial

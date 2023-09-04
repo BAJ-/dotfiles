@@ -18,11 +18,11 @@ zsh < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binsc
 info "gvm installed"
 
 info "Symlink init.lua"
-ln -s "${DOTFILES_DIR}/dotfiles/init.lua" "${HOME}/.config/nvim/init.lua"
+ln -sf "${DOTFILES_DIR}/dotfiles/init.lua" "${HOME}/.config/nvim/init.lua"
 info "Symlink lua/"
-ln -s "${DOTFILES_DIR}/dotfiles/lua" "${HOME}/.config/nvim/lua"
+ln -sn "${DOTFILES_DIR}/dotfiles/lua" "${HOME}/.config/nvim/lua"
 info "Symlink .vimrc"
-ln -s "${DOTFILES_DIR}/dotfiles/vimrc" "${HOME}/.vimrc"
+ln -sf "${DOTFILES_DIR}/dotfiles/vimrc" "${HOME}/.vimrc"
 
 if [ $CODESPACES ]; then
   setup_linux
