@@ -8,10 +8,23 @@ export NVM_DIR="$HOME/.nvm"
 [[ -s "/Users/bjornjohansen/.gvm/scripts/gvm" ]] && source "/Users/bjornjohansen/.gvm/scripts/gvm"
 
 run_test_on_file() {
-  TEST_FILE=$(pbpaste)
-  FILE_PATH=$(find . -name "$TEST_FILE" -exec sh -c 'echo "${0#./}"' {} \;)
-  FILE_PATH=${FILE_PATH//.test/}
-  npm run test $TEST_FILE -- --coverage --collectCoverageFrom=$FILE_PATH
+  TEST_FILE=
+  if [[ $1 =~ ^[A-Z][a-zA-Z]*\.test.(ts|tsx)$ ]]; then
+    TEST_FILE=$1
+  else
+    PASTE_BUFFER=$(pbpaste)
+    if [[ PASTE_BUFFER =~ ^[A-Z][a-zA-Z]*\.test.(ts|tsx)$ ]]; then
+      TEST_FILE=$PASTE_BUFFER
+    else
+      echo 'No matching file name was found'
+    fi
+  fi
+
+  if [[ -z TEST_FILE ]]; then
+    FILE_PATH=$(find . -name "$TEST_FILE" -exec sh -c 'echo "${0#./}"' {} \;)
+    FILE_PATH=${FILE_PATH//.test/}
+    npm run test --if-present $TEST_FILE -- --coverage --collectCoverageFrom=$FILE_PATH
+  fi
 }
 
 alias testfile=run_test_on_file
