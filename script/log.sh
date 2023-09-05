@@ -1,11 +1,17 @@
-BLUE='\033[0;34m'
+RED='\033[0;31m'
 GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+
 NONE="\033[0m"
 
 function info {
-  echo "${GREEN}[INFO]${NONE}  $1"
+  echo -e "${GREEN}[INFO]${NONE} $1"
+}
+
+function warn {
+  echo -e "${RED}[WARN]${NONE}  $1"
 }
 
 function note {
-  echo "${BLUE}[NOTE]${NONE}  $1"
+  echo -e "${BLUE}[NOTE]${NONE}  $1"
 }
