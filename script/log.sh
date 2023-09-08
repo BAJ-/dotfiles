@@ -9,9 +9,9 @@ function info {
 }
 
 function warn {
-  echo -e "${RED}[WARN]${NONE}  $1"
+  echo -e "${RED}[WARN]${NONE} $1"
 }
 
 function note {
-  echo -e "${BLUE}[NOTE]${NONE}  $1"
+  echo -e "${BLUE}[NOTE]${NONE} $1"
 }
