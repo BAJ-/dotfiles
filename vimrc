@@ -94,7 +94,7 @@ let g:nvim_tree_show_icons = {
 " default shows no icon by default
 let g:nvim_tree_icons = {
     \ 'default': "",
-    \ 'symlink': "",
+    \ 'symlink': "",
     \ 'git': {
     \   'unstaged': "✗",
     \   'staged': "✓",
