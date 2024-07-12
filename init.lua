@@ -61,7 +61,8 @@ if(iterm_profile == 'tokyonight-storm')
 then
   colorSchemeName = 'tokyonight-storm'
 else
-  colorSchemeName = 'zengarden'
+  vim.o.background = 'light'
+  colorSchemeName = 'solarized8_high'
 end
 
 -- Set colorscheme

@@ -45,7 +45,7 @@ function setup_linux() {
     info "Setup .vim folders"
     mkdir -p "${HOME}/.vim" "${HOME}/.vim/autoload" "${HOME}/.vim/backup" "${HOME}/.vim/colors" "${HOME}/.vim/plugged"
     info "Get colorscheme"
-    curl -o "${HOME}/.vim/colors/zengarden.vim" https://raw.githubusercontent.com/tobi-wan-kenobi/zengarden/main/colors/zengarden.vim
+    curl -o "${HOME}/.vim/colors/solarized8_high.vim" https://raw.githubusercontent.com/lifepillar/vim-solarized8/master/colors/solarized8_high.vim
     info "Prepare for init.lua"
     mkdir -p "${HOME}/.config/nvim"
     info "Symlink init.lua"
