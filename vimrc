@@ -130,6 +130,15 @@ set splitright
 let g:NERDDefaultAlign = 'left'
 
 " PLUGINS ---------------------------------------------------------------- {{{
+" ALE linting settings
+let g:ale_linters = {
+\  'json': ['jq']
+\}
+let g:ale_json_jq_executable = 'jq'
+let g:ale_json_jq_options = '.'
+let g:ale_fixers = ['prettier', 'eslint']
+" Auto fix on save
+let g:ale_fix_on_save = 1
 
 " Install Plug if it's not already
 let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
@@ -236,7 +245,7 @@ nnoremap <leader>en :ALENextWrap<CR>zz
 nnoremap <leader>ep :ALEPreviousWrap<CR>zz
 nnoremap <leader>ed :ALEDetail<CR>
 " ALE code
-nnoremap <leader>cr :ALEFindReferences<CR>
+nnoremap <leader>cr :ALEFindReferences -relative<CR>
 nnoremap <leader>cd :ALEGoToDefinition<CR>
 nnoremap <leader>ct :ALEGoToTypeDefinition<CR>
 
