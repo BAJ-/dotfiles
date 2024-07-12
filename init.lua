@@ -18,7 +18,7 @@ require'nvim-tree'.setup {
 
 require'nvim-treesitter.configs'.setup {
   -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-  ensure_installed = {'bash', 'javascript', 'lua', 'go', 'gomod', 'typescript', 'tsx', 'html', 'css', 'scss', 'toml', 'yaml', 'json', 'regex', 'make', 'dot', 'dockerfile', 'ruby', 'python'},
+  ensure_installed = {'bash', 'javascript', 'lua', 'go', 'gomod', 'typescript', 'tsx', 'html', 'css', 'scss', 'toml', 'yaml', 'json', 'regex', 'make', 'dot', 'dockerfile', 'ruby', 'python', 'graphql'},
 
   -- Install languages synchronously (only applied to `ensure_installed`)
   sync_install = false,
