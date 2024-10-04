@@ -1,3 +1,6 @@
+export LANG=en_GB.UTF-8
+export LC_MESSAGES=en_GB.UTF-8
+
 . ~/z.sh
 eval "$(starship init zsh)"
 
