@@ -182,6 +182,15 @@ Plug 'preservim/nerdcommenter'
 Plug 'github/copilot.vim'
 " Color
 Plug 'folke/tokyonight.nvim'
+Plug 'rebelot/kanagawa.nvim'
+" Neotest
+" Plug 'nvim-lua/plenary.nvim'
+" Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'antoinemadec/FixCursorHold.nvim'
+Plug 'nvim-neotest/nvim-nio'
+Plug 'nvim-neotest/neotest'
+" Neotest-jest
+Plug 'nvim-neotest/neotest-jest'
 
 call plug#end()
 
