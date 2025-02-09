@@ -35,3 +35,5 @@ run_test_on_file() {
 alias testfile=run_test_on_file
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+source "$HOME/.rye/env"
