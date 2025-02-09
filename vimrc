@@ -157,6 +157,7 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-lua/plenary.nvim'
 " Fuzzy finder
 Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-live-grep-args.nvim'
 " Nvim tree with icons
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
 Plug 'kyazdani42/nvim-tree.lua'
@@ -181,6 +182,15 @@ Plug 'preservim/nerdcommenter'
 Plug 'github/copilot.vim'
 " Color
 Plug 'folke/tokyonight.nvim'
+Plug 'rebelot/kanagawa.nvim'
+" Neotest
+" Plug 'nvim-lua/plenary.nvim'
+" Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'antoinemadec/FixCursorHold.nvim'
+Plug 'nvim-neotest/nvim-nio'
+Plug 'nvim-neotest/neotest'
+" Neotest-jest
+Plug 'nvim-neotest/neotest-jest'
 
 call plug#end()
 
@@ -213,9 +223,10 @@ nnoremap N Nzz
 
 " Find files using Telescope command-line sugar.
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
-nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+" nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+nnoremap <leader>fr <cmd>Telescope resume<cr>
 
 " Nvim tree mappings
 nnoremap <leader>tt :NvimTreeToggle<CR>

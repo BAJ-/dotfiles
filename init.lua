@@ -47,13 +47,41 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
-require('telescope').setup{  defaults = { file_ignore_patterns = { "node_modules", "vendor" }} }
+local telescope = require('telescope')
+telescope.setup{  defaults = { file_ignore_patterns = { "node_modules", "vendor" }} }
+-- Load live grep args extension
+telescope.load_extension("live_grep_args")
+vim.keymap.set('n', '<leader>fg', telescope.extensions.live_grep_args.live_grep_args, { noremap = true })
+
 
 -- DEBUGGING ---
 -- Run setup for Mason
 require("mason").setup()
 -- Setup Dap
 require('dap.setup').setup()
+
+--- Neotest
+require("neotest").setup({
+  adapters = {
+    require('neotest-jest')({
+      jestCommand = "npm test --",
+      jestConfigFile = "jest.config.ts",
+      env = { CI = true },
+      cwd = function(path)
+        return vim.fn.getcwd()
+      end,
+    }),
+  },
+})
+
+-- Run nearest test
+vim.api.nvim_set_keymap('n', 'mr', '<cmd>lua require("neotest").run.run()<CR><cmd>lua require("neotest").summary.open()<CR>', { noremap = true, silent = true })
+-- Open output
+vim.api.nvim_set_keymap('n', 'mo', '<cmd>lua require("neotest").output.open({ enter = true })<CR>', { noremap = true, silent = true })
+-- Run all tests in file
+vim.api.nvim_set_keymap('n', 'ma', '<cmd>lua require("neotest").run.run(vim.fn.expand("%"))<CR><cmd>lua require("neotest").summary.open()<CR>', { noremap = true, silent = true })
+-- Toggle summary
+vim.api.nvim_set_keymap('n', 'ms', '<cmd>lua require("neotest").summary.toggle()<CR>', { noremap = true, silent = true })
 
 -- Get iterm profile
 local iterm_profile = os.getenv('ITERM_PROFILE')
@@ -62,7 +90,31 @@ then
   colorSchemeName = 'tokyonight-storm'
 else
   vim.o.background = 'light'
-  colorSchemeName = 'solarized8_high'
+  colorSchemeName = 'kanagawa'
+  require('kanagawa').setup({
+    compile = false,             -- enable compiling the colorscheme
+    undercurl = true,            -- enable undercurls
+    commentStyle = { italic = true },
+    functionStyle = {},
+    keywordStyle = { italic = true},
+    statementStyle = { bold = true },
+    typeStyle = {},
+    transparent = false,         -- do not set background color
+    dimInactive = false,         -- dim inactive window `:h hl-NormalNC`
+    terminalColors = true,       -- define vim.g.terminal_color_{0,17}
+    colors = {                   -- add/modify theme and palette colors
+        palette = {},
+        theme = { wave = {}, lotus = {}, dragon = {}, all = {} },
+    },
+    overrides = function(colors) -- add/modify highlights
+        return {}
+    end,
+    theme = "wave",              -- Load "wave" theme when 'background' option is not set
+    background = {               -- map the value of 'background' option to a theme
+        dark = "wave",           -- try "dragon" !
+        light = "lotus"
+    }, 
+  })
 end
 
 -- Set colorscheme
