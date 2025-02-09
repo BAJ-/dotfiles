@@ -262,6 +262,8 @@ nnoremap <leader>ct :ALEGoToTypeDefinition<CR>
 
 nnoremap <leader>fn :let @+ = expand('%:t')<CR>
 
+"Remove all trailing whitespace by pressing F5
+nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 " VIMSCRIPT -------------------------------------------------------------- {{{
 
 " This will enable code folding.
