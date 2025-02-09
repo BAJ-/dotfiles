@@ -47,7 +47,12 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
-require('telescope').setup{  defaults = { file_ignore_patterns = { "node_modules", "vendor" }} }
+local telescope = require('telescope')
+telescope.setup{  defaults = { file_ignore_patterns = { "node_modules", "vendor" }} }
+-- Load live grep args extension
+telescope.load_extension("live_grep_args")
+vim.keymap.set('n', '<leader>fg', telescope.extensions.live_grep_args.live_grep_args, { noremap = true })
+
 
 -- DEBUGGING ---
 -- Run setup for Mason
