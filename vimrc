@@ -128,8 +128,6 @@ Plug 'jay-babu/mason-nvim-dap.nvim'
 Plug 'rcarriga/nvim-dap-ui'
 " Notify, a nice tool to send notifications in Nvim
 Plug 'rcarriga/nvim-notify'
-" Nvim Dap VSCode for good frontend debugging
-Plug 'mxsdev/nvim-dap-vscode-js'
 " NERD Comment
 Plug 'preservim/nerdcommenter'
 " Copilot

@@ -1,12 +1,6 @@
 return {
   setup = function(dap)
 
-    local dap_vscode_ok, dap_vscode = pcall(require, "dap-vscode-js")
-    if not (dap_vscode_ok) then
-      require("notify")("dap-vscode-js not installed!", "warning")
-      return
-    end
-
     dap.adapters.go = {
       type = "server",
       port = "${port}",
@@ -21,13 +15,6 @@ return {
       command = 'node',
       args = { vim.fn.stdpath("data") .. '/mason/packages/node-debug2-adapter/out/src/nodeDebug.js' };
     }
-
-    -- The VSCode Debugger requires a special setup
-    --dap_vscode.setup({
-    --  adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' },
-    --  debugger_path = vim.fn.stdpath("data") .. "/mason/bin/js-debug-adapter", -- Path to VSCode Debugger
-    --  debugger_cmd = { "js-debug-adapter" }
-    --})
 
     dap.adapters.chrome = {
         type = "executable",
