@@ -89,7 +89,10 @@ let g:ale_linters = {
 let g:ale_json_jq_executable = 'jq'
 let g:ale_json_jq_options = '.'
 let g:ale_fixers = {
-\  '*': ['prettier', 'eslint'],
+\  'javascript': ['prettier', 'eslint'],
+\  'javascriptreact': ['prettier', 'eslint'],
+\  'typescript': ['prettier', 'eslint'],
+\  'typescriptreact': ['prettier', 'eslint'],
 \}
 " Auto fix on save
 let g:ale_fix_on_save = 1
