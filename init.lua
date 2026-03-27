@@ -104,6 +104,9 @@ telescope.setup{  defaults = { file_ignore_patterns = { "node_modules", "vendor"
 telescope.load_extension("live_grep_args")
 vim.keymap.set('n', '<leader>fg', telescope.extensions.live_grep_args.live_grep_args, { noremap = true })
 
+-- Which-key setup
+require("which-key").setup()
+
 -- Open git changed/new files in smart split layout
 local function open_in_layout(files)
   if #files == 0 then return end
