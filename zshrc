@@ -36,7 +36,6 @@ alias testfile=run_test_on_file
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
-eval "$(gh copilot alias -- zsh)"
 export PATH="$HOME/.gum/bin:$PATH"
 source "$HOME/.rye/env"
 eval "$(/Users/bjornjohansen/.local/bin/mise activate zsh)"
