@@ -195,7 +195,7 @@ call plug#end()
 
 
 " MAPPINGS --------------------------------------------------------------- {{{
-" Set the backslash as the leader key.
+" Set comma as the leader key.
 let mapleader = ","
 
 " Split mapping
