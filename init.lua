@@ -183,18 +183,21 @@ vim.api.nvim_create_autocmd("User", {
 })
 
 -- Statusline
-local function git_branch()
+local cached_branch = ":"
+local function update_git_branch()
     local branch = vim.fn.system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
-    if string.len(branch) > 0 then
-        return branch
-    else
-        return ":"
-    end
+    cached_branch = string.len(branch) > 0 and branch or ":"
+    vim.cmd("redrawstatus")
 end
+
+vim.api.nvim_create_autocmd({"BufEnter", "FocusGained", "DirChanged"}, {
+  callback = update_git_branch,
+})
+update_git_branch()
 
 local function statusline()
     local set_color_1 = "%#Search#"
-    local branch = git_branch()
+    local branch = cached_branch
     local set_color_2 = "%#MoreMsg#"
     local file_name = " %f"
     local modified = "%m"
