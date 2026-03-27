@@ -133,6 +133,8 @@ Plug 'nvim-neotest/nvim-nio'
 Plug 'nvim-neotest/neotest'
 " Neotest-jest
 Plug 'nvim-neotest/neotest-jest'
+" Which-key for keymap discovery
+Plug 'folke/which-key.nvim'
 
 call plug#end()
 
