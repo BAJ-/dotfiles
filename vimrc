@@ -18,9 +18,6 @@ filetype plugin on
 " Load an indent file for the detected file type.
 filetype indent on
 
-" Turn syntax highlighting on
-syntax on
-
 " Add line numbers
 set number
 
