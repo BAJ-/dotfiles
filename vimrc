@@ -78,6 +78,11 @@ let g:ale_fixers = {
 \  'javascriptreact': ['prettier', 'eslint'],
 \  'typescript': ['prettier', 'eslint'],
 \  'typescriptreact': ['prettier', 'eslint'],
+\  'css': ['prettier'],
+\  'json': ['prettier'],
+\  'yaml': ['prettier'],
+\  'markdown': ['prettier'],
+\  'html': ['prettier'],
 \}
 " Auto fix on save
 let g:ale_fix_on_save = 1
