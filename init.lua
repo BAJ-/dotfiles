@@ -30,7 +30,44 @@ require'nvim-web-devicons'.setup {
 require'nvim-tree'.setup {
   view = {
     adaptive_size = true
-  }
+  },
+  sync_root_with_cwd = true,
+  renderer = {
+    add_trailing = true,
+    group_empty = true,
+    highlight_git = true,
+    highlight_opened_files = "all",
+    root_folder_label = ":~",
+    indent_markers = {
+      enable = true,
+    },
+    special_files = { "README.md", "Makefile", "MAKEFILE" },
+    icons = {
+      padding = " ",
+      show = {
+        git = true,
+        folder = true,
+        file = true,
+        folder_arrow = true,
+      },
+      glyphs = {
+        git = {
+          unstaged = "✗",
+          staged = "✓",
+          unmerged = "",
+          renamed = "➜",
+          untracked = "★",
+          deleted = "",
+          ignored = "◌",
+        },
+      },
+    },
+  },
+  actions = {
+    open_file = {
+      resize_window = true,
+    },
+  },
 }
 
 require'nvim-treesitter.configs'.setup {
