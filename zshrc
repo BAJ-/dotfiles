@@ -38,8 +38,16 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 
 eval "$(gh copilot alias -- zsh)"
 export PATH="$HOME/.gum/bin:$PATH"
+source "$HOME/.rye/env"
+eval "$(/Users/bjornjohansen/.local/bin/mise activate zsh)"
 
-alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export JAVA_HOME=/opt/homebrew/opt/openjdk@17
+export PATH="$JAVA_HOME/bin:$PATH"
 
 export GOPROXY=https://goproxy.githubapp.com/mod,https://proxy.golang.org/,direct
 export GOPRIVATE=
