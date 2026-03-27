@@ -82,6 +82,11 @@ let g:ale_fixers = {
 " Auto fix on save
 let g:ale_fix_on_save = 1
 
+" vim-go: let ALE handle linting and formatting
+let g:go_fmt_autosave = 0
+let g:go_diagnostics_enabled = 0
+let g:go_metalinter_enabled = []
+
 " Install Plug if it's not already
 let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
 if empty(glob(data_dir . '/autoload/plug.vim'))
