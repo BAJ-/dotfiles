@@ -199,7 +199,7 @@ local function pick_changed_files()
   }):find()
 end
 
-vim.keymap.set('n', '<leader>gc', pick_changed_files, { noremap = true, desc = "Open changed files in layout" })
+vim.keymap.set('n', '<leader>gf', pick_changed_files, { noremap = true, desc = "Open changed files in layout" })
 
 -- DEBUGGING ---
 -- Run setup for Mason
