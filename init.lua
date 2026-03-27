@@ -195,14 +195,17 @@ vim.api.nvim_create_autocmd({"BufEnter", "FocusGained", "DirChanged"}, {
 })
 update_git_branch()
 
-local function statusline()
+-- Highlight for linting indicator
+vim.api.nvim_set_hl(0, "StatusLineLinting", { fg = "#1a1b26", bg = "#9ece6a" })
+
+function _G.statusline()
     local set_color_1 = "%#Search#"
     local branch = cached_branch
     local set_color_2 = "%#MoreMsg#"
     local file_name = " %f"
     local modified = "%m"
     local align_right = "%="
-    local lint_status = vim.g.ale_linting and " [linting...] " or ""
+    local lint_status = vim.g.ale_linting and "%#StatusLineLinting# [linting...] %#MoreMsg#" or ""
     local fileencoding = " %{&fileencoding?&fileencoding:&encoding}"
     local fileformat = " [%{&fileformat}]"
     local filetype = " %y"
@@ -226,4 +229,4 @@ local function statusline()
     )
 end
 
-vim.opt.statusline = statusline()
+vim.opt.statusline = "%!v:lua.statusline()"
