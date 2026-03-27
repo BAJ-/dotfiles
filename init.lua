@@ -60,6 +60,29 @@ require("mason").setup()
 -- Setup Dap
 require('dap.setup').setup()
 
+--- Neotest
+require("neotest").setup({
+  adapters = {
+    require('neotest-jest')({
+      jestCommand = "npm test --",
+      jestConfigFile = "jest.config.ts",
+      env = { CI = true },
+      cwd = function(path)
+        return vim.fn.getcwd()
+      end,
+    }),
+  },
+})
+
+-- Run nearest test
+vim.api.nvim_set_keymap('n', 'mr', '<cmd>lua require("neotest").run.run()<CR><cmd>lua require("neotest").summary.open()<CR>', { noremap = true, silent = true })
+-- Open output
+vim.api.nvim_set_keymap('n', 'mo', '<cmd>lua require("neotest").output.open({ enter = true })<CR>', { noremap = true, silent = true })
+-- Run all tests in file
+vim.api.nvim_set_keymap('n', 'ma', '<cmd>lua require("neotest").run.run(vim.fn.expand("%"))<CR><cmd>lua require("neotest").summary.open()<CR>', { noremap = true, silent = true })
+-- Toggle summary
+vim.api.nvim_set_keymap('n', 'ms', '<cmd>lua require("neotest").summary.toggle()<CR>', { noremap = true, silent = true })
+
 -- Get iterm profile
 local iterm_profile = os.getenv('ITERM_PROFILE')
 if(iterm_profile == 'tokyonight-storm')
