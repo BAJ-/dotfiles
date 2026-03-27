@@ -132,11 +132,17 @@ let g:NERDDefaultAlign = 'left'
 " PLUGINS ---------------------------------------------------------------- {{{
 " ALE linting settings
 let g:ale_linters = {
-\  'json': ['jq']
+\  'json': ['jq'],
+\  'javascript': ['eslint', 'tsserver'],
+\  'javascriptreact': ['eslint', 'tsserver'],
+\  'typescript': ['eslint', 'tsserver'],
+\  'typescriptreact': ['eslint', 'tsserver'],
 \}
 let g:ale_json_jq_executable = 'jq'
 let g:ale_json_jq_options = '.'
-let g:ale_fixers = ['prettier', 'eslint']
+let g:ale_fixers = {
+\  '*': ['prettier', 'eslint'],
+\}
 " Auto fix on save
 let g:ale_fix_on_save = 1
 

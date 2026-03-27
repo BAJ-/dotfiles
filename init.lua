@@ -5,6 +5,20 @@ source ~/.vimrc
 ]])
 vim.opt.termguicolors = true
 
+-- Ensure nvm-managed Node.js is in PATH for ALE/linters
+local nvm_dir = os.getenv("NVM_DIR")
+if nvm_dir then
+  local default_node = nvm_dir .. "/versions/node"
+  local handle = io.popen("ls -1 " .. default_node .. " 2>/dev/null | sort -V | tail -1")
+  if handle then
+    local latest = handle:read("*l")
+    handle:close()
+    if latest then
+      vim.env.PATH = default_node .. "/" .. latest .. "/bin:" .. vim.env.PATH
+    end
+  end
+end
+
 -- Run setup for Hop
 require'hop'.setup()
 
