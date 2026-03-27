@@ -135,6 +135,16 @@ Plug 'nvim-neotest/neotest'
 Plug 'nvim-neotest/neotest-jest'
 " Which-key for keymap discovery
 Plug 'folke/which-key.nvim'
+" Auto-completion
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+" Snippet engine (required by nvim-cmp)
+Plug 'L3MON4D3/LuaSnip'
+Plug 'saadparwaiz1/cmp_luasnip'
+" LSP config
+Plug 'neovim/nvim-lspconfig'
 
 call plug#end()
 

@@ -207,6 +207,68 @@ end
 
 vim.keymap.set('n', '<leader>gf', pick_changed_files, { noremap = true, desc = "Open changed files in layout" })
 
+-- LSP + Auto-completion setup
+local lspconfig = require('lspconfig')
+local cmp = require('cmp')
+local luasnip = require('luasnip')
+
+-- nvim-cmp setup
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      luasnip.lsp_expand(args.body)
+    end,
+  },
+  mapping = cmp.mapping.preset.insert({
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<CR>'] = cmp.mapping.confirm({ select = false }),
+    ['<Tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
+    ['<S-Tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
+  }),
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+    { name = 'luasnip' },
+  }, {
+    { name = 'buffer' },
+    { name = 'path' },
+  }),
+})
+
+-- LSP capabilities for nvim-cmp
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+-- TypeScript/JavaScript
+lspconfig.ts_ls.setup({
+  capabilities = capabilities,
+})
+
+-- Go
+lspconfig.gopls.setup({
+  capabilities = capabilities,
+})
+
+-- Disable ALE's LSP features to avoid duplicates (ALE handles linting, LSP handles completion)
+vim.g.ale_disable_lsp = 1
+
 -- DEBUGGING ---
 -- Run setup for Mason
 require("mason").setup()
