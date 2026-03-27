@@ -105,6 +105,8 @@ call plug#begin('~/.vim/plugged')
 Plug 'dense-analysis/ale'
 " Better syntax highlighting
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+" Auto close/rename JSX and HTML tags
+Plug 'windwp/nvim-ts-autotag'
 " Lua functions and required for telescoep.nvim to work
 Plug 'nvim-lua/plenary.nvim'
 " Fuzzy finder
