@@ -104,6 +104,102 @@ telescope.setup{  defaults = { file_ignore_patterns = { "node_modules", "vendor"
 telescope.load_extension("live_grep_args")
 vim.keymap.set('n', '<leader>fg', telescope.extensions.live_grep_args.live_grep_args, { noremap = true })
 
+-- Open git changed/new files in smart split layout
+local function open_in_layout(files)
+  if #files == 0 then return end
+
+  -- Focus a non-NvimTree window, or create one
+  local tree_open = false
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.bo[buf].filetype == "NvimTree" then
+      tree_open = true
+    else
+      vim.api.nvim_set_current_win(win)
+    end
+  end
+
+  -- Close other file windows (keep NvimTree)
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.bo[buf].filetype ~= "NvimTree" and win ~= vim.api.nvim_get_current_win() then
+      pcall(vim.api.nvim_win_close, win, false)
+    end
+  end
+
+  vim.cmd("edit " .. vim.fn.fnameescape(files[1]))
+
+  if #files == 2 then
+    vim.cmd("vsplit " .. vim.fn.fnameescape(files[2]))
+  elseif #files == 3 then
+    vim.cmd("split " .. vim.fn.fnameescape(files[2]))
+    vim.cmd("vsplit " .. vim.fn.fnameescape(files[3]))
+  elseif #files >= 4 then
+    local top = math.ceil(#files / 2)
+    for i = 2, top do
+      vim.cmd("vsplit " .. vim.fn.fnameescape(files[i]))
+    end
+    vim.cmd("wincmd t")
+    vim.cmd("split " .. vim.fn.fnameescape(files[top + 1]))
+    for i = top + 2, #files do
+      vim.cmd("vsplit " .. vim.fn.fnameescape(files[i]))
+    end
+  end
+  vim.cmd("wincmd t")
+end
+
+local function pick_changed_files()
+  local pickers = require("telescope.pickers")
+  local finders = require("telescope.finders")
+  local conf = require("telescope.config").values
+  local actions = require("telescope.actions")
+  local action_state = require("telescope.actions.state")
+
+  local output = vim.fn.systemlist("git ls-files --modified --others --exclude-standard 2>/dev/null")
+  local diff = vim.fn.systemlist("git diff --name-only HEAD 2>/dev/null")
+  local seen = {}
+  local files = {}
+  for _, list in ipairs({output, diff}) do
+    for _, f in ipairs(list) do
+      if f ~= "" and not seen[f] then
+        seen[f] = true
+        table.insert(files, f)
+      end
+    end
+  end
+
+  if #files == 0 then
+    print("No changed or new files found")
+    return
+  end
+
+  pickers.new({}, {
+    prompt_title = "Changed/New Files (Tab to select, Enter to open)",
+    finder = finders.new_table({ results = files }),
+    sorter = conf.generic_sorter({}),
+    attach_mappings = function(prompt_bufnr, map)
+      actions.select_default:replace(function()
+        local picker = action_state.get_current_picker(prompt_bufnr)
+        local selections = picker:get_multi_selection()
+        actions.close(prompt_bufnr)
+
+        local selected = {}
+        if #selections > 0 then
+          for _, entry in ipairs(selections) do
+            table.insert(selected, entry[1])
+          end
+        else
+          local entry = action_state.get_selected_entry()
+          if entry then table.insert(selected, entry[1]) end
+        end
+        open_in_layout(selected)
+      end)
+      return true
+    end,
+  }):find()
+end
+
+vim.keymap.set('n', '<leader>gc', pick_changed_files, { noremap = true, desc = "Open changed files in layout" })
 
 -- DEBUGGING ---
 -- Run setup for Mason
