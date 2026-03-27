@@ -136,9 +136,6 @@ Plug 'github/copilot.vim'
 Plug 'folke/tokyonight.nvim'
 Plug 'rebelot/kanagawa.nvim'
 " Neotest
-" Plug 'nvim-lua/plenary.nvim'
-" Plug 'nvim-treesitter/nvim-treesitter'
-Plug 'antoinemadec/FixCursorHold.nvim'
 Plug 'nvim-neotest/nvim-nio'
 Plug 'nvim-neotest/neotest'
 " Neotest-jest
