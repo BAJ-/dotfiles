@@ -3,20 +3,8 @@
 "               
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Disable compatibility with vi which can cause unexpected issues
-set nocompatible
-
 " Copy to clipboard
 set clipboard+=unnamedplus
-
-" Enable type file detection
-filetype on
-
-" Enable and load plugin for the detected file type
-filetype plugin on
-
-" Load an indent file for the detected file type.
-filetype indent on
 
 " Add line numbers
 set number
