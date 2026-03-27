@@ -182,6 +182,7 @@ Plug 'preservim/nerdcommenter'
 Plug 'github/copilot.vim'
 " Color
 Plug 'folke/tokyonight.nvim'
+Plug 'rebelot/kanagawa.nvim'
 Plug 'antoinemadec/FixCursorHold.nvim'
 Plug 'nvim-neotest/nvim-nio'
 Plug 'nvim-neotest/neotest'
