@@ -45,8 +45,8 @@ set smartcase
 " Show partial command you type in the last line of the screen
 set showcmd
 
-" Show the mode you are on the last line.
-set showmode
+" Don't show mode in command line (shown in statusline instead)
+set noshowmode
 
 " Set command history
 set history=1000

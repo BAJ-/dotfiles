@@ -195,8 +195,15 @@ vim.api.nvim_create_autocmd({"BufEnter", "FocusGained", "DirChanged"}, {
 })
 update_git_branch()
 
--- Highlight for linting indicator
+-- Highlight for linting indicator and mode
 vim.api.nvim_set_hl(0, "StatusLineLinting", { fg = "#1a1b26", bg = "#9ece6a" })
+vim.api.nvim_set_hl(0, "StatusLineMode", { fg = "#1a1b26", bg = "#7aa2f7" })
+
+local mode_map = {
+  n = "NORMAL", i = "INSERT", v = "VISUAL", V = "V-LINE",
+  ["\22"] = "V-BLOCK", c = "COMMAND", R = "REPLACE", t = "TERMINAL",
+  s = "SELECT", S = "S-LINE", ["\19"] = "S-BLOCK",
+}
 
 function _G.statusline()
     local set_color_1 = "%#Search#"
@@ -205,6 +212,8 @@ function _G.statusline()
     local file_name = " %f"
     local modified = "%m"
     local align_right = "%="
+    local mode = mode_map[vim.fn.mode()] or vim.fn.mode()
+    local mode_display = "%#StatusLineMode# " .. mode .. " %#MoreMsg#"
     local lint_status = vim.g.ale_linting and "%#StatusLineLinting# [linting...] %#MoreMsg#" or ""
     local fileencoding = " %{&fileencoding?&fileencoding:&encoding}"
     local fileformat = " [%{&fileformat}]"
@@ -213,13 +222,14 @@ function _G.statusline()
     local linecol = " %l:%c"
 
     return string.format(
-        "%s %s %s%s%s%s%s%s%s%s%s%s",
+        "%s %s %s%s%s%s%s%s%s%s%s%s%s",
         set_color_1,
         branch,
         set_color_2,
         file_name,
         modified,
         align_right,
+        mode_display,
         lint_status,
         filetype,
         fileencoding,
