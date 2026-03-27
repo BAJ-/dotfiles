@@ -202,6 +202,8 @@ nnoremap <leader>ed :ALEDetail<CR>
 " ALE code
 nnoremap <leader>cr :ALEFindReferences -relative<CR>
 nnoremap <leader>cd :ALEGoToDefinition<CR>
+nnoremap <leader>cv :ALEGoToDefinition -vsplit<CR>
+nnoremap <leader>ch :ALEGoToDefinition -split<CR>
 nnoremap <leader>ct :ALEGoToTypeDefinition<CR>
 
 nnoremap <leader>fn :let @+ = expand('%:t')<CR>
