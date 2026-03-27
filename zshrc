@@ -36,4 +36,12 @@ alias testfile=run_test_on_file
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
-source "$HOME/.rye/env"
+eval "$(gh copilot alias -- zsh)"
+export PATH="$HOME/.gum/bin:$PATH"
+
+alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
+
+export GOPROXY=https://goproxy.githubapp.com/mod,https://proxy.golang.org/,direct
+export GOPRIVATE=
+export GONOPROXY=
+export GONOSUMDB=github.com/github/*
