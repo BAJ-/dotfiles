@@ -101,6 +101,8 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
+require('nvim-ts-autotag').setup()
+
 local telescope = require('telescope')
 telescope.setup{  defaults = { file_ignore_patterns = { "node_modules", "vendor" }} }
 -- Load live grep args extension
