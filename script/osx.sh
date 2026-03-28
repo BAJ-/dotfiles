@@ -43,13 +43,12 @@ function setup_osx() {
     info "Installing starship..."
     brew install starship
     info "Starship installed"
-
-    info "Symlink Starship config"
-    ln -sf "${DOTFILES_DIR}/dotfiles/config/starship.toml" "${HOME}/.config/starship.toml"
-
   else
     note "$(starship --version | grep "starship") is already installed"
   fi
+
+  info "Symlink Starship config"
+  ln -sf "${DOTFILES_DIR}/dotfiles/config/starship.toml" "${HOME}/.config/starship.toml"
 
   if ! command -v tig &> /dev/null
   then
