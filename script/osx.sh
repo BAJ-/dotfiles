@@ -84,14 +84,8 @@ function setup_osx() {
   info "Installing tokyonight-storm color theme for iTerm"
   curl -o "${HOME}/Downloads/tokyonight-storm.itermcolors" https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/schemes/tokyonight-storm.itermcolors
 
-  if ! [ -f "${HOME}/Library/Fonts/HackNerdFont-Regular.ttf" ]
-  then
-    info "Installing Nerd Font"
-    brew tap homebrew/cask-fonts
-    brew install --cask font-hack-nerd-font
-  else
-    note "Nerd Font already installed"
-  fi
+  info "Installing/updating Nerd Font"
+  brew install --cask font-hack-nerd-font || brew upgrade --cask font-hack-nerd-font 2>/dev/null
 
   if ! [ -f "${HOME}/.iterm2_shell_integration.zsh" ]
   then
