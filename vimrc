@@ -113,8 +113,8 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-live-grep-args.nvim'
 " Nvim tree with icons
-Plug 'kyazdani42/nvim-web-devicons' " for file icons
-Plug 'kyazdani42/nvim-tree.lua'
+Plug 'nvim-tree/nvim-web-devicons' " for file icons
+Plug 'nvim-tree/nvim-tree.lua'
 " Jump to any part of the file
 Plug 'phaazon/hop.nvim'
 " Go plugin
