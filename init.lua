@@ -304,10 +304,11 @@ vim.api.nvim_set_keymap('n', '<leader>ms', '<cmd>lua require("neotest").summary.
 local iterm_profile = os.getenv('ITERM_PROFILE')
 if(iterm_profile == 'tokyonight-storm')
 then
-  colorSchemeName = 'tokyonight-storm'
+  local colorSchemeName = 'tokyonight-storm'
+  vim.cmd.colorscheme(colorSchemeName)
 else
   vim.o.background = 'light'
-  colorSchemeName = 'kanagawa'
+  local colorSchemeName = 'kanagawa'
   require('kanagawa').setup({
     compile = false,             -- enable compiling the colorscheme
     undercurl = true,            -- enable undercurls
@@ -332,10 +333,8 @@ else
         light = "lotus"
     }, 
   })
+  vim.cmd.colorscheme(colorSchemeName)
 end
-
--- Set colorscheme
-vim.cmd.colorscheme(colorSchemeName)
 
 -- ALE linting status indicator
 vim.g.ale_linting = false
