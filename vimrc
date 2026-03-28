@@ -66,10 +66,10 @@ let g:NERDDefaultAlign = 'left'
 " ALE linting settings
 let g:ale_linters = {
 \  'json': ['jq'],
-\  'javascript': ['eslint', 'tsserver'],
-\  'javascriptreact': ['eslint', 'tsserver'],
-\  'typescript': ['eslint', 'tsserver'],
-\  'typescriptreact': ['eslint', 'tsserver'],
+\  'javascript': ['eslint'],
+\  'javascriptreact': ['eslint'],
+\  'typescript': ['eslint'],
+\  'typescriptreact': ['eslint'],
 \}
 let g:ale_json_jq_executable = 'jq'
 let g:ale_json_jq_options = '.'
