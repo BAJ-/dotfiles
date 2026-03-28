@@ -23,7 +23,7 @@ run_test_on_file() {
     fi
   fi
 
-  if [ -n $TEST_FILE ]; then
+  if [ -n "$TEST_FILE" ]; then
     FILE_PATH=$(find . -name "$TEST_FILE" -exec sh -c 'echo "${0#./}"' {} \;)
     FILE_PATH=${FILE_PATH//.test/}
     npm run test --if-present $TEST_FILE -- --coverage --collectCoverageFrom=$FILE_PATH
