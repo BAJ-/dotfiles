@@ -116,7 +116,7 @@ Plug 'nvim-telescope/telescope-live-grep-args.nvim'
 Plug 'nvim-tree/nvim-web-devicons' " for file icons
 Plug 'nvim-tree/nvim-tree.lua'
 " Jump to any part of the file
-Plug 'phaazon/hop.nvim'
+Plug 'smoka7/hop.nvim'
 " Go plugin
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 " Mason, portalbe package manager for NVIM
