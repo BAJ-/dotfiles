@@ -83,7 +83,7 @@ function setup_osx() {
   fi
 
   info "Installing tokyonight-storm color theme for iTerm"
-  curl -o "${HOME}/Downloads" https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/schemes/tokyonight-storm.itermcolors
+  curl -o "${HOME}/Downloads/tokyonight-storm.itermcolors" https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/schemes/tokyonight-storm.itermcolors
 
   if ! [ -f "${HOME}/Library/Fonts/HackNerdFont-Regular.ttf" ]
   then
