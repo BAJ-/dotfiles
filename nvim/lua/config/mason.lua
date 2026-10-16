@@ -11,6 +11,7 @@ M.packages = {
   'cssmodules-language-server',
   'eslint-lsp',
   'html-lsp',
+  'js-debug-adapter',
   'json-lsp',
   'lua-language-server',
   'prettierd',
