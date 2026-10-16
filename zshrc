@@ -37,8 +37,8 @@ alias testfile=run_test_on_file
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 export PATH="$HOME/.gum/bin:$PATH"
-source "$HOME/.rye/env"
-eval "$($HOME/.local/bin/mise activate zsh)"
+[ -s "$HOME/.rye/env" ] && source "$HOME/.rye/env"
+[ -x "$HOME/.local/bin/mise" ] && eval "$("$HOME/.local/bin/mise" activate zsh)"
 
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
