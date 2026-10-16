@@ -1,0 +1,46 @@
+local map = vim.keymap.set
+
+map('n', '<space>', ':', { desc = 'Command line' })
+map('i', 'jj', '<Esc>', { desc = 'Leave insert mode' })
+map('n', 'n', 'nzz', { desc = 'Next match (centred)' })
+map('n', 'N', 'Nzz', { desc = 'Previous match (centred)' })
+
+map('n', '<leader>sv', '<cmd>vsplit<cr>', { desc = 'Split vertically' })
+map('n', '<leader>sh', '<cmd>split<cr>', { desc = 'Split horizontally' })
+map('n', '<leader>h', '<C-w>h', { desc = 'Window left' })
+map('n', '<leader>j', '<C-w>j', { desc = 'Window down' })
+map('n', '<leader>k', '<C-w>k', { desc = 'Window up' })
+map('n', '<leader>l', '<C-w>l', { desc = 'Window right' })
+
+map('n', '<leader>bk', function()
+  require('config.buffers').delete()
+end, { desc = 'Delete buffer, keep window' })
+map('n', '<leader>bh', '<cmd>hide<cr>', { desc = 'Hide window' })
+
+map('n', '<leader>tc', '<cmd>tabnew<cr>', { desc = 'New tab' })
+map('n', '<leader>tn', '<cmd>tabnext<cr>', { desc = 'Next tab' })
+map('n', '<leader>tp', '<cmd>tabprevious<cr>', { desc = 'Previous tab' })
+
+map('n', '<leader>tm', '<cmd>terminal<cr>', { desc = 'Terminal' })
+-- Double <Esc> so a single <Esc> still reaches TUIs running inside (AI CLIs, fzf, lazygit)
+map('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Leave terminal mode' })
+
+map('n', '<leader>en', function()
+  vim.diagnostic.jump({ count = 1, float = true })
+  vim.cmd.normal({ 'zz', bang = true })
+end, { desc = 'Next diagnostic' })
+map('n', '<leader>ep', function()
+  vim.diagnostic.jump({ count = -1, float = true })
+  vim.cmd.normal({ 'zz', bang = true })
+end, { desc = 'Previous diagnostic' })
+map('n', '<leader>ed', vim.diagnostic.open_float, { desc = 'Diagnostic details' })
+
+map('n', '<leader>fn', function()
+  vim.fn.setreg('+', vim.fn.expand('%:t'))
+end, { desc = 'Copy file name' })
+
+map('n', '<F5>', function()
+  local view = vim.fn.winsaveview()
+  vim.cmd([[keeppatterns %s/\s\+$//e]])
+  vim.fn.winrestview(view)
+end, { desc = 'Strip trailing whitespace' })
