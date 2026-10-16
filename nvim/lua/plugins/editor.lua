@@ -41,25 +41,14 @@ end, { desc = 'Flash: select syntax node' })
 
 -- fzf-lua -------------------------------------------------------------------
 
-local setup_fzf = pack.once(function()
-  pack.load('fzf-lua')
-  require('fzf-lua').setup()
-  require('fzf-lua').register_ui_select()
-end)
-
-local function fzf(picker, opts)
-  return function()
-    setup_fzf()
-    require('fzf-lua')[picker](opts)
-  end
-end
+local fzf = require('config.fzf')
 
 pack.on_keys({
-  { '<leader>ff', fzf('files'), desc = 'Files' },
-  { '<leader>fg', fzf('live_grep_glob'), desc = 'Grep (filter files: text -- *.tsx !*.test.*)' },
-  { '<leader>fb', fzf('buffers'), desc = 'Buffers' },
-  { '<leader>fh', fzf('helptags'), desc = 'Help' },
-  { '<leader>fr', fzf('resume'), desc = 'Resume last picker' },
+  { '<leader>ff', fzf.picker('files'), desc = 'Files' },
+  { '<leader>fg', fzf.picker('live_grep_glob'), desc = 'Grep (filter files: text -- *.tsx !*.test.*)' },
+  { '<leader>fb', fzf.picker('buffers'), desc = 'Buffers' },
+  { '<leader>fh', fzf.picker('helptags'), desc = 'Help' },
+  { '<leader>fr', fzf.picker('resume'), desc = 'Resume last picker' },
   {
     '<leader>gf',
     function()
@@ -67,14 +56,14 @@ pack.on_keys({
     end,
     desc = 'Open changed files in a layout',
   },
-}, setup_fzf)
+}, fzf.setup)
 
 -- Route vim.ui.select (code actions, etc.) through fzf-lua once it's loaded
 local default_select = vim.ui.select
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.ui.select = function(...)
   vim.ui.select = default_select
-  setup_fzf()
+  fzf.setup()
   return vim.ui.select(...)
 end
 
