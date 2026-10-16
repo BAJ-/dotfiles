@@ -1,14 +1,21 @@
 export LANG=en_GB.UTF-8
 export LC_MESSAGES=en_GB.UTF-8
 
-. ~/z.sh
-eval "$(starship init zsh)"
+# Nested shells (e.g. Neovim's terminal) would otherwise keep re-adding PATH entries
+typeset -U path PATH
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+[ -f ~/z.sh ] && . ~/z.sh
+command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
 
-[[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
+# Node via fnm: the nearest .nvmrc/.node-version wins, else fnm's default.
+# Custom hook because fnm's --use-on-cd can't install missing versions.
+if command -v fnm >/dev/null 2>&1; then
+  eval "$(fnm env --version-file-strategy=recursive --shell zsh)"
+  _fnm_use_project_node() { fnm use --silent-if-unchanged --install-if-missing; }
+  autoload -U add-zsh-hook
+  add-zsh-hook chpwd _fnm_use_project_node
+  _fnm_use_project_node
+fi
 
 run_test_on_file() {
   TEST_FILE=''
@@ -37,13 +44,20 @@ alias testfile=run_test_on_file
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 export PATH="$HOME/.gum/bin:$PATH"
-[ -s "$HOME/.rye/env" ] && source "$HOME/.rye/env"
-[ -x "$HOME/.local/bin/mise" ] && eval "$("$HOME/.local/bin/mise" activate zsh)"
+if [ -x "$HOME/.local/bin/mise" ]; then
+  # fnm owns Node; stop mise from putting a second node on PATH
+  command -v fnm >/dev/null 2>&1 && export MISE_DISABLE_TOOLS="${MISE_DISABLE_TOOLS:+$MISE_DISABLE_TOOLS,}node"
+  eval "$("$HOME/.local/bin/mise" activate zsh)"
+fi
 
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
-export ANDROID_HOME=$HOME/Library/Android/sdk
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-export JAVA_HOME=/opt/homebrew/opt/openjdk@17
-export PATH="$JAVA_HOME/bin:$PATH"
+if [ -d "$HOME/Library/Android/sdk" ]; then
+  export ANDROID_HOME=$HOME/Library/Android/sdk
+  export PATH=$PATH:$ANDROID_HOME/emulator
+  export PATH=$PATH:$ANDROID_HOME/platform-tools
+fi
+if [ -d /opt/homebrew/opt/openjdk@17 ]; then
+  export JAVA_HOME=/opt/homebrew/opt/openjdk@17
+  export PATH="$JAVA_HOME/bin:$PATH"
+fi

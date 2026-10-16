@@ -65,17 +65,26 @@ function setup_osx() {
   info "Symlink z folder jumper"
   ln -sf "${DOTFILES_DIR}/dotfiles/z.sh" "${HOME}/z.sh"
 
-  if ! command -v hg &> /dev/null
+  if ! command -v fnm &> /dev/null
   then
-    info "Installing mercurial for gvm..."
-    brew install mercurial
+    info "Installing fnm..."
+    brew install fnm
   else
-    note "$(hg --version | grep "Mercurial") is already installed"
+    note "$(fnm --version) is already installed"
+  fi
+
+  if ! fnm ls 2>/dev/null | grep -q default
+  then
+    info "Installing latest Node LTS as the fnm default..."
+    fnm install --lts
+    fnm default lts-latest
+  else
+    note "Node $(fnm ls | grep default | awk '{print $2}') is the fnm default"
   fi
 
   if ! command -v go &> /dev/null
   then
-    info "Installing go using brew to get around gvm bootstrapping problem..."
+    info "Installing go..."
     brew install go
   else
     note "$(go version) is already installed"
