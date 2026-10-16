@@ -209,10 +209,74 @@ end
 
 vim.keymap.set('n', '<leader>gf', pick_changed_files, { noremap = true, desc = "Open changed files in layout" })
 
+-- Browse and insert snippets via Telescope
+local function pick_snippet()
+  local pickers = require("telescope.pickers")
+  local finders = require("telescope.finders")
+  local conf = require("telescope.config").values
+  local actions = require("telescope.actions")
+  local action_state = require("telescope.actions.state")
+  local ls = require("luasnip")
+
+  local ft = vim.bo.filetype
+  local available = ls.get_snippets(ft)
+  if not available or #available == 0 then
+    print("No snippets for filetype: " .. ft)
+    return
+  end
+
+  local items = {}
+  for _, snip in ipairs(available) do
+    table.insert(items, {
+      trigger = snip.trigger,
+      name = snip.name or snip.trigger,
+      display = snip.trigger .. " — " .. (snip.name or snip.trigger),
+      snippet = snip,
+    })
+  end
+
+  pickers.new({}, {
+    prompt_title = "Snippets (" .. ft .. ")",
+    finder = finders.new_table({
+      results = items,
+      entry_maker = function(item)
+        return {
+          value = item,
+          display = item.display,
+          ordinal = item.display,
+        }
+      end,
+    }),
+    sorter = conf.generic_sorter({}),
+    attach_mappings = function(prompt_bufnr)
+      actions.select_default:replace(function()
+        local entry = action_state.get_selected_entry()
+        actions.close(prompt_bufnr)
+        if entry then
+          vim.cmd("startinsert")
+          ls.snip_expand(entry.value.snippet)
+        end
+      end)
+      return true
+    end,
+  }):find()
+end
+
+vim.keymap.set('n', '<leader>ss', pick_snippet, { noremap = true, desc = "Browse and insert snippets" })
+
 -- LSP + Auto-completion setup
 local lspconfig = require('lspconfig')
 local cmp = require('cmp')
 local luasnip = require('luasnip')
+
+-- Load custom snippets
+luasnip.add_snippets("typescriptreact", require("snippets.typescriptreact"))
+luasnip.add_snippets("typescript", require("snippets.typescript"))
+-- TSX snippets also work in TS files
+luasnip.filetype_extend("typescript", { "typescriptreact" })
+-- JS files get TS snippets too
+luasnip.filetype_extend("javascript", { "typescript" })
+luasnip.filetype_extend("javascriptreact", { "typescriptreact" })
 
 -- nvim-cmp setup
 cmp.setup({
