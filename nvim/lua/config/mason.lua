@@ -5,6 +5,7 @@ local M = {}
 
 M.packages = {
   'bash-language-server',
+  'copilot-language-server',
   'css-lsp',
   'css-variables-language-server',
   'cssmodules-language-server',

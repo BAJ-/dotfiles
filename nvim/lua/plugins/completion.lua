@@ -18,7 +18,15 @@ local setup = pack.once(function()
     keymap = {
       -- <CR> only accepts an item you've selected, like the old nvim-cmp setup
       preset = 'enter',
-      ['<Tab>'] = { 'select_next', 'snippet_forward', 'fallback' },
+      -- menu open: next item; otherwise accept ghost text, then snippet jump
+      ['<Tab>'] = {
+        'select_next',
+        function()
+          return vim.lsp.inline_completion.get()
+        end,
+        'snippet_forward',
+        'fallback',
+      },
       ['<S-Tab>'] = { 'select_prev', 'snippet_backward', 'fallback' },
     },
     completion = {

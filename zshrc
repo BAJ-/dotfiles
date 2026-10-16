@@ -44,6 +44,8 @@ alias testfile=run_test_on_file
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 export PATH="$HOME/.gum/bin:$PATH"
+# This repo's scripts (copilot-auto); %x is this file, :A resolves the ~/.zshrc symlink
+path=("${${(%):-%x}:A:h}/bin" $path)
 if [ -x "$HOME/.local/bin/mise" ]; then
   # fnm owns Node; stop mise from putting a second node on PATH
   command -v fnm >/dev/null 2>&1 && export MISE_DISABLE_TOOLS="${MISE_DISABLE_TOOLS:+$MISE_DISABLE_TOOLS,}node"

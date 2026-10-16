@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Start GitHub Copilot CLI on a local Ollama model when one is available,
+# otherwise on GitHub's hosted models (which use AI credits).
+#
+#   AI_LOCAL_MODEL   local model to use (default: qwen3-coder:30b)
+#   OLLAMA_HOST      Ollama address (default: http://localhost:11434)
+#   COPILOT_LOCAL=0  skip the local model and use GitHub's models
+#
+# Any arguments are passed on to `copilot` (e.g. --acp, --resume).
+set -euo pipefail
+
+if ! command -v copilot >/dev/null 2>&1; then
+  echo "copilot-auto: Copilot CLI isn't installed (brew install --cask copilot-cli)" >&2
+  exit 127
+fi
+
+host="${OLLAMA_HOST:-http://localhost:11434}"
+[[ $host == http://* || $host == https://* ]] || host="http://$host"
+model="${AI_LOCAL_MODEL:-qwen3-coder:30b}"
+# Ollama lists untagged models as <name>:latest
+[[ $model == *:* ]] || model="$model:latest"
+
+if [[ ${COPILOT_LOCAL:-1} == 0 ]]; then
+  echo "copilot-auto: COPILOT_LOCAL=0, using GitHub's models" >&2
+elif curl -fsS --max-time 1 "$host/api/tags" 2>/dev/null | tr -d '[:space:]' | grep -qF "\"name\":\"$model\""; then
+  export COPILOT_PROVIDER_BASE_URL="$host"
+  export COPILOT_MODEL="$model"
+  echo "copilot-auto: using local model $model via Ollama" >&2
+else
+  echo "copilot-auto: local model unavailable, using GitHub's models" >&2
+fi
+
+exec copilot "$@"
