@@ -14,7 +14,10 @@ end)
 
 if #vim.api.nvim_list_uis() > 0 then
   vim.defer_fn(function()
-    require('config.mason').install()
+    local ok, err = pcall(require('config.mason').install)
+    if not ok then
+      pack.broken('plugins.lsp', err)
+    end
   end, 500)
 end
 
@@ -23,6 +26,12 @@ vim.diagnostic.config({
   virtual_text = { spacing = 2, source = 'if_many' },
   float = { source = true },
 })
+
+-- The server definitions come from nvim-lspconfig; without it (its install
+-- failed, which config.pack already reported) there is nothing to start
+if #vim.api.nvim_get_runtime_file('lsp/vtsls.lua', false) == 0 then
+  return
+end
 
 -- TypeScript: one server per project (see config/typescript.lua) while
 -- keeping each server's own root detection from nvim-lspconfig

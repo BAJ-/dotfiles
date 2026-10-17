@@ -36,7 +36,7 @@ end, { desc = 'Previous ghost text suggestion' })
 
 -- sidekick: Copilot Next Edit Suggestions + AI CLIs in a terminal ----------
 
-vim.schedule(function()
+pack.later('plugins.ai', function()
   require('sidekick').setup({
     cli = {
       picker = 'fzf-lua',

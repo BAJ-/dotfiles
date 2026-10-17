@@ -12,7 +12,7 @@ pack.defer({
 })
 
 -- Cheap to set up, but not needed before the first screen is drawn
-vim.schedule(function()
+pack.later('plugins.editor', function()
   require('ts-comments').setup()
   require('flash').setup()
 
