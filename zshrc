@@ -4,6 +4,11 @@ export LC_MESSAGES=en_GB.UTF-8
 # Nested shells (e.g. Neovim's terminal) would otherwise keep re-adding PATH entries
 typeset -U path PATH
 
+# Homebrew on Apple Silicon, unless ~/.zprofile already set it up
+if [[ -z "$HOMEBREW_PREFIX" && -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
 [ -f ~/z.sh ] && . ~/z.sh
 command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
 

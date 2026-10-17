@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
@@ -9,7 +10,7 @@ function info {
 }
 
 function warn {
-  echo -e "${RED}[WARN]${NONE} $1"
+  echo -e "${RED}[WARN]${NONE} $1" >&2
 }
 
 function note {

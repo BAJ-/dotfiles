@@ -72,6 +72,14 @@ function M.failed()
   return vim.deepcopy(failed)
 end
 
+---Config modules that errored so far, as "name: error"
+---@return string[]
+function M.errors()
+  return vim.tbl_map(function(b)
+    return ('%s: %s'):format(b.name, b.err)
+  end, broken)
+end
+
 ---Run setup that isn't needed before the first screen is drawn
 ---@param name string reported if it errors
 ---@param fn fun()
