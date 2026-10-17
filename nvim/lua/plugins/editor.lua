@@ -135,6 +135,8 @@ pack.on_keys({
 pack.on_cmds({ 'NvimTreeToggle', 'NvimTreeOpen', 'NvimTreeFindFile', 'NvimTreeRefresh' }, setup_tree)
 
 -- `nvim some/dir` shows the tree instead of an empty directory buffer
-if vim.fn.argc() == 1 and vim.fn.isdirectory(vim.fn.argv(0) --[[@as string]]) == 1 then
+if
+  vim.fn.argc() == 1 and vim.fn.isdirectory(vim.fn.argv(0) --[[@as string]]) == 1
+then
   setup_tree()
 end

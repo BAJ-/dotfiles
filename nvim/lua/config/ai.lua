@@ -40,10 +40,10 @@ end
 function M.local_model(model)
   local models = M.ollama_models()
   if not models then
-    return false, ('Ollama isn\'t running at %s (brew install ollama, then: ollama serve)'):format(M.ollama_url())
+    return false, ("Ollama isn't running at %s (brew install ollama, then: ollama serve)"):format(M.ollama_url())
   end
   if not vim.list_contains(models, tagged(model)) then
-    return false, ('%s isn\'t pulled (ollama pull %s)'):format(model, model)
+    return false, ("%s isn't pulled (ollama pull %s)"):format(model, model)
   end
   return true, ('local model %s'):format(model)
 end
@@ -58,7 +58,7 @@ function M.chat_backend()
   if vim.fn.executable('copilot') == 1 then
     return { adapter = 'copilot_acp' }, 'Copilot CLI, because ' .. why
   end
-  return { adapter = 'copilot' }, 'Copilot chat, because ' .. why .. ' and Copilot CLI isn\'t installed'
+  return { adapter = 'copilot' }, 'Copilot chat, because ' .. why .. " and Copilot CLI isn't installed"
 end
 
 -- Ghost text comes from one provider at a time: 'copilot' or 'local' (minuet)
@@ -98,12 +98,19 @@ function M.status()
   else
     add('Copilot language server: not installed yet (Mason installs it in the background)')
   end
-  add('Ghost text: %s', M.inline_provider == 'local' and ('local model ' .. M.fim_model) or 'Copilot (free on paid plans)')
+  add(
+    'Ghost text: %s',
+    M.inline_provider == 'local' and ('local model ' .. M.fim_model) or 'Copilot (free on paid plans)'
+  )
   local nes_ok, nes = pcall(require, 'sidekick.nes')
   add('Next Edit Suggestions: %s', nes_ok and (nes.enabled and 'on' or 'off') or 'sidekick not loaded')
 
   local models = M.ollama_models()
-  add('Ollama (%s): %s', M.ollama_url(), models and ('running, models: ' .. (#models > 0 and table.concat(models, ', ') or 'none')) or 'not reachable')
+  add(
+    'Ollama (%s): %s',
+    M.ollama_url(),
+    models and ('running, models: ' .. (#models > 0 and table.concat(models, ', ') or 'none')) or 'not reachable'
+  )
   local chat_ok, chat_why = M.local_model(M.chat_model)
   add('  chat/agent model AI_LOCAL_MODEL=%s: %s', M.chat_model, chat_ok and 'available' or chat_why)
   local fim_ok, fim_why = M.local_model(M.fim_model)
@@ -112,9 +119,9 @@ function M.status()
   local _, backend_why = M.chat_backend()
   add('Chat (<leader>ac) uses: %s', backend_why)
   if vim.fn.executable('copilot') == 0 then
-    add('Agent CLI (<leader>aa): Copilot CLI isn\'t installed (brew install --cask copilot-cli)')
+    add("Agent CLI (<leader>aa): Copilot CLI isn't installed (brew install --cask copilot-cli)")
   else
-    add('Agent CLI (<leader>aa): copilot-auto -> %s', chat_ok and ('local model ' .. M.chat_model) or 'GitHub\'s models')
+    add('Agent CLI (<leader>aa): copilot-auto -> %s', chat_ok and ('local model ' .. M.chat_model) or "GitHub's models")
   end
   return lines
 end

@@ -63,7 +63,12 @@ local function cli(fn, opts)
 end
 local map = vim.keymap.set
 map('n', '<leader>aa', cli('toggle', { name = 'copilot', focus = true }), { desc = 'Agent CLI (local first)' })
-map('n', '<leader>ag', cli('toggle', { name = 'copilot_github', focus = true }), { desc = 'Agent CLI on GitHub models' })
+map(
+  'n',
+  '<leader>ag',
+  cli('toggle', { name = 'copilot_github', focus = true }),
+  { desc = 'Agent CLI on GitHub models' }
+)
 map('n', '<leader>as', cli('select'), { desc = 'Choose agent CLI' })
 map({ 'n', 'x' }, '<leader>at', cli('send', { msg = '{this}' }), { desc = 'Send this to agent' })
 map('n', '<leader>af', cli('send', { msg = '{file}' }), { desc = 'Send file to agent' })

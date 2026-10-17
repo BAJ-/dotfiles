@@ -14,11 +14,7 @@ local function savable(buf)
     return false
   end
   local bo = vim.bo[buf]
-  return bo.buftype == ''
-    and bo.modified
-    and bo.modifiable
-    and not bo.readonly
-    and vim.api.nvim_buf_get_name(buf) ~= ''
+  return bo.buftype == '' and bo.modified and bo.modifiable and not bo.readonly and vim.api.nvim_buf_get_name(buf) ~= ''
 end
 
 ---@param buf integer
