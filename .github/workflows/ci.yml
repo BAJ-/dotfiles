@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: shellcheck
+        run: shellcheck -x setup.sh bin/copilot-auto
+
+      - name: stylua
+        uses: JohnnyMorganz/stylua-action@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: 2.6.0
+          args: --check --indent-type Spaces --indent-width 2 --quote-style AutoPreferSingle --column-width 120 nvim script
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: zshrc syntax
+        run: zsh -n zshrc
+
+      - name: setup.sh --dry-run
+        run: ./setup.sh --dry-run
+
+      # What setup.sh does for Neovim on a new Mac: Homebrew's Neovim, plugins at
+      # the lockfile revisions, parsers, Mason packages, then a clean config load
+      - name: Install Neovim
+        run: brew install neovim tree-sitter-cli
+
+      - name: Neovim from a clean start
+        run: |
+          mkdir -p ~/.config
+          ln -s "$GITHUB_WORKSPACE/nvim" ~/.config/nvim
+          nvim --headless "+luafile script/nvim-sync.lua"
