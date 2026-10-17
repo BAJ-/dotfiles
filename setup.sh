@@ -420,7 +420,9 @@ neovim() {
   command -v fnm >/dev/null 2>&1 && fnm use --silent-if-unchanged default
   local before after summary
   before="$(nvim_state)"
-  if (cd "$HOME" && env -u NVIM_APPNAME nvim --headless "+luafile $DOTFILES_DIR/script/nvim-sync.lua"); then
+  # Plugins are public: clone over HTTPS even where ~/.gitconfig sends GitHub
+  # through SSH, which fails (or hangs) without a key loaded in the agent
+  if (cd "$HOME" && GIT_CONFIG_GLOBAL=/dev/null env -u NVIM_APPNAME nvim --headless "+luafile $DOTFILES_DIR/script/nvim-sync.lua"); then
     after="$(nvim_state)"
     summary="$(nvim_changes "$before" "$after")"
     [[ -z "$summary" ]] || changed "Neovim: $summary"
@@ -428,7 +430,8 @@ neovim() {
     failed "Neovim sync failed (see above)"
   fi
 
-  if [[ ! -s "$HOME/.config/github-copilot/apps.json" && ! -s "$HOME/.config/github-copilot/hosts.json" ]]; then
+  local copilot="$HOME/.config/github-copilot" # auth.db now, *.json in older versions
+  if [[ ! -s "$copilot/auth.db" && ! -s "$copilot/apps.json" && ! -s "$copilot/hosts.json" ]]; then
     MANUAL+=("Sign in to Copilot: open Neovim and run :LspCopilotSignIn")
   fi
 }
