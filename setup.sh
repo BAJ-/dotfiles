@@ -31,8 +31,12 @@ if [[ "$(uname -s)" != Darwin ]]; then
   exit 1
 fi
 
-# -E runs this inside functions too; skip subshells, where failures can be expected
-trap '((BASH_SUBSHELL > 0)) || warn "Stopped: \"$BASH_COMMAND\" failed (line $LINENO)"' ERR
+# -E runs this inside functions too. Subshells ($(...), <(...)) can fail on
+# purpose, so only the main shell reports; $BASH_COMMAND must be read first
+on_error() { # <command> <subshell level>
+  (($2 > 0)) || warn "Stopped: \"$1\" failed"
+}
+trap 'on_error "$BASH_COMMAND" "$BASH_SUBSHELL"' ERR
 
 BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 NVIM_DATA="${XDG_DATA_HOME:-$HOME/.local/share}/nvim"
@@ -201,6 +205,32 @@ dotfiles() {
 
 # --- Node ------------------------------------------------------------------------
 
+# npm settings from an old Node's global npmrc that ~/.npmrc doesn't have yet.
+# A per-version npmrc vanishes with its Node; ~/.npmrc applies to every version
+carry_npm_config() {
+  local npmrc="$1" line key keys=() lines=()
+  [[ -s "$npmrc" ]] || return 0
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    [[ "$line" =~ ^[[:space:]]*([^#\;=[:space:]][^=]*)= ]] || continue
+    key="${BASH_REMATCH[1]%"${BASH_REMATCH[1]##*[![:space:]]}"}"
+    if [[ "$key" == *'[]' ]]; then
+      grep -qxF "$line" "$HOME/.npmrc" 2>/dev/null && continue
+    elif awk -F= -v k="$key" '{ gsub(/^[ \t]+|[ \t]+$/, "", $1) } $1 == k { found = 1 } END { exit !found }' \
+      "$HOME/.npmrc" 2>/dev/null; then
+      continue
+    fi
+    lines+=("$line")
+    [[ " ${keys[*]:-} " == *" $key "* ]] || keys+=("$key")
+  done <"$npmrc"
+  if ((${#lines[@]} > 0)); then
+    if ! $DRY_RUN; then
+      printf '%s\n' "${lines[@]}" >>"$HOME/.npmrc"
+      chmod 600 "$HOME/.npmrc" # may hold registry tokens
+    fi
+    changed "copy npm settings (${keys[*]}) from $(tilde "$npmrc") to ~/.npmrc"
+  fi
+}
+
 # Global npm packages from an old Node's node_modules folder onto the default Node
 carry_npm_globals() {
   local from="$1" root dir name pkgs=()
@@ -246,6 +276,7 @@ node_lts() {
   if [[ "$after" != "$before" ]]; then
     changed "make Node $after (latest LTS) the default${before:+ instead of $before}"
     if [[ -n "$before" ]]; then
+      carry_npm_config "$(fnm exec --using="$before" npm config get globalconfig)"
       carry_npm_globals "$(fnm exec --using="$before" npm root -g)"
     fi
   fi
@@ -253,24 +284,34 @@ node_lts() {
 
 # --- Leftovers from the old setup ---------------------------------------------------
 
+# Removing never stops the run: files left by an old sudo need your password
+remove_dir() { # <dir> <why>
+  if run rm -rf "$1"; then
+    changed "remove $(tilde "$1") ($2)"
+  else
+    MANUAL+=("Finish removing $(tilde "$1"), some files there belong to root: sudo rm -rf $(tilde "$1")")
+  fi
+}
+
 retired_tools() {
   if [[ -d "$HOME/.nvm" ]]; then
-    local newest
-    newest="$(printf '%s\n' "$HOME"/.nvm/versions/node/v* | sort -V | tail -1)"
-    if [[ -d "$newest/lib/node_modules" ]] && command -v npm >/dev/null 2>&1; then
-      carry_npm_globals "$newest/lib/node_modules"
+    local version
+    # newest first: its settings win when versions disagree
+    for version in $(printf '%s\n' "$HOME"/.nvm/versions/node/v* | sort -rV); do
+      carry_npm_config "$version/etc/npmrc"
+    done
+    version="$(printf '%s\n' "$HOME"/.nvm/versions/node/v* | sort -V | tail -1)"
+    if [[ -d "$version/lib/node_modules" ]] && command -v npm >/dev/null 2>&1; then
+      carry_npm_globals "$version/lib/node_modules"
     fi
-    run rm -rf "$HOME/.nvm"
-    changed "remove ~/.nvm (fnm manages Node now)"
+    remove_dir "$HOME/.nvm" "fnm manages Node now"
   fi
   if [[ -d "$HOME/.gvm" ]]; then
-    run chmod -R u+w "$HOME/.gvm" # Go's module cache is read-only
-    run rm -rf "$HOME/.gvm"
-    changed "remove ~/.gvm (no longer used)"
+    run chmod -R u+w "$HOME/.gvm" 2>/dev/null || true # Go's module cache is read-only
+    remove_dir "$HOME/.gvm" "no longer used"
   fi
   if [[ -d "$HOME/.rye" ]]; then
-    run rm -rf "$HOME/.rye"
-    changed "remove ~/.rye (Rye is no longer developed)"
+    remove_dir "$HOME/.rye" "Rye is no longer developed"
   fi
 
   # Their installers add these to shell startup files; Rye's line errors once it's gone
@@ -293,8 +334,7 @@ old_neovim() {
     local dir
     for dir in "$HOME/.vim" "$NVIM_DATA" "${XDG_STATE_HOME:-$HOME/.local/state}/nvim" "${XDG_CACHE_HOME:-$HOME/.cache}/nvim"; do
       if [[ -e "$dir" ]]; then
-        run rm -rf "$dir"
-        changed "remove the old $(tilde "$dir")"
+        remove_dir "$dir" "old Vimscript setup"
       fi
     done
   fi
