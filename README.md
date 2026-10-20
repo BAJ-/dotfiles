@@ -139,9 +139,10 @@ Inside a picker:
 
 ### Understand and change code
 
-Language servers start on their own for TypeScript and JavaScript, ESLint, CSS and SCSS, CSS Modules (`styles.` completes class names and `gd` jumps to the class), CSS variables, HTML, JSON, YAML, Lua and Bash. TypeScript projects on TypeScript 7 or later get TypeScript's own `tsc --lsp`; older ones get vtsls. If a server gets stuck, `:lsp restart` restarts it.
+Language servers start on their own for TypeScript and JavaScript, ESLint, CSS and SCSS, CSS Modules (`styles.` completes class names and `gd` jumps to the class), CSS variables, HTML, JSON, YAML, GitHub Actions workflows, Lua and Bash. TypeScript projects on TypeScript 7 or later get TypeScript's own `tsc --lsp`; older ones get vtsls. If a server gets stuck, `:lsp restart` restarts it.
 
 - **JSON and YAML** are checked against their schemas, so a wrong value in package.json, tsconfig.json, devcontainer.json, an ESLint or Prettier config (and many more) shows as a problem, and valid keys and values complete.
+- **Workflows** (`.github/workflows/`) get GitHub's own Actions server: it checks `${{ }}` expressions and each action's inputs (it reads them from GitHub with your `gh` login).
 
 | Keys | Does |
 | --- | --- |

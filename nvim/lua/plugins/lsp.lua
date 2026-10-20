@@ -92,12 +92,33 @@ vim.lsp.config('jsonls', {
   end,
 })
 
+-- GitHub's Actions server checks workflow expressions and, given the gh CLI's
+-- token, each action's inputs (it fetches the action's metadata from GitHub)
+vim.lsp.config('gh_actions_ls', {
+  before_init = function(params)
+    local ok, out = pcall(function()
+      return vim.system({ 'gh', 'auth', 'token' }, { text = true }):wait()
+    end)
+    if ok and out.code == 0 then
+      params.initializationOptions =
+        vim.tbl_extend('force', params.initializationOptions or {}, { sessionToken = vim.trim(out.stdout) })
+    end
+  end,
+})
+
+-- Workflow files get the Actions server; yamlls would report the same errors again
+only_when('yamlls', function(buf)
+  local workflow = vim.api.nvim_buf_get_name(buf):find('/%.github/workflows/[^/]+$') ~= nil
+  return not (workflow and vim.fn.executable('gh-actions-language-server') == 1)
+end)
+
 vim.lsp.enable({
   'bashls',
   'css_variables',
   'cssls',
   'cssmodules_ls',
   'eslint',
+  'gh_actions_ls',
   'html',
   'jsonls',
   'lua_ls',

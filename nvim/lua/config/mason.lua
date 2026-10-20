@@ -10,6 +10,7 @@ M.packages = {
   'css-variables-language-server',
   'cssmodules-language-server',
   'eslint-lsp',
+  'gh-actions-language-server',
   'html-lsp',
   'js-debug-adapter',
   'json-lsp',
