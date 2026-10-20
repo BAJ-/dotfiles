@@ -122,6 +122,7 @@ vim.lsp.enable({
   'html',
   'jsonls',
   'lua_ls',
+  'marksman',
   'tsc',
   'vtsls',
   'yamlls',

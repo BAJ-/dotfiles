@@ -15,6 +15,7 @@ M.packages = {
   'js-debug-adapter',
   'json-lsp',
   'lua-language-server',
+  'marksman',
   'prettierd',
   'stylua',
   'vtsls',
