@@ -349,6 +349,7 @@ export const useTheme = () => {
 | `,gd` | Diff the file against the index, side by side |
 | `,gf` | Pick changed files (`Tab` marks several); `Enter` opens them side by side: 2 next to each other, 3 as one over two, more in a grid |
 | `,gv` (or `:Review [branch]`) | Review your branch file by file (see below); `,gv` again or `:ReviewEnd` closes it |
+| `,go` / `,gy` | Open the line or selection on GitHub / copy its link |
 | `:DiffTool a b` | Compare two folders or files |
 
 **Reviewing a branch or a pull request.** `,gv` shows what your branch changes compared with where it left the default branch (usually `origin/main`), like the Files changed tab on GitHub; `:Review some-branch` compares with another branch. For someone else's pull request, run `gh pr checkout 123` first. A new tab opens with the original on the left, your file on the right and every changed file listed below:
@@ -356,6 +357,8 @@ export const useTheme = () => {
 - `]q` / `[q` move to the next / previous file, `]c` / `[c` to the next / previous change in it.
 - The right side is the real file, so `gd`, `K`, references and the other language server keys work while you read.
 - Git signs, `]h` and `,gp` compare against the same starting point until the review ends, and the status line shows `REVIEW vs main`.
+
+GitHub links (`,go`, `,gy`) point at the commit when GitHub has it, so they keep showing those lines. Otherwise they point at the branch, with a warning that the lines may differ.
 
 The file tree marks changed files (✗ changed, ✓ staged, ★ new). For anything more, run `tig` or `gh` in a terminal (`,tm`).
 
@@ -581,10 +584,12 @@ Every key this config adds. Neovim's own keys and the keys inside plugin windows
 | `,gb` | Blame the line | [Git](#git) |
 | `,gd` | Diff against the index | [Git](#git) |
 | `,gf` | Open changed files side by side | [Git](#git) |
+| `,go` | Open the line on GitHub (also *visual*) | [Git](#git) |
 | `,gp` | Preview the change | [Git](#git) |
 | `,gr` | Reset the change | [Git](#git) |
 | `,gs` | Stage the change | [Git](#git) |
 | `,gv` | Review the branch on/off | [Git](#git) |
+| `,gy` | Copy the line's GitHub link (also *visual*) | [Git](#git) |
 | `,ma` | Run the whole test file | [Tests](#run-tests) |
 | `,md` | Debug the test under the cursor | [Tests](#run-tests) |
 | `,mi` | Playwright Inspector for the test under the cursor | [Tests](#run-tests) |
