@@ -8,11 +8,21 @@ pack.defer({ { src = 'https://github.com/L3MON4D3/LuaSnip', version = vim.versio
 local setup = pack.once(function()
   pack.load('LuaSnip')
   local ls = require('luasnip')
-  require('luasnip.loaders.from_lua').lazy_load({ paths = { vim.fn.stdpath('config') .. '/snippets' } })
-  -- filetype_extend isn't recursive, so every filetype lists all of its parents
-  ls.filetype_extend('typescript', { 'javascript' })
-  ls.filetype_extend('typescriptreact', { 'typescript', 'javascript' })
+  ls.setup({
+    -- moving out of an unfinished snippet ends it, so Tab can't jump back into it
+    region_check_events = 'CursorMoved,CursorMovedI,InsertEnter',
+    delete_check_events = 'TextChanged,InsertLeave',
+    -- mirrored names (setCount from count) follow as you type
+    update_events = 'TextChanged,TextChangedI',
+  })
+  -- filetype_extend isn't recursive, so every filetype lists all of its parents.
+  -- It goes before lazy_load, which loads the current buffer's snippets right away.
+  -- react-hooks is a snippet file, not a real filetype; its snippets decide
+  -- for themselves whether a .ts file is a React one.
+  ls.filetype_extend('typescript', { 'javascript', 'react-hooks' })
+  ls.filetype_extend('typescriptreact', { 'typescript', 'javascript', 'react-hooks' })
   ls.filetype_extend('javascriptreact', { 'javascript' })
+  require('luasnip.loaders.from_lua').lazy_load({ paths = { vim.fn.stdpath('config') .. '/snippets' } })
 
   require('blink.cmp').setup({
     keymap = {

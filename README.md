@@ -181,18 +181,7 @@ The completion menu appears as you type, with suggestions from the language serv
 | `<C-f>` / `<C-b>` | Scroll the docs |
 | `<C-k>` | Show or hide the signature |
 
-**Snippets.** Type the trigger and pick it in the menu, then `Tab` / `<S-Tab>` through its fields. `,ss` lists the ones available in the current file.
-
-| Trigger | Inserts | In |
-| --- | --- | --- |
-| `cl` | `console.log()` | JS, TS, TSX |
-| `tc` | `try { } catch (error) { }` | JS, TS, TSX |
-| `ed` | `export default` | JS, TS, TSX |
-| `af` / `arf` | Async function / arrow function | TS, TSX |
-| `int` / `tp` | Interface / type alias | TS, TSX |
-| `rfc` / `arfc` | React component (function / arrow) named after the file, with its `Props` interface | TSX |
-| `rfcc` | The same as a client component (`"use client"`) | TSX |
-| `us` `ue` `ucb` `um` `ur` | `useState`, `useEffect`, `useCallback`, `useMemo`, `useRef` | TSX |
+**Snippets.** Type a trigger and pick it in the menu. Every snippet, and how to use them, is in [Snippets](#snippets).
 
 **Editing**
 
@@ -206,6 +195,134 @@ The completion menu appears as you type, with suggestions from the language serv
 | `]<Space>` / `[<Space>` | Add an empty line below / above |
 | `F5` | Remove trailing whitespace in the file |
 | `>` *(insert)* | Finishing an opening JSX/HTML tag adds its closing tag; renaming a tag renames its pair |
+
+### Snippets
+
+Type a trigger and pick it in the completion menu, then fill in its fields:
+
+- The first field is selected, so typing replaces it. `Tab` / `<S-Tab>` go to the next / previous field; if the menu is open, close it with `<C-e>` first.
+- Names that depend on a field change as you type it, like the setter in `us` or the closing tag in `jmap`.
+- Moving the cursor out of a snippet ends it, so a later `Tab` doesn't jump back into it.
+- Snippets don't add imports. Put the cursor on the name that needs one and press `,ca`.
+- `,ss` lists every snippet for the file type, with the file it comes from.
+
+**JavaScript and TypeScript files**
+
+| Trigger | Writes | Fields, in order |
+| --- | --- | --- |
+| `cl` | `console.log(…)` | value |
+| `tc` | `try { … } catch (error) { console.error(error) }` | body, catch body |
+| `ed` | `export default …` | value |
+| `af` | `async function name(…) { … }` | name, parameters, body |
+| `arf` | `const name = (…) => { … }` | name, parameters, body |
+| `tne` | ``throw new Error(`message`)`` | message |
+| `pa` | `const [a, b] = await Promise.all([…])` | names, promises |
+| `fetchj` | `fetch`, an error unless `response.ok`, then the JSON | URL, name for the data |
+
+`af` and `arf` leave out the return type, so TypeScript works it out.
+
+```ts
+// fetchj
+const response = await fetch(url)
+if (!response.ok) throw new Error(`Request failed: ${response.status}`)
+const data = await response.json()
+```
+
+**TypeScript files**
+
+| Trigger | Writes | Fields, in order |
+| --- | --- | --- |
+| `int` | `interface Name { … }` | name, members |
+| `tp` | `type Name = { … }` | name, members |
+| `guard` | `function isUser(value: unknown): value is User { return … }` | type (written in both places), the check |
+
+**React hooks**: in .tsx files, and in .ts files that import from `'react'` or are named `use…` (`useWindowSize.ts`, `use-window-size.ts`)
+
+| Trigger | Writes | Fields, in order |
+| --- | --- | --- |
+| `us` | `const [count, setCount] = useState(…)` | name (the setter follows), initial value |
+| `ust` | `const [user, setUser] = useState<User \| null>(…)` | name, type, initial value |
+| `ue` | `useEffect(() => { … }, [])` | body, dependencies |
+| `uel` | An effect that adds an event listener and removes it again | event (the handler's name and the event's type follow), target, handler body, dependencies |
+| `ucb` | `const fn = useCallback((…) => { … }, [])` | name, parameters, body, dependencies |
+| `um` | `const value = useMemo(() => { return … }, [])` | name, value, dependencies |
+| `ur` | `const ref = useRef<type>(null)` | name, type, initial value |
+| `hook` | `export const useWindowSize = (…) => { … }` | name (from the file, else `useName`), parameters, body |
+
+`uel` types the event from its name: `keydown` gives `KeyboardEvent`, `click` gives `MouseEvent`, and any event it doesn't know gives `Event`.
+
+```tsx
+// uel: type "resize", Tab past "window", then write the handler
+useEffect(() => {
+  const handleResize = (event: Event) => {
+    setWidth(window.innerWidth)
+  }
+  window.addEventListener('resize', handleResize)
+  return () => window.removeEventListener('resize', handleResize)
+}, [])
+```
+
+**React components**: in .tsx files
+
+| Trigger | Writes | Fields, in order |
+| --- | --- | --- |
+| `rafc` | Arrow component named after the file, with its `Props` interface | props interface, props, JSX |
+| `rfc` | `export default function` component named after the file, with its `Props` interface | props interface, props, JSX |
+| `rfcc` | `rfc` with `"use client"` on top, for Next.js | props interface, props, JSX |
+| `jmap` | `{items.map((item) => (<li key={item.id}></li>))}` | list, item (the key follows), element (the closing tag follows), content |
+| `ctx` | A context, its provider, and a hook that throws when used outside the provider | name (written everywhere), value type, value |
+
+- `rafc` turns the file name into PascalCase (`user-card.tsx` gives `UserCard`) and uses the folder's name for `index.tsx`. `rfc` and `rfcc` use the file name as it is.
+- `ctx` starts with the file's name minus `Context` or `Provider` (`ThemeContext.tsx` gives `Theme`). It writes `<ThemeContext value={value}>` for React 19 and later and `<ThemeContext.Provider value={value}>` before that, going by the React installed in the project, else the version in its package.json.
+
+```tsx
+// rafc in user-card.tsx
+interface UserCardProps {
+  name: string
+}
+
+export const UserCard = ({ name }: UserCardProps) => {
+  return (
+    <div>
+      {name}
+    </div>
+  )
+}
+```
+
+```tsx
+// ctx in ThemeContext.tsx, on React 19
+interface ThemeContextValue {
+  dark: boolean
+}
+
+const ThemeContext = createContext<ThemeContextValue | null>(null)
+
+export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+  const value = { dark: true }
+  return <ThemeContext value={value}>{children}</ThemeContext>
+}
+
+export const useTheme = () => {
+  const context = useContext(ThemeContext)
+  if (!context) throw new Error('useTheme must be used inside ThemeProvider')
+  return context
+}
+```
+
+**After an expression**: type these straight after an expression, in JavaScript and TypeScript files
+
+| Trigger | Turns | Into |
+| --- | --- | --- |
+| `.log` | `user.name.log` | `console.log(user.name)` |
+| `.await` | `res.json().await` | `await res.json()` |
+| `.return` | `getUser(id).return` | `return getUser(id)` |
+| `.const` | `items.filter(isOpen).const` | `const name = items.filter(isOpen)`, with `name` selected |
+| `.if` | `user.isAdmin.if` | `if (user.isAdmin) { … }` |
+
+- They take the whole expression that ends at the dot, including call chains over several lines: `a.b().c.log` logs `a.b().c`, and `fn(a.b.log)` logs `a.b`.
+- `.log`, `.return`, `.const` and `.if` also take comparisons, `!x` and `await x` (`a > b.if` gives `if (a > b)`). `.await` takes only the last part (`a + b.await` gives `a + await b`).
+- The menu offers them only straight after `expression.`, not in comments, strings or JSX text. Typing part of the trigger is enough: `user.lo`, then pick `.log`.
 
 ### Save and format
 
@@ -460,7 +577,7 @@ Every key this config adds. Neovim's own keys and the keys inside plugin windows
 | `,mw` | Watch the file | [Tests](#run-tests) |
 | `,mx` | Stop tests | [Tests](#run-tests) |
 | `,sh` | Split horizontally | [Move around](#move-around) |
-| `,ss` | Browse snippets | [Write](#write-code) |
+| `,ss` | Browse snippets | [Snippets](#snippets) |
 | `,sv` | Split vertically | [Move around](#move-around) |
 | `,tc` | New tab | [Move around](#move-around) |
 | `,tm` | Terminal | [Shell](#terminal-and-shell) |
@@ -495,5 +612,5 @@ Every key this config adds. Neovim's own keys and the keys inside plugin windows
 | [nvim/lua/config/keymaps.lua](nvim/lua/config/keymaps.lua) | Keys that don't belong to a plugin |
 | [nvim/lua/config/debug.lua](nvim/lua/config/debug.lua) | Debug configurations |
 | [nvim/lua/config/mason.lua](nvim/lua/config/mason.lua) | Language servers and tools to install |
-| [nvim/snippets/](nvim/snippets) | Snippets per file type |
+| [nvim/snippets/](nvim/snippets) | Snippets per file type; `react-hooks.lua` holds the hooks that .tsx and React .ts files share. Helpers (names from the file, React version) are in [nvim/lua/config/snippets.lua](nvim/lua/config/snippets.lua) |
 | [nvim/nvim-pack-lock.json](nvim/nvim-pack-lock.json) | Plugin versions; commit it after updating plugins |

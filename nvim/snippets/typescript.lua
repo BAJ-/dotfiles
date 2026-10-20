@@ -3,22 +3,9 @@ local ls = require('luasnip')
 local s = ls.snippet
 local t = ls.text_node
 local i = ls.insert_node
+local rep = require('luasnip.extras').rep
 
 return {
-  -- Async function
-  s({ trig = 'af', name = 'Async Function' }, {
-    t('async function '),
-    i(1, 'name'),
-    t('('),
-    i(2),
-    t('): Promise<'),
-    i(3, 'void'),
-    t('> {'),
-    t({ '', '  ' }),
-    i(4),
-    t({ '', '}' }),
-  }),
-
   -- Interface
   s({ trig = 'int', name = 'Interface' }, {
     t('interface '),
@@ -39,17 +26,15 @@ return {
     t({ '', '}' }),
   }),
 
-  -- Arrow function
-  s({ trig = 'arf', name = 'Arrow Function' }, {
-    t('const '),
-    i(1, 'name'),
-    t(' = ('),
+  -- Type guard: the type name fills in both places
+  s({ trig = 'guard', name = 'Type Guard' }, {
+    t('function is'),
+    i(1, 'Type'),
+    t('(value: unknown): value is '),
+    rep(1),
+    t(' {'),
+    t({ '', '  return ' }),
     i(2),
-    t('): '),
-    i(3, 'void'),
-    t(' => {'),
-    t({ '', '  ' }),
-    i(4),
     t({ '', '}' }),
   }),
 }
