@@ -432,7 +432,7 @@ neovim() {
 
   local copilot="$HOME/.config/github-copilot" # auth.db now, *.json in older versions
   if [[ ! -s "$copilot/auth.db" && ! -s "$copilot/apps.json" && ! -s "$copilot/hosts.json" ]]; then
-    MANUAL+=("Sign in to Copilot: open Neovim and run :LspCopilotSignIn")
+    MANUAL+=("Sign in to Copilot: in Neovim press ,al (starts Copilot), then run :LspCopilotSignIn")
   fi
 }
 

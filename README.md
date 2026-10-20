@@ -21,7 +21,7 @@ cd ~/projects/dotfiles
 - removes the old setup (nvm, gvm, Rye, vim-plug, old Neovim data), moving global npm packages and npm settings (to `~/.npmrc`) across first
 - installs Neovim's plugins at the versions in [nvim/nvim-pack-lock.json](nvim/nvim-pack-lock.json), plus the Treesitter parsers and language servers
 
-It ends with a summary of what changed and anything left for you, such as signing in to Copilot (`:LspCopilotSignIn` in Neovim).
+It ends with a summary of what changed and anything left for you, such as signing in to Copilot (in Neovim: `,al`, then `:LspCopilotSignIn`).
 
 ## Reading the keys
 
@@ -42,13 +42,14 @@ It ends with a summary of what changed and anything left for you, such as signin
 | `,cr` / `grn` | References / rename everywhere |
 | `,ca` | Code action: quick fix, add import… |
 | `]d` / `[d` | Next / previous problem |
-| `Tab` *(insert)* | Next completion item, else accept the AI suggestion, else next snippet field |
+| `Tab` *(insert)* | Next completion item, else accept AI ghost text (if on), else next snippet field |
 | `gcc` | Comment the line (`gc` + a motion or selection for more) |
 | `,mr` / `,ma` | Run the test under the cursor / the whole file |
 | `,db`, then `,ds` | Set a breakpoint, then start debugging |
 | `]h` / `,gp` / `,gs` | Next git change / preview it / stage it |
 | `,gf` | Open your changed files side by side |
 | `,aa` / `,ac` | AI agent in a split / AI chat |
+| `,al` / `,an` | AI ghost text / next edit suggestions on/off (both start off) |
 | `Space` | Command line (same as `:`) |
 | `jj` *(insert)* | Back to normal mode |
 
@@ -168,11 +169,11 @@ Failing tests show up as problems too, on the failing line.
 
 ### Write code
 
-The completion menu appears as you type, with suggestions from the language server, file paths, snippets and words in the file.
+The completion menu appears as you type, with suggestions from the language server, file paths, snippets and words in the file. There's no AI in it; AI suggestions are separate and off until you turn them on ([AI](#ai)).
 
 | Keys *(insert)* | Does |
 | --- | --- |
-| `Tab` | Menu open: next item. Otherwise: accept the AI suggestion, else go to the next snippet field, else a tab |
+| `Tab` | Menu open: next item. Otherwise: accept AI ghost text if it's on, else go to the next snippet field, else a tab |
 | `<S-Tab>` | Previous item, or the previous snippet field |
 | `<C-n>` / `<C-p>` (or `Down` / `Up`) | Next / previous item |
 | `Enter` | Accept the selected item; with nothing selected, a new line |
@@ -429,17 +430,20 @@ In the debug view:
 
 ### AI
 
-Copilot works once you've signed in (`:LspCopilotSignIn`, once per Mac). When Ollama is running with the right model pulled, the local model is used instead; nothing local is installed by default. `:AIStatus` shows what's active and why.
+AI suggestions are off until you turn them on: `,al` for ghost text and `,an` for next edit suggestions. Copilot's language server only runs while one of them is on, and stops when both are off. Chat and the agent only run when you open them.
 
-**While typing,** suggestions appear as grey ghost text:
+To sign in to Copilot (once per Mac), turn on ghost text with `,al` and run `:LspCopilotSignIn`. When Ollama is running with the right model pulled, chat and the agent use the local model; ghost text uses Copilot unless you switch it with `,aL`. Nothing local is installed by default. `:AIStatus` shows what's on and why.
+
+**Ghost text** appears in grey while you type, once you've turned it on:
 
 | Keys | Does |
 | --- | --- |
+| `,al` | Ghost text on/off |
+| `,aL` | Switch ghost text between Copilot and the local model |
 | `Tab` *(insert)* | Accept (when the completion menu is closed) |
 | `<M-]>` / `<M-[>` *(insert)* | Next / previous suggestion |
-| `,al` | Switch ghost text between Copilot and the local model |
-| `Tab` *(normal)* | Jump to the next edit Copilot suggests in the file, then apply it |
 | `,an` | Next edit suggestions on/off |
+| `Tab` *(normal)* | With next edit suggestions on: jump to the next edit Copilot suggests in the file, then apply it |
 
 **Agent in a split.** This is Copilot CLI next to your code; `,aa` runs it on the local model when one is available.
 
@@ -481,7 +485,7 @@ In the agent window:
 
 When the chat proposes edits: `g2` accepts, `g3` rejects, `g1` accepts everything in this file from now on, `gv` shows the diff, `}` / `{` move between changes and `g4` cancels.
 
-**Local models (optional).** Run `brew install ollama` and `ollama serve`, then `ollama pull qwen3-coder:30b` for chat and the agent, and `ollama pull qwen2.5-coder:7b` for ghost text. Other models: set `AI_LOCAL_MODEL` / `AI_LOCAL_FIM_MODEL`. Another machine: set `OLLAMA_HOST`.
+**Local models (optional).** Run `brew install ollama` and `ollama serve`, then `ollama pull qwen3-coder:30b` for chat and the agent, and `ollama pull qwen2.5-coder:7b` for ghost text (switch to it with `,aL`). Other models: set `AI_LOCAL_MODEL` / `AI_LOCAL_FIM_MODEL`. Another machine: set `OLLAMA_HOST`.
 
 ### Terminal and shell
 
@@ -522,7 +526,8 @@ Every key this config adds. Neovim's own keys and the keys inside plugin windows
 | `,ac` | AI chat; *visual*: add the selection to the chat | [AI](#ai) |
 | `,af` | Send the file to the agent | [AI](#ai) |
 | `,ag` | Agent CLI on GitHub's models | [AI](#ai) |
-| `,al` | Ghost text from Copilot or the local model | [AI](#ai) |
+| `,al` | Ghost text on/off | [AI](#ai) |
+| `,aL` | Ghost text from Copilot or the local model | [AI](#ai) |
 | `,an` | Next edit suggestions on/off | [AI](#ai) |
 | `,ap` | Agent prompts (also *visual*) | [AI](#ai) |
 | `,as` | Choose the agent CLI | [AI](#ai) |
@@ -594,7 +599,7 @@ Every key this config adds. Neovim's own keys and the keys inside plugin windows
 | `S` | Select a syntax node (also *visual* and after an operator) | [Move around](#move-around) |
 | `gd` | Go to definition | [Code](#understand-and-change-code) |
 | `]h` / `[h` | Next / previous git change | [Git](#git) |
-| `Tab` | Next edit suggestion, else forward through places you've been | [AI](#ai) |
+| `Tab` | Next edit suggestion (when on), else forward through places you've been | [AI](#ai) |
 | `<M-]>` / `<M-[>` | *Insert*: next / previous ghost text suggestion | [AI](#ai) |
 | `F5` | Remove trailing whitespace | [Write](#write-code) |
 | `Esc Esc` | *Terminal*: back to normal mode | [Shell](#terminal-and-shell) |
@@ -612,5 +617,6 @@ Every key this config adds. Neovim's own keys and the keys inside plugin windows
 | [nvim/lua/config/keymaps.lua](nvim/lua/config/keymaps.lua) | Keys that don't belong to a plugin |
 | [nvim/lua/config/debug.lua](nvim/lua/config/debug.lua) | Debug configurations |
 | [nvim/lua/config/mason.lua](nvim/lua/config/mason.lua) | Language servers and tools to install |
+| [nvim/lua/config/ai.lua](nvim/lua/config/ai.lua) | AI: local model or Copilot, and turning suggestions on and off |
 | [nvim/snippets/](nvim/snippets) | Snippets per file type; `react-hooks.lua` holds the hooks that .tsx and React .ts files share. Helpers (names from the file, React version) are in [nvim/lua/config/snippets.lua](nvim/lua/config/snippets.lua) |
 | [nvim/nvim-pack-lock.json](nvim/nvim-pack-lock.json) | Plugin versions; commit it after updating plugins |

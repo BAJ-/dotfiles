@@ -8,11 +8,12 @@ pack.defer({
   'https://github.com/milanglacier/minuet-ai.nvim',
 })
 
--- Copilot ghost text through Neovim's own LSP client (no copilot.vim).
--- Sign in once with :LspCopilotSignIn.
-vim.lsp.enable('copilot')
--- Enabled globally (buffers default to off otherwise); ai.apply_inline then
--- switches off whichever provider (Copilot or local) isn't active
+-- Copilot ghost text through Neovim's own LSP client (no copilot.vim). AI
+-- suggestions are off until you turn them on (<leader>al, <leader>an), and
+-- Copilot's server only runs while one of them needs it (ai.sync_copilot).
+-- Sign in once: <leader>al, then :LspCopilotSignIn.
+-- This only lets buffers show ghost text; ai.apply_inline decides per client
+-- whether that client may (on, and from the chosen provider)
 vim.lsp.inline_completion.enable(true)
 
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -38,6 +39,8 @@ end, { desc = 'Previous ghost text suggestion' })
 
 pack.later('plugins.ai', function()
   require('sidekick').setup({
+    -- off until <leader>an
+    nes = { enabled = false },
     cli = {
       picker = 'fzf-lua',
       tools = {
@@ -77,8 +80,9 @@ map({ 'n', 'x' }, '<leader>ap', cli('prompt'), { desc = 'Agent prompts' })
 map('n', '<leader>an', function()
   local nes = require('sidekick.nes')
   nes.enable(not nes.enabled)
+  ai.sync_copilot()
   vim.notify('Next Edit Suggestions ' .. (nes.enabled and 'on' or 'off'))
-end, { desc = 'Toggle next edit suggestions' })
+end, { desc = 'Next edit suggestions on/off' })
 
 -- CodeCompanion chat: local model first, then Copilot CLI, then Copilot ----
 
@@ -117,7 +121,7 @@ map('x', '<leader>ac', function()
 end, { desc = 'Add selection to AI chat' })
 pack.on_cmds({ 'CodeCompanion', 'CodeCompanionChat', 'CodeCompanionActions', 'CodeCompanionCmd' }, setup_chat)
 
--- Local ghost text (minuet + Ollama), toggled with <leader>al --------------
+-- Local ghost text (minuet + Ollama), chosen with <leader>aL ----------------
 
 local setup_minuet = pack.once(function()
   pack.load({ 'plenary.nvim', 'minuet-ai.nvim' })
@@ -152,20 +156,40 @@ local setup_minuet = pack.once(function()
 end)
 
 map('n', '<leader>al', function()
+  if ai.ghost_text then
+    ai.set_ghost_text(false)
+    vim.notify('Ghost text off')
+    return
+  end
+  if ai.inline_provider == 'local' then
+    local ok, why = ai.local_model(ai.fim_model)
+    if ok then
+      setup_minuet()
+    else
+      ai.inline_provider = 'copilot'
+      vim.notify('Local model unavailable, using Copilot: ' .. why, vim.log.levels.WARN)
+    end
+  end
+  ai.set_ghost_text(true)
+  vim.notify('Ghost text on: ' .. ai.ghost_text_source())
+end, { desc = 'Ghost text on/off' })
+
+map('n', '<leader>aL', function()
   if ai.inline_provider == 'local' then
     ai.set_inline_provider('copilot')
-    vim.notify('Ghost text: Copilot')
-    return
+  else
+    local ok, why = ai.local_model(ai.fim_model)
+    if not ok then
+      vim.notify('Ghost text stays on Copilot: ' .. why, vim.log.levels.WARN)
+      return
+    end
+    if ai.ghost_text then
+      setup_minuet()
+    end
+    ai.set_inline_provider('local')
   end
-  local ok, why = ai.local_model(ai.fim_model)
-  if not ok then
-    vim.notify('Ghost text stays on Copilot: ' .. why, vim.log.levels.WARN)
-    return
-  end
-  setup_minuet()
-  ai.set_inline_provider('local')
-  vim.notify('Ghost text: local model ' .. ai.fim_model)
-end, { desc = 'Toggle local ghost text' })
+  vim.notify('Ghost text from ' .. ai.ghost_text_source() .. (ai.ghost_text and '' or ' (off; ,al turns it on)'))
+end, { desc = 'Ghost text: Copilot or local model' })
 
 vim.api.nvim_create_user_command('AIStatus', function()
   vim.notify(table.concat(ai.status(), '\n'))

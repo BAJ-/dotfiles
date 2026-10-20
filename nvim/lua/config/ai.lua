@@ -61,18 +61,42 @@ function M.chat_backend()
   return { adapter = 'copilot' }, 'Copilot chat, because ' .. why .. " and Copilot CLI isn't installed"
 end
 
+-- AI suggestions are off until you turn them on: ghost text with <leader>al,
+-- next edit suggestions with <leader>an. Copilot's language server only runs
+-- while one of them needs it.
+M.ghost_text = false
+
 -- Ghost text comes from one provider at a time: 'copilot' or 'local' (minuet)
 M.inline_provider = 'copilot'
 
 local inline_clients = { copilot = 'copilot', ['local'] = 'minuet' }
 
----Enable inline completion for the active provider's clients only
+---@return string
+function M.ghost_text_source()
+  return M.inline_provider == 'local' and ('local model ' .. M.fim_model) or 'Copilot'
+end
+
+---Let a client show ghost text only when it's on and from this client's provider
 ---@param client vim.lsp.Client
 function M.apply_inline(client)
   for provider, name in pairs(inline_clients) do
     if client.name == name then
-      vim.lsp.inline_completion.enable(provider == M.inline_provider, { client_id = client.id })
+      vim.lsp.inline_completion.enable(M.ghost_text and provider == M.inline_provider, { client_id = client.id })
     end
+  end
+end
+
+local function nes_on()
+  local ok, nes = pcall(require, 'sidekick.nes')
+  return ok and nes.enabled
+end
+
+---Start Copilot's language server while ghost text or next edit suggestions
+---need it, and stop it when neither does
+function M.sync_copilot()
+  local wanted = (M.ghost_text and M.inline_provider == 'copilot') or nes_on()
+  if wanted ~= vim.lsp.is_enabled('copilot') then
+    vim.lsp.enable('copilot', wanted)
   end
 end
 
@@ -82,6 +106,13 @@ function M.set_inline_provider(provider)
   for _, client in ipairs(vim.lsp.get_clients()) do
     M.apply_inline(client)
   end
+  M.sync_copilot()
+end
+
+---@param on boolean
+function M.set_ghost_text(on)
+  M.ghost_text = on
+  M.set_inline_provider(M.inline_provider)
 end
 
 function M.status()
@@ -94,16 +125,16 @@ function M.status()
   if copilot then
     add('Copilot language server: running')
   elseif vim.fn.executable('copilot-language-server') == 1 then
-    add('Copilot language server: installed, starts with the first file in a git repo')
+    add('Copilot language server: installed, starts when ghost text or next edit suggestions need it')
   else
     add('Copilot language server: not installed yet (Mason installs it in the background)')
   end
   add(
-    'Ghost text: %s',
-    M.inline_provider == 'local' and ('local model ' .. M.fim_model) or 'Copilot (free on paid plans)'
+    'Ghost text (<leader>al): %s, from %s (<leader>aL switches)',
+    M.ghost_text and 'on' or 'off',
+    M.ghost_text_source()
   )
-  local nes_ok, nes = pcall(require, 'sidekick.nes')
-  add('Next Edit Suggestions: %s', nes_ok and (nes.enabled and 'on' or 'off') or 'sidekick not loaded')
+  add('Next Edit Suggestions (<leader>an): %s', nes_on() and 'on' or 'off')
 
   local models = M.ollama_models()
   add(
