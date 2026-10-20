@@ -4,7 +4,8 @@ local ai = require('config.ai')
 pack.add({ 'https://github.com/folke/sidekick.nvim' })
 pack.defer({
   'https://github.com/nvim-lua/plenary.nvim',
-  'https://github.com/olimorris/codecompanion.nvim',
+  -- major versions change its config; move to the next one deliberately
+  { src = 'https://github.com/olimorris/codecompanion.nvim', version = vim.version.range('20.*') },
   'https://github.com/milanglacier/minuet-ai.nvim',
 })
 
@@ -117,6 +118,8 @@ end
 map('n', '<leader>ac', open_chat, { desc = 'AI chat (local first)' })
 map('x', '<leader>ac', function()
   setup_chat()
+  -- '< and '> only point at this selection once visual mode has ended
+  vim.cmd('normal! ' .. vim.keycode('<Esc>'))
   vim.cmd("'<,'>CodeCompanionChat Add")
 end, { desc = 'Add selection to AI chat' })
 pack.on_cmds({ 'CodeCompanion', 'CodeCompanionChat', 'CodeCompanionActions', 'CodeCompanionCmd' }, setup_chat)

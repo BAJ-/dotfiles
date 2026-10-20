@@ -11,8 +11,9 @@
       "version": "1.0.0 - 2.0.0"
     },
     "codecompanion.nvim": {
-      "rev": "3dd1ef7fa8d6aeb27020023e40293bac588de714",
-      "src": "https://github.com/olimorris/codecompanion.nvim"
+      "rev": "142eadffdaa8dd06060646b6f8ef74e99c42ab06",
+      "src": "https://github.com/olimorris/codecompanion.nvim",
+      "version": "20.0.0 - 21.0.0"
     },
     "conform.nvim": {
       "rev": "016802de402556da54c36bd7359b441266b01cdd",
