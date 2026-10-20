@@ -28,3 +28,20 @@ require('gitsigns').setup({
 pack.on_cmds({ 'DiffTool' }, function()
   vim.cmd.packadd('nvim.difftool')
 end)
+
+-- Review the branch against its base, file by file (config/review.lua)
+vim.api.nvim_create_user_command('Review', function(args)
+  require('config.review').start(args.args)
+end, {
+  nargs = '?',
+  complete = function(lead)
+    return require('config.review').complete(lead)
+  end,
+  desc = 'Review changes against a branch (default: the remote default branch)',
+})
+vim.api.nvim_create_user_command('ReviewEnd', function()
+  require('config.review').stop()
+end, { desc = 'End the review' })
+vim.keymap.set('n', '<leader>gv', function()
+  require('config.review').toggle()
+end, { desc = 'Review the branch on/off' })

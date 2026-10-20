@@ -48,6 +48,7 @@ It ends with a summary of what changed and anything left for you, such as signin
 | `,db`, then `,ds` | Set a breakpoint, then start debugging |
 | `]h` / `,gp` / `,gs` | Next git change / preview it / stage it |
 | `,gf` | Open your changed files side by side |
+| `,gv` | Review your branch against main, file by file |
 | `,aa` / `,ac` | AI agent in a split / AI chat |
 | `,al` / `,an` | AI ghost text / next edit suggestions on/off (both start off) |
 | `Space` | Command line (same as `:`) |
@@ -347,7 +348,14 @@ export const useTheme = () => {
 | `,gb` | Blame the line, with the full commit message |
 | `,gd` | Diff the file against the index, side by side |
 | `,gf` | Pick changed files (`Tab` marks several); `Enter` opens them side by side: 2 next to each other, 3 as one over two, more in a grid |
+| `,gv` (or `:Review [branch]`) | Review your branch file by file (see below); `,gv` again or `:ReviewEnd` closes it |
 | `:DiffTool a b` | Compare two folders or files |
+
+**Reviewing a branch or a pull request.** `,gv` shows what your branch changes compared with where it left the default branch (usually `origin/main`), like the Files changed tab on GitHub; `:Review some-branch` compares with another branch. For someone else's pull request, run `gh pr checkout 123` first. A new tab opens with the original on the left, your file on the right and every changed file listed below:
+
+- `]q` / `[q` move to the next / previous file, `]c` / `[c` to the next / previous change in it.
+- The right side is the real file, so `gd`, `K`, references and the other language server keys work while you read.
+- Git signs, `]h` and `,gp` compare against the same starting point until the review ends, and the status line shows `REVIEW vs main`.
 
 The file tree marks changed files (✗ changed, ✓ staged, ★ new). For anything more, run `tig` or `gh` in a terminal (`,tm`).
 
@@ -576,6 +584,7 @@ Every key this config adds. Neovim's own keys and the keys inside plugin windows
 | `,gp` | Preview the change | [Git](#git) |
 | `,gr` | Reset the change | [Git](#git) |
 | `,gs` | Stage the change | [Git](#git) |
+| `,gv` | Review the branch on/off | [Git](#git) |
 | `,ma` | Run the whole test file | [Tests](#run-tests) |
 | `,md` | Debug the test under the cursor | [Tests](#run-tests) |
 | `,mi` | Playwright Inspector for the test under the cursor | [Tests](#run-tests) |
@@ -624,5 +633,6 @@ Every key this config adds. Neovim's own keys and the keys inside plugin windows
 | [nvim/lua/config/debug.lua](nvim/lua/config/debug.lua) | Debug configurations |
 | [nvim/lua/config/mason.lua](nvim/lua/config/mason.lua) | Language servers and tools to install |
 | [nvim/lua/config/ai.lua](nvim/lua/config/ai.lua) | AI: local model or Copilot, and turning suggestions on and off |
+| [nvim/lua/config/review.lua](nvim/lua/config/review.lua) | Branch review (`,gv`) |
 | [nvim/snippets/](nvim/snippets) | Snippets per file type; `react-hooks.lua` holds the hooks that .tsx and React .ts files share. Helpers (names from the file, React version) are in [nvim/lua/config/snippets.lua](nvim/lua/config/snippets.lua) |
 | [nvim/nvim-pack-lock.json](nvim/nvim-pack-lock.json) | Plugin versions; commit it after updating plugins |

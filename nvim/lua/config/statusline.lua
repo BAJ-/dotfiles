@@ -19,6 +19,7 @@ local function highlights()
   vim.api.nvim_set_hl(0, 'StatusLineMode', { link = 'PmenuSel' })
   vim.api.nvim_set_hl(0, 'StatusLineBranch', { link = 'Search' })
   vim.api.nvim_set_hl(0, 'StatusLineText', { link = 'MoreMsg' })
+  vim.api.nvim_set_hl(0, 'StatusLineReview', { link = 'DiffText' })
 end
 
 function M.render()
@@ -31,8 +32,12 @@ function M.render()
   local branch = vim.b[buf].gitsigns_head
   local parts = {
     '%#StatusLineBranch# ' .. ((branch and branch ~= '') and branch or '-') .. ' ',
-    '%#StatusLineText# %f%m%r %=',
   }
+  -- git signs and hunks compare against the review's base while it's open
+  if vim.g.review then
+    parts[#parts + 1] = '%#StatusLineReview# REVIEW vs ' .. vim.g.review:gsub('%%', '%%%%') .. ' '
+  end
+  parts[#parts + 1] = '%#StatusLineText# %f%m%r %='
 
   local diagnostics = vim.diagnostic.status(buf)
   if diagnostics ~= '' then
