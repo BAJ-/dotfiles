@@ -27,6 +27,13 @@ vim.diagnostic.config({
   float = { source = true },
 })
 
+vim.api.nvim_create_user_command('TypeCheck', function()
+  require('config.typescript').check()
+end, { desc = 'Type-check the whole project; errors go to the quickfix list' })
+vim.keymap.set('n', '<leader>et', function()
+  require('config.typescript').check()
+end, { desc = 'Type-check the project' })
+
 -- The server definitions come from nvim-lspconfig; without it (its install
 -- failed, which config.pack already reported) there is nothing to start
 if #vim.api.nvim_get_runtime_file('lsp/vtsls.lua', false) == 0 then

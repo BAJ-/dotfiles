@@ -168,6 +168,7 @@ Language servers start on their own for TypeScript and JavaScript, ESLint, CSS a
 | `]D` / `[D` | Last / first problem in the file |
 | `,en` / `,ep` | Next / previous problem, with its message, centred |
 | `,ed` (or `<C-w>d`) | Full message for the problem under the cursor |
+| `,et` (or `:TypeCheck`) | Type-check the whole project, not just open files: the project's own `tsc` runs in the background (shown in the status line) and its errors go to the quickfix list (`]q` / `[q`) |
 
 Failing tests show up as problems too, on the failing line.
 
@@ -562,6 +563,7 @@ Every key this config adds. Neovim's own keys and the keys inside plugin windows
 | `,ed` | Full message for the problem under the cursor | [Code](#understand-and-change-code) |
 | `,en` | Next problem, with its message | [Code](#understand-and-change-code) |
 | `,ep` | Previous problem, with its message | [Code](#understand-and-change-code) |
+| `,et` | Type-check the whole project | [Code](#understand-and-change-code) |
 | `,fb` | Buffers | [Find](#find-files-and-text) |
 | `,ff` | Files | [Find](#find-files-and-text) |
 | `,fg` | Search text | [Find](#find-files-and-text) |
