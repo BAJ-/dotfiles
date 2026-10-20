@@ -1,7 +1,7 @@
 local pack = require('config.pack')
 
 pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
-pack.defer({ 'https://github.com/mason-org/mason.nvim' })
+pack.defer({ 'https://github.com/mason-org/mason.nvim', 'https://github.com/b0o/SchemaStore.nvim' })
 
 -- Servers are found through Mason's bin folder, so Mason itself only loads
 -- when something needs installing (or for :Mason)
@@ -78,6 +78,18 @@ vim.lsp.config('lua_ls', {
       format = { enable = false },
     },
   },
+})
+
+-- SchemaStore's catalog checks and completes package.json, tsconfig.json,
+-- devcontainer.json, ESLint and Prettier configs and so on. Loaded when the
+-- server starts; schemas go into the settings table the client already holds.
+vim.lsp.config('jsonls', {
+  settings = { json = { validate = { enable = true } } },
+  before_init = function(_, config)
+    if pcall(pack.load, 'SchemaStore.nvim') then
+      config.settings.json.schemas = require('schemastore').json.schemas()
+    end
+  end,
 })
 
 vim.lsp.enable({
