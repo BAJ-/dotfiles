@@ -174,6 +174,7 @@ Language servers start on their own for TypeScript and JavaScript, ESLint, CSS a
 | `grn` | Rename the symbol in every file |
 | `grx` | Run the code lens on this line |
 | `,ci` | Inlay hints on/off (parameter names, inferred types) |
+| `,cx` | Sticky context on/off: the component, function or `describe`/`it` you're in stays at the top as you scroll (on by default) |
 
 **Problems (diagnostics)**
 
@@ -573,6 +574,7 @@ Every key this config adds. Neovim's own keys and the keys inside plugin windows
 | `,cs` | Symbols in the file | [Code](#understand-and-change-code) |
 | `,ct` | Type definition | [Code](#understand-and-change-code) |
 | `,cv` | Definition in a vertical split | [Code](#understand-and-change-code) |
+| `,cx` | Sticky context on/off | [Code](#understand-and-change-code) |
 | `,db` | Breakpoint on/off | [Debug](#debug) |
 | `,dB` | Conditional breakpoint | [Debug](#debug) |
 | `,dc` | Continue | [Debug](#debug) |

@@ -3,6 +3,7 @@ local pack = require('config.pack')
 pack.add({
   { src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' },
   'https://github.com/windwp/nvim-ts-autotag',
+  'https://github.com/nvim-treesitter/nvim-treesitter-context',
 })
 
 local parsers = {
@@ -85,5 +86,14 @@ if #vim.api.nvim_list_uis() > 0 then
 end
 
 require('nvim-ts-autotag').setup()
+
+-- Sticky context: the enclosing component, function or describe/it stays
+-- visible at the top while scrolling (one line each, three at most)
+pack.later('plugins.treesitter', function()
+  require('treesitter-context').setup({ max_lines = 3, multiline_threshold = 1 })
+end)
+vim.keymap.set('n', '<leader>cx', function()
+  require('treesitter-context').toggle()
+end, { desc = 'Sticky context on/off' })
 
 return { parsers = parsers }
