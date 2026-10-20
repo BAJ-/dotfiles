@@ -15,7 +15,7 @@ cd ~/projects/dotfiles
 
 `setup.sh` works on a new Mac and on one that's already set up. Every step checks first, so a second run changes nothing and says "Everything is up to date". It:
 
-- installs Homebrew if needed, then everything in the [Brewfile](Brewfile) (Neovim, tree-sitter-cli, ripgrep, fd, fzf, fnm, Go, gh, starship, tig, shellcheck, Hack Nerd Font), upgrading anything outdated
+- installs Homebrew if needed, then everything in the [Brewfile](Brewfile) (Neovim, tree-sitter-cli, ripgrep, ast-grep, fd, fzf, fnm, Go, gh, starship, tig, shellcheck, Hack Nerd Font), upgrading anything outdated
 - links `~/.zshrc`, `~/z.sh`, `~/.config/starship.toml` and `~/.config/nvim` to this repo; your own files are moved to `~/.dotfiles-backup/<date-time>/` first
 - makes the latest Node LTS (through fnm) the default
 - removes the old setup (nvm, gvm, Rye, vim-plug, old Neovim data), moving global npm packages and npm settings (to `~/.npmrc`) across first
@@ -35,6 +35,7 @@ It ends with a summary of what changed and anything left for you, such as signin
 | Keys | Does |
 | --- | --- |
 | `,ff` / `,fg` | Find a file / search text (`useState -- *.tsx` searches only .tsx files) |
+| `,fs` | Search and replace across files |
 | `,fr` | Back to the last picker, as you left it |
 | `,tt` / `,n` | File tree / show the current file in it |
 | `s` | Jump anywhere on screen: type a character or two, then the label |
@@ -67,8 +68,21 @@ It ends with a summary of what changed and anything left for you, such as signin
 | `,fb` | Open buffers |
 | `,fh` | Neovim help |
 | `,fr` | Resume the last picker |
+| `,fs` | Search and replace across files (see below) |
 | `,fn` | Copy the current file's name |
 | `,gf` | Changed files from git (see [Git](#git)) |
+
+**Search and replace.** `,fs` (on a word or a selection) opens a search-and-replace buffer: type what to find, what to replace it with and, optionally, which files. Every match is listed with the replacement applied, before anything changes on disk.
+
+| Keys *(in the buffer)* | Does |
+| --- | --- |
+| `Tab` / `<S-Tab>` | Next / previous field |
+| `\r` | Replace everywhere (`\j`: only the next match) |
+| `Enter` / `Down` / `Up` | Go to the match / preview the next / previous one |
+| `\s` | Save edits you made to the listed lines back to their files |
+| `\e` | Switch to ast-grep, which matches code structure: `$A * 2` finds every multiplication by 2, `console.log($$$)` every `console.log` call |
+| `\q` / `\c` | Send the matches to the quickfix list / close |
+| `g?` | All keys |
 
 Inside a picker:
 
@@ -581,6 +595,7 @@ Every key this config adds. Neovim's own keys and the keys inside plugin windows
 | `,fh` | Neovim help | [Find](#find-files-and-text) |
 | `,fn` | Copy the file's name | [Find](#find-files-and-text) |
 | `,fr` | Resume the last picker | [Find](#find-files-and-text) |
+| `,fs` | Search and replace across files (also *visual*) | [Find](#find-files-and-text) |
 | `,gb` | Blame the line | [Git](#git) |
 | `,gd` | Diff against the index | [Git](#git) |
 | `,gf` | Open changed files side by side | [Git](#git) |

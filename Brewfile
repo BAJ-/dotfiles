@@ -3,6 +3,7 @@
 brew "neovim"
 brew "tree-sitter-cli" # builds nvim-treesitter's parsers
 brew "ripgrep"
+brew "ast-grep" # structural search and replace in grug-far (,fs)
 brew "fd"
 brew "fzf"
 brew "fnm" # Node versions, per project via .nvmrc / .node-version

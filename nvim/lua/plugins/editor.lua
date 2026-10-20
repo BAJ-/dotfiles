@@ -9,6 +9,7 @@ pack.defer({
   'https://github.com/ibhagwan/fzf-lua',
   'https://github.com/nvim-tree/nvim-tree.lua',
   'https://github.com/antosha417/nvim-lsp-file-operations',
+  'https://github.com/MagicDuck/grug-far.nvim',
 })
 
 -- Cheap to set up, but not needed before the first screen is drawn
@@ -66,6 +67,32 @@ vim.ui.select = function(...)
   fzf.setup()
   return vim.ui.select(...)
 end
+
+-- grug-far: search and replace across files, with a preview of every change -
+
+local setup_grug_far = pack.once(function()
+  pack.load('grug-far.nvim')
+  require('grug-far').setup()
+end)
+
+pack.on_keys({
+  {
+    '<leader>fs',
+    function()
+      require('grug-far').open({ prefills = { search = vim.fn.expand('<cword>') } })
+    end,
+    desc = 'Search and replace in files',
+  },
+  {
+    '<leader>fs',
+    function()
+      require('grug-far').with_visual_selection()
+    end,
+    mode = 'x',
+    desc = 'Search and replace the selection in files',
+  },
+}, setup_grug_far)
+pack.on_cmds({ 'GrugFar', 'GrugFarWithin' }, setup_grug_far)
 
 -- nvim-tree -----------------------------------------------------------------
 
