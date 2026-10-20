@@ -2,7 +2,9 @@
 
 My Mac setup for frontend work: zsh, plus Neovim 0.12 set up for TypeScript, React, Next.js, Vite and Electron, with tests, debugging and AI built in. One script sets up a new Mac or brings an existing one up to date.
 
-**Contents:** [Set up a Mac](#set-up-a-mac) · [Reading the keys](#reading-the-keys) · [Cheat sheet](#cheat-sheet) · Workflows: [Find](#find-files-and-text) · [Move around](#move-around) · [Code](#understand-and-change-code) · [Write](#write-code) · [Save](#save-and-format) · [Git](#git) · [Tests](#run-tests) · [Debug](#debug) · [AI](#ai) · [Shell](#terminal-and-shell) · [Updates](#keep-it-up-to-date) · [Key index](#key-index) · [Where things live](#where-things-live)
+To learn the keys while you work, [workflows.md](workflows.md) walks through everyday tasks step by step: building a component, fixing a failing test, reviewing a pull request and more.
+
+**Contents:** [Set up a Mac](#set-up-a-mac) · [Reading the keys](#reading-the-keys) · [Cheat sheet](#cheat-sheet) · Workflows: [Find](#find-files-and-text) · [Move around](#move-around) · [Code](#understand-and-change-code) · [Write](#write-code) · [Snippets](#snippets) · [Save](#save-and-format) · [Git](#git) · [Tests](#run-tests) · [Debug](#debug) · [AI](#ai) · [Shell](#terminal-and-shell) · [Updates](#keep-it-up-to-date) · [Key index](#key-index) · [Where things live](#where-things-live)
 
 ## Set up a Mac
 
