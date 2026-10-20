@@ -5,6 +5,61 @@ local pack = require('config.pack')
 pack.add({ { src = 'https://github.com/saghen/blink.cmp', version = vim.version.range('1.*') } })
 pack.defer({ { src = 'https://github.com/L3MON4D3/LuaSnip', version = vim.version.range('2.*') } })
 
+-- Emmet's server offers abbreviations anywhere in a JSX file, so `user.n`
+-- would turn into <user className="n">. Its items only stay where markup goes:
+-- between JSX tags. An abbreviation like `div.card>h2+p` doesn't parse as JSX,
+-- so the check parses the file with a plain word in its place.
+local function in_jsx_markup(buf, range)
+  local lang = vim.treesitter.language.get_lang(vim.bo[buf].filetype)
+  local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+  local row = range.start.line
+  local line = lines[row + 1]
+  if not lang or not line then
+    return false
+  end
+  local from = vim.str_byteindex(line, 'utf-16', range.start.character, false)
+  local to = vim.str_byteindex(line, 'utf-16', range['end'].character, false)
+  lines[row + 1] = line:sub(1, from) .. 'x' .. line:sub(to + 1)
+  local ok, parser = pcall(vim.treesitter.get_string_parser, table.concat(lines, '\n'), lang)
+  if not ok then
+    return false
+  end
+  local node = parser:parse()[1]:root():named_descendant_for_range(row, from, row, from)
+  while node do
+    local type = node:type()
+    if type == 'jsx_element' then
+      return true
+    elseif type == 'jsx_expression' or type == 'jsx_opening_element' or type == 'jsx_self_closing_element' then
+      return false
+    end
+    node = node:parent()
+  end
+  return false
+end
+
+local function without_emmet_in_code(ctx, items)
+  -- the response can arrive after its buffer is gone
+  if not vim.api.nvim_buf_is_valid(ctx.bufnr) then
+    return items
+  end
+  local ft = vim.bo[ctx.bufnr].filetype
+  if ft ~= 'javascriptreact' and ft ~= 'typescriptreact' then
+    return items
+  end
+  -- every Emmet item in a response covers the same abbreviation
+  local allowed
+  return vim.tbl_filter(function(item)
+    if item.client_name ~= 'emmet_language_server' then
+      return true
+    end
+    if allowed == nil then
+      local range = item.textEdit and (item.textEdit.range or item.textEdit.insert)
+      allowed = range ~= nil and in_jsx_markup(ctx.bufnr, range)
+    end
+    return allowed
+  end, items)
+end
+
 local setup = pack.once(function()
   pack.load('LuaSnip')
   local ls = require('luasnip')
@@ -45,7 +100,10 @@ local setup = pack.once(function()
     },
     signature = { enabled = true },
     snippets = { preset = 'luasnip' },
-    sources = { default = { 'lsp', 'path', 'snippets', 'buffer' } },
+    sources = {
+      default = { 'lsp', 'path', 'snippets', 'buffer' },
+      providers = { lsp = { transform_items = without_emmet_in_code } },
+    },
     fuzzy = { implementation = 'prefer_rust_with_warning' },
   })
 end)

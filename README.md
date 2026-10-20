@@ -173,7 +173,7 @@ Failing tests show up as problems too, on the failing line.
 
 ### Write code
 
-The completion menu appears as you type, with suggestions from the language server, file paths, snippets and words in the file. There's no AI in it; AI suggestions are separate and off until you turn them on ([AI](#ai)).
+The completion menu appears as you type, with suggestions from the language server, file paths, snippets and words in the file. There's no AI in it; AI suggestions are separate and off until you turn them on ([AI](#ai)). In HTML, and between tags in JSX and TSX, it also offers Emmet abbreviations: `ul>li*3` or `div.card>p*2` expand into markup (a class becomes `className="card"`). In code and inside `{…}` it doesn't, so `user.n` still completes to `user.name`.
 
 | Keys *(insert)* | Does |
 | --- | --- |

@@ -9,6 +9,7 @@ M.packages = {
   'css-lsp',
   'css-variables-language-server',
   'cssmodules-language-server',
+  'emmet-language-server',
   'eslint-lsp',
   'gh-actions-language-server',
   'html-lsp',

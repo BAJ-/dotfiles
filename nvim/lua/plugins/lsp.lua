@@ -112,11 +112,15 @@ only_when('yamlls', function(buf)
   return not (workflow and vim.fn.executable('gh-actions-language-server') == 1)
 end)
 
+-- Emmet only where markup is written; in CSS it would offer a suggestion for every word
+vim.lsp.config('emmet_language_server', { filetypes = { 'html', 'javascriptreact', 'typescriptreact' } })
+
 vim.lsp.enable({
   'bashls',
   'css_variables',
   'cssls',
   'cssmodules_ls',
+  'emmet_language_server',
   'eslint',
   'gh_actions_ls',
   'html',
