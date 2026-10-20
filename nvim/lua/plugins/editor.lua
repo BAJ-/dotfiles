@@ -94,6 +94,12 @@ pack.on_keys({
 }, setup_grug_far)
 pack.on_cmds({ 'GrugFar', 'GrugFarWithin' }, setup_grug_far)
 
+-- Built-in undo history browser (Neovim 0.12), loaded on first use
+pack.on_cmds({ 'Undotree' }, function()
+  vim.cmd.packadd('nvim.undotree')
+end)
+vim.keymap.set('n', '<leader>u', '<cmd>Undotree<cr>', { desc = 'Undo history' })
+
 -- nvim-tree -----------------------------------------------------------------
 
 local setup_tree = pack.once(function()

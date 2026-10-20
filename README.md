@@ -350,7 +350,7 @@ export const useTheme = () => {
 - **Autosave.** A file is saved a second after you stop changing it (in normal mode or when you leave insert mode), and when Neovim loses focus, so dev servers reload without `:w`. It never saves while you're typing.
 - **Formatting on save.** Prettier formats JS, TS, CSS, SCSS, HTML, JSON, Markdown, YAML and GraphQL. A manual `:w` runs ESLint's fixes first; autosave doesn't, so an import you haven't used yet isn't removed while you work.
 - `:Format` formats now and `:LspEslintFixAll` applies ESLint's fixes now. Lua is formatted with stylua, but only in projects with a stylua config.
-- Files changed outside Neovim (git, AI agents) reload when you come back to them. Undo history survives closing a file.
+- Files changed outside Neovim (git, AI agents) reload when you come back to them. Undo history survives closing a file, and `,u` shows it as a tree: move through it to get back any earlier version (`,u` again closes it).
 
 ### Git
 
@@ -627,6 +627,7 @@ Every key this config adds. Neovim's own keys and the keys inside plugin windows
 | `,h` `,j` `,k` `,l` | Window left / below / above / right | [Move around](#move-around) |
 | `,n` | Show the current file in the tree | [Move around](#move-around) |
 | `,r` | Refresh the tree | [Move around](#move-around) |
+| `,u` | Undo history | [Save](#save-and-format) |
 | `Space` | Command line | [Reading the keys](#reading-the-keys) |
 | `jj` | *Insert*: back to normal mode | [Reading the keys](#reading-the-keys) |
 | `n` / `N` | Next / previous search match, centred | [Move around](#move-around) |
