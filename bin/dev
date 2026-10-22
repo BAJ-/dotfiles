@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+# The project's dev server or test watcher, run with the package manager its
+# lockfile names (npm, pnpm, yarn or bun):
+#
+#   dev server   the "dev" script, else "start"
+#   dev test     Vitest or Jest watching, starting with the tests your changes touch
+#
+# In iTerm2 the tab's status dot follows along (triggers in config/iterm2).
+set -euo pipefail
+
+usage() {
+  sed -n '2,8p' "$0" | sed -E 's/^# ?//'
+}
+
+# The nearest package.json at or above the current folder
+project() {
+  local dir=$PWD
+  while [[ "$dir" != / ]]; do
+    if [[ -f "$dir/package.json" ]]; then
+      echo "$dir"
+      return 0
+    fi
+    dir=$(dirname "$dir")
+  done
+  return 1
+}
+
+# In a monorepo the lockfile sits at the root, above the package
+package_manager() {
+  local dir=$1
+  while :; do
+    if [[ -f "$dir/pnpm-lock.yaml" ]]; then
+      echo pnpm
+      return
+    elif [[ -f "$dir/yarn.lock" ]]; then
+      echo yarn
+      return
+    elif [[ -f "$dir/bun.lock" || -f "$dir/bun.lockb" ]]; then
+      echo bun
+      return
+    elif [[ -f "$dir/package-lock.json" || "$dir" == / ]]; then
+      echo npm
+      return
+    fi
+    dir=$(dirname "$dir")
+  done
+}
+
+has_script() { # <project> <script>
+  node -e 'process.exit(require(process.argv[1]).scripts?.[process.argv[2]] ? 0 : 1)' "$1/package.json" "$2"
+}
+
+has_package() { # <project> <package>
+  node -e 'const p = require(process.argv[1])
+process.exit({ ...p.dependencies, ...p.devDependencies }[process.argv[2]] ? 0 : 1)' "$1/package.json" "$2"
+}
+
+in_iterm() {
+  [[ "${TERM_PROGRAM:-}" == iTerm.app || "${LC_TERMINAL:-}" == iTerm2 ]]
+}
+
+status() { # <text> <dot colour>
+  if in_iterm; then printf '\e]21337;status=%s;indicator=%s\a' "$1" "$2"; fi
+}
+
+clear_status() {
+  if in_iterm; then printf '\e]21337;status=;indicator=;status-color=\a'; fi
+}
+
+case "${1:-}" in
+  server | test) ;;
+  -h | --help)
+    usage
+    exit 0
+    ;;
+  *)
+    usage >&2
+    exit 2
+    ;;
+esac
+
+dir=$(project) || {
+  echo "dev: no package.json here or above" >&2
+  exit 1
+}
+pm=$(package_manager "$dir")
+case "$pm" in
+  npm) run=(npm run) exec=(npx) ;;
+  pnpm) run=(pnpm run) exec=(pnpm exec) ;;
+  yarn) run=(yarn run) exec=(yarn) ;;
+  bun) run=(bun run) exec=(bunx) ;;
+esac
+
+if [[ "$1" == server ]]; then
+  if has_script "$dir" dev; then
+    cmd=("${run[@]}" dev)
+  elif has_script "$dir" start; then
+    cmd=("${run[@]}" start)
+  else
+    echo "dev: $dir/package.json has no dev or start script" >&2
+    exit 1
+  fi
+  state=starting
+else
+  if has_package "$dir" vitest; then
+    cmd=("${exec[@]}" vitest --changed)
+  elif has_package "$dir" jest; then
+    cmd=("${exec[@]}" jest --watch)
+  elif has_script "$dir" test; then
+    cmd=("${run[@]}" test)
+  else
+    echo "dev: no Vitest, Jest or test script in $dir/package.json" >&2
+    exit 1
+  fi
+  state=testing
+fi
+
+cd "$dir"
+echo "→ ${cmd[*]}"
+trap clear_status EXIT
+status "$state" '#d29922'
+"${cmd[@]}"
