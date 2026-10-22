@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+# Opens a file at a line in the Neovim that's working on it, and switches to
+# that Neovim's pane. iTerm2 runs this when you Cmd-click a path such as
+# src/app.tsx:42:7 (Semantic History in config/iterm2/profiles.json):
+#
+#   nvim-open <file> [line] [column] [folder the path was printed in]
+#
+# Without a Neovim for that project it starts one in a new iTerm2 tab.
+set -euo pipefail
+
+file=${1:?usage: nvim-open <file> [line] [column] [folder]}
+line=${2:-} col=${3:-} dir=${4:-$PWD}
+# iTerm2 starts this outside your shell, so Homebrew isn't on PATH yet
+PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+[[ "$line" =~ ^[0-9]+$ ]] || line=0
+[[ "$col" =~ ^[0-9]+$ ]] || col=0
+[[ "$file" == /* ]] || file="$dir/$file"
+# Neovim reports its folder with symlinks resolved (/tmp is /private/tmp)
+if parent=$(cd "$(dirname "$file")" 2>/dev/null && pwd -P); then
+  file="$parent/$(basename "$file")"
+fi
+tmp=${TMPDIR:-$(getconf DARWIN_USER_TEMP_DIR)}
+user=${USER:-$(id -un)}
+
+# As a Vimscript string: single quotes, with ' doubled
+quoted="'${file//\'/\'\'}'"
+
+# Every running Neovim listens on a socket; pick the one that has the file open,
+# else the one whose folder holds it (the deepest folder wins)
+best='' best_score=0 best_session=''
+for sock in "${tmp%/}/nvim.$user"/*/nvim.*.0; do
+  [[ -S "$sock" ]] || continue
+  # A Neovim that's busy or gone mustn't hold this up
+  info="$(perl -e 'alarm 2; exec @ARGV' nvim --server "$sock" --remote-expr \
+    "bufloaded($quoted) . ' ' . (empty(\$ITERM_SESSION_ID) ? '-' : \$ITERM_SESSION_ID) . ' ' . getcwd()" \
+    2>/dev/null)" || continue
+  loaded=${info%% *} rest=${info#* }
+  session=${rest%% *} cwd=${rest#* }
+  score=0
+  if [[ "$loaded" == 1 ]]; then
+    score=100000
+  elif [[ "$file" == "$cwd"/* ]]; then
+    score=${#cwd}
+  fi
+  if ((score > best_score)); then
+    best=$sock best_score=$score best_session=$session
+  fi
+done
+
+if [[ -n "$best" ]]; then
+  # Still switch panes if that Neovim runs without this config
+  nvim --server "$best" --remote-expr "v:lua.require'config.iterm'.open($quoted, $line, $col)" >/dev/null || true
+  # ITERM_SESSION_ID is w0t1p0:<unique ID>
+  if [[ "$best_session" == *:* ]]; then
+    osascript - "${best_session#*:}" <<'APPLESCRIPT' >/dev/null
+on run argv
+  tell application "iTerm2"
+    repeat with w in windows
+      repeat with t in tabs of w
+        repeat with s in sessions of t
+          if unique ID of s is (item 1 of argv) then
+            select w
+            select t
+            select s
+            activate
+            return
+          end if
+        end repeat
+      end repeat
+    end repeat
+  end tell
+end run
+APPLESCRIPT
+  fi
+  exit 0
+fi
+
+target=''
+((line > 0)) && target=$(printf %q "+call cursor($line, $col)")
+command="cd $(printf %q "$dir") && nvim $target $(printf %q "$file")"
+osascript - "$command" <<'APPLESCRIPT' >/dev/null
+on run argv
+  tell application "iTerm2"
+    activate
+    if (count of windows) is 0 then
+      create window with default profile
+    else
+      tell current window to create tab with default profile
+    end if
+    tell current session of current window to write text (item 1 of argv)
+  end tell
+end run
+APPLESCRIPT

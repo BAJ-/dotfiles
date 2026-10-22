@@ -1,6 +1,7 @@
 -- iTerm2 integration:
 -- - the tab's status dot and a macOS notification when tests or a type check
 --   finish, so you can work elsewhere and still see how it went
+-- - opening the files that bin/nvim-open sends here (Cmd-click in iTerm2)
 -- Other terminals get none of the escape codes.
 local M = {}
 
@@ -109,6 +110,76 @@ function M.neotest(client)
     end
   end
   return {}
+end
+
+local function regular(win)
+  return vim.api.nvim_win_get_config(win).relative == '' and vim.bo[vim.api.nvim_win_get_buf(win)].buftype == ''
+end
+
+-- A window already showing the file, preferably in this tab page
+local function window_showing(path)
+  if vim.fn.bufexists(path) == 0 then
+    return nil
+  end
+  local found
+  for _, win in ipairs(vim.fn.win_findbuf(vim.fn.bufadd(path))) do
+    if regular(win) then
+      if vim.api.nvim_win_get_tabpage(win) == vim.api.nvim_get_current_tabpage() then
+        return win
+      end
+      found = found or win
+    end
+  end
+  return found
+end
+
+-- Not the file tree, quickfix list, a terminal or a picker
+local function editor_window()
+  local wins = { vim.api.nvim_get_current_win(), vim.fn.win_getid(vim.fn.winnr('#')) }
+  vim.list_extend(wins, vim.api.nvim_tabpage_list_wins(0))
+  for _, win in ipairs(wins) do
+    if win ~= 0 and regular(win) then
+      return win
+    end
+  end
+end
+
+---Called by bin/nvim-open over Neovim's socket
+---@param path string
+---@param line integer 0 when unknown
+---@param col integer 0 when unknown
+function M.open(path, line, col)
+  local function go()
+    local ok, err = pcall(function()
+      local win = window_showing(path)
+      if win then
+        vim.api.nvim_set_current_win(win)
+        if line > 0 then
+          -- :edit records the jump below; here it's needed for <C-o> to come back
+          vim.cmd("normal! m'")
+        end
+      else
+        vim.api.nvim_set_current_win(editor_window() or 0)
+        vim.cmd('edit ' .. vim.fn.fnameescape(path))
+      end
+      if line > 0 then
+        line = math.min(line, vim.api.nvim_buf_line_count(0))
+        vim.api.nvim_win_set_cursor(0, { line, math.max(col - 1, 0) })
+        vim.cmd('normal! zz')
+      end
+    end)
+    if not ok then
+      vim.notify(tostring(err), vim.log.levels.ERROR)
+    end
+  end
+  if vim.api.nvim_get_mode().mode:find('^[iRt]') then
+    -- Leaving Insert mode moves the cursor back a column, so open after that
+    vim.api.nvim_create_autocmd('ModeChanged', { pattern = '*:n*', once = true, callback = vim.schedule_wrap(go) })
+    vim.cmd.stopinsert()
+  else
+    go()
+  end
+  return ''
 end
 
 function M.setup()
