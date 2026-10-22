@@ -197,6 +197,15 @@ function M.setup()
     end,
   })
   vim.api.nvim_create_autocmd('VimLeavePre', { group = group, callback = M.clear })
+  -- iTerm2 follows its profiles file by inode: saving it in place keeps
+  -- iTerm2 picking up every change, not just the first
+  vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
+    group = group,
+    pattern = '*/config/iterm2/*.json',
+    callback = function(args)
+      vim.bo[args.buf].backupcopy = 'yes'
+    end,
+  })
 end
 
 return M

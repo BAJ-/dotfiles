@@ -1,0 +1,102 @@
+{
+  "uniqueIdentifier": "c1f1e29f-c5ac-46b4-ab2e-1f5591ef8016",
+  "name": "Frontend",
+  "sessions": [
+    {
+      "uniqueIdentifier": "0bd2cd68-a003-4701-90c0-ea489e67cf2e",
+      "kind": {
+        "kind": "root"
+      },
+      "command": "",
+      "urlString": "",
+      "toolbarItems": [
+        {
+          "kind": "gitStatus"
+        }
+      ],
+      "displayName": "Code",
+      "mode": "regular"
+    },
+    {
+      "uniqueIdentifier": "0717afd5-393e-4600-bfd5-fe7a03b26e10",
+      "kind": {
+        "kind": "split",
+        "split": {
+          "orientation": "vertical",
+          "side": "trailingOrBottom",
+          "location": 0.35
+        }
+      },
+      "command": "dev server; exec \"$SHELL\" -l",
+      "urlString": "",
+      "toolbarItems": [
+        {
+          "kind": "modeSwitcher"
+        }
+      ],
+      "displayName": "Dev server",
+      "mode": "regular",
+      "parentID": "0bd2cd68-a003-4701-90c0-ea489e67cf2e",
+      "peerSwitchShortcut": {
+        "serialized": "0x31-0x140000"
+      }
+    },
+    {
+      "uniqueIdentifier": "a1bea08a-55b8-4441-9baf-54e415565e9d",
+      "kind": {
+        "kind": "peer"
+      },
+      "command": "dev test; exec \"$SHELL\" -l",
+      "urlString": "",
+      "toolbarItems": [
+        {
+          "kind": "modeSwitcher"
+        }
+      ],
+      "displayName": "Tests",
+      "mode": "regular",
+      "parentID": "0717afd5-393e-4600-bfd5-fe7a03b26e10",
+      "peerSwitchShortcut": {
+        "serialized": "0x32-0x140000"
+      }
+    },
+    {
+      "uniqueIdentifier": "e1296753-ecb9-4ef2-bb60-2f04131b2fa2",
+      "kind": {
+        "kind": "peer"
+      },
+      "command": "tig; exec \"$SHELL\" -l",
+      "urlString": "",
+      "toolbarItems": [
+        {
+          "kind": "modeSwitcher"
+        }
+      ],
+      "displayName": "Git",
+      "mode": "regular",
+      "parentID": "0717afd5-393e-4600-bfd5-fe7a03b26e10",
+      "peerSwitchShortcut": {
+        "serialized": "0x33-0x140000"
+      }
+    },
+    {
+      "uniqueIdentifier": "f603fd74-bbaf-4c5c-aa78-da274d43b199",
+      "kind": {
+        "kind": "peer"
+      },
+      "command": "",
+      "urlString": "",
+      "toolbarItems": [
+        {
+          "kind": "modeSwitcher"
+        }
+      ],
+      "displayName": "Shell",
+      "mode": "regular",
+      "parentID": "0717afd5-393e-4600-bfd5-fe7a03b26e10",
+      "peerSwitchShortcut": {
+        "serialized": "0x34-0x140000"
+      }
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Sets up this Mac, or brings an existing setup up to date: Homebrew tools,
-# shell and Neovim config, Node. Safe to run again at any time: every step
-# checks first and only changes what is missing or outdated.
+# shell, Neovim and iTerm2 config, Node. Safe to run again at any time:
+# every step checks first and only changes what is missing or outdated.
 #
 #   ./setup.sh             apply
 #   ./setup.sh --dry-run   list what would change, change nothing
@@ -448,6 +448,8 @@ neovim() {
 
 # --- iTerm2 ---------------------------------------------------------------------------
 
+ITERM_PROFILE=eb28cae1-d910-48d3-995b-6bca4485eed1 # "Dotfiles" in config/iterm2/profiles.json
+
 # Marks every prompt, so iTerm2 can jump between commands, select a command's
 # output and tell you when one finishes. It changes with iTerm2, so it's
 # fetched each run and replaced when it differs
@@ -472,6 +474,25 @@ iterm_shell_integration() {
 iterm() {
   [[ -d /Applications/iTerm.app ]] || return 0
   iterm_shell_integration
+  # The Dotfiles profile, and Hotkey for the window that drops down on a double Control
+  link config/iterm2/profiles.json "$HOME/Library/Application Support/iTerm2/DynamicProfiles/dotfiles.json"
+  # The profile's Cmd-click handler: iTerm2 runs it without your shell's PATH
+  link bin/nvim-open "$HOME/.local/bin/nvim-open"
+
+  local args=("$DOTFILES_DIR/config/iterm2/workgroup.json") workgroup
+  if $DRY_RUN; then args+=(--dry-run); fi
+  if ! workgroup="$(python3 "$DOTFILES_DIR/script/iterm-workgroup.py" "${args[@]}")"; then
+    failed "Couldn't add the Frontend Workgroup to iTerm2's settings"
+  elif [[ "$workgroup" != present ]]; then
+    changed "add the Frontend Workgroup to iTerm2 (⌃⌘W)"
+    if [[ "$workgroup" == added ]] && pgrep -xq iTerm2; then
+      MANUAL+=("Restart iTerm2 to get the Frontend Workgroup (it reads them at startup)")
+    fi
+  fi
+
+  if [[ "$(defaults read com.googlecode.iterm2 'Default Bookmark Guid' 2>/dev/null)" != "$ITERM_PROFILE" ]]; then
+    MANUAL+=("Make Dotfiles iTerm2's default profile: Settings › Profiles, select Dotfiles, then Other Actions… › Set as Default")
+  fi
 }
 
 # --- Run ---------------------------------------------------------------------------------
@@ -485,10 +506,6 @@ retired_tools
 old_neovim
 neovim
 iterm
-
-if grep -q 'install font-hack-nerd-font' <<<"${CHANGES[*]:-}"; then
-  MANUAL+=("iTerm2: Settings › Profiles › Text › Font: Hack Nerd Font")
-fi
 
 echo
 if ((${#CHANGES[@]} == 0)); then

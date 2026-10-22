@@ -1,0 +1,514 @@
+{
+  "Profiles": [
+    {
+      "Name": "Dotfiles",
+      "Guid": "eb28cae1-d910-48d3-995b-6bca4485eed1",
+      "Normal Font": "HackNFM-Regular 12",
+      "Option Key Sends": 2,
+      "Right Option Key Sends": 2,
+      "Mouse Reporting": true,
+      "Unlimited Scrollback": true,
+      "Visual Bell": true,
+      "Use Separate Colors for Light and Dark Mode": true,
+      "Background Color (Dark)": {
+        "Red Component": 0.141176,
+        "Green Component": 0.156863,
+        "Blue Component": 0.231373,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Foreground Color (Dark)": {
+        "Red Component": 0.752941,
+        "Green Component": 0.792157,
+        "Blue Component": 0.960784,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Bold Color (Dark)": {
+        "Red Component": 0.101961,
+        "Green Component": 0.737255,
+        "Blue Component": 0.611765,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Cursor Color (Dark)": {
+        "Red Component": 0.752941,
+        "Green Component": 0.792157,
+        "Blue Component": 0.960784,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Cursor Text Color (Dark)": {
+        "Red Component": 0.141176,
+        "Green Component": 0.156863,
+        "Blue Component": 0.231373,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Selection Color (Dark)": {
+        "Red Component": 0.180392,
+        "Green Component": 0.235294,
+        "Blue Component": 0.392157,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Selected Text Color (Dark)": {
+        "Red Component": 0.752941,
+        "Green Component": 0.792157,
+        "Blue Component": 0.960784,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Link Color (Dark)": {
+        "Red Component": 0.45098,
+        "Green Component": 0.854902,
+        "Blue Component": 0.792157,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Badge Color (Dark)": {
+        "Red Component": 1.0,
+        "Green Component": 0.149131,
+        "Blue Component": 0.0,
+        "Alpha Component": 0.5,
+        "Color Space": "sRGB"
+      },
+      "Cursor Guide Color (Dark)": {
+        "Red Component": 0.752941,
+        "Green Component": 0.792157,
+        "Blue Component": 0.960784,
+        "Alpha Component": 0.25,
+        "Color Space": "sRGB"
+      },
+      "Ansi 0 Color (Dark)": {
+        "Red Component": 0.113725,
+        "Green Component": 0.12549,
+        "Blue Component": 0.184314,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 1 Color (Dark)": {
+        "Red Component": 0.968627,
+        "Green Component": 0.462745,
+        "Blue Component": 0.556863,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 2 Color (Dark)": {
+        "Red Component": 0.619608,
+        "Green Component": 0.807843,
+        "Blue Component": 0.415686,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 3 Color (Dark)": {
+        "Red Component": 0.878431,
+        "Green Component": 0.686275,
+        "Blue Component": 0.407843,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 4 Color (Dark)": {
+        "Red Component": 0.478431,
+        "Green Component": 0.635294,
+        "Blue Component": 0.968627,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 5 Color (Dark)": {
+        "Red Component": 0.733333,
+        "Green Component": 0.603922,
+        "Blue Component": 0.968627,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 6 Color (Dark)": {
+        "Red Component": 0.490196,
+        "Green Component": 0.811765,
+        "Blue Component": 1.0,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 7 Color (Dark)": {
+        "Red Component": 0.662745,
+        "Green Component": 0.694118,
+        "Blue Component": 0.839216,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 8 Color (Dark)": {
+        "Red Component": 0.254902,
+        "Green Component": 0.282353,
+        "Blue Component": 0.407843,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 9 Color (Dark)": {
+        "Red Component": 0.968627,
+        "Green Component": 0.462745,
+        "Blue Component": 0.556863,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 10 Color (Dark)": {
+        "Red Component": 0.619608,
+        "Green Component": 0.807843,
+        "Blue Component": 0.415686,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 11 Color (Dark)": {
+        "Red Component": 0.878431,
+        "Green Component": 0.686275,
+        "Blue Component": 0.407843,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 12 Color (Dark)": {
+        "Red Component": 0.478431,
+        "Green Component": 0.635294,
+        "Blue Component": 0.968627,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 13 Color (Dark)": {
+        "Red Component": 0.733333,
+        "Green Component": 0.603922,
+        "Blue Component": 0.968627,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 14 Color (Dark)": {
+        "Red Component": 0.490196,
+        "Green Component": 0.811765,
+        "Blue Component": 1.0,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 15 Color (Dark)": {
+        "Red Component": 0.752941,
+        "Green Component": 0.792157,
+        "Blue Component": 0.960784,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Background Color (Light)": {
+        "Red Component": 0.94902,
+        "Green Component": 0.92549,
+        "Blue Component": 0.737255,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Foreground Color (Light)": {
+        "Red Component": 0.329412,
+        "Green Component": 0.329412,
+        "Blue Component": 0.392157,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Bold Color (Light)": {
+        "Red Component": 0.329412,
+        "Green Component": 0.329412,
+        "Blue Component": 0.392157,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Cursor Color (Light)": {
+        "Red Component": 0.262745,
+        "Green Component": 0.262745,
+        "Blue Component": 0.423529,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Cursor Text Color (Light)": {
+        "Red Component": 0.94902,
+        "Green Component": 0.92549,
+        "Blue Component": 0.737255,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Selection Color (Light)": {
+        "Red Component": 0.788235,
+        "Green Component": 0.796078,
+        "Blue Component": 0.819608,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Selected Text Color (Light)": {
+        "Red Component": 0.262745,
+        "Green Component": 0.262745,
+        "Blue Component": 0.423529,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Link Color (Light)": {
+        "Red Component": 0.301961,
+        "Green Component": 0.411765,
+        "Blue Component": 0.607843,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Badge Color (Light)": {
+        "Red Component": 0.301961,
+        "Green Component": 0.411765,
+        "Blue Component": 0.607843,
+        "Alpha Component": 0.5,
+        "Color Space": "sRGB"
+      },
+      "Cursor Guide Color (Light)": {
+        "Red Component": 0.788235,
+        "Green Component": 0.796078,
+        "Blue Component": 0.819608,
+        "Alpha Component": 0.25,
+        "Color Space": "sRGB"
+      },
+      "Ansi 0 Color (Light)": {
+        "Red Component": 0.121569,
+        "Green Component": 0.121569,
+        "Blue Component": 0.156863,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 1 Color (Light)": {
+        "Red Component": 0.784314,
+        "Green Component": 0.25098,
+        "Blue Component": 0.32549,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 2 Color (Light)": {
+        "Red Component": 0.435294,
+        "Green Component": 0.537255,
+        "Blue Component": 0.305882,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 3 Color (Light)": {
+        "Red Component": 0.466667,
+        "Green Component": 0.443137,
+        "Blue Component": 0.247059,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 4 Color (Light)": {
+        "Red Component": 0.301961,
+        "Green Component": 0.411765,
+        "Blue Component": 0.607843,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 5 Color (Light)": {
+        "Red Component": 0.701961,
+        "Green Component": 0.356863,
+        "Blue Component": 0.47451,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 6 Color (Light)": {
+        "Red Component": 0.34902,
+        "Green Component": 0.482353,
+        "Blue Component": 0.458824,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 7 Color (Light)": {
+        "Red Component": 0.329412,
+        "Green Component": 0.329412,
+        "Blue Component": 0.392157,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 8 Color (Light)": {
+        "Red Component": 0.541176,
+        "Green Component": 0.537255,
+        "Blue Component": 0.501961,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 9 Color (Light)": {
+        "Red Component": 0.843137,
+        "Green Component": 0.278431,
+        "Blue Component": 0.294118,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 10 Color (Light)": {
+        "Red Component": 0.431373,
+        "Green Component": 0.568627,
+        "Blue Component": 0.372549,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 11 Color (Light)": {
+        "Red Component": 0.513725,
+        "Green Component": 0.435294,
+        "Blue Component": 0.290196,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 12 Color (Light)": {
+        "Red Component": 0.4,
+        "Green Component": 0.576471,
+        "Blue Component": 0.74902,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 13 Color (Light)": {
+        "Red Component": 0.384314,
+        "Green Component": 0.298039,
+        "Blue Component": 0.513725,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 14 Color (Light)": {
+        "Red Component": 0.368627,
+        "Green Component": 0.521569,
+        "Blue Component": 0.478431,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Ansi 15 Color (Light)": {
+        "Red Component": 0.262745,
+        "Green Component": 0.262745,
+        "Blue Component": 0.423529,
+        "Alpha Component": 1.0,
+        "Color Space": "sRGB"
+      },
+      "Show Status Bar": true,
+      "Status Bar Layout": {
+        "components": [
+          {
+            "class": "iTermStatusBarCPUUtilizationComponent",
+            "configuration": {
+              "knobs": {
+                "base: priority": 5,
+                "shared text color": {
+                  "Red Component": 0.9,
+                  "Color Space": "sRGB",
+                  "Blue Component": 0.63,
+                  "Alpha Component": 1,
+                  "Green Component": 0.63
+                },
+                "base: compression resistance": 1
+              },
+              "layout advanced configuration dictionary value": {
+                "algorithm": 0,
+                "auto-rainbow style": 0,
+                "remove empty components": false
+              }
+            }
+          },
+          {
+            "class": "iTermStatusBarMemoryUtilizationComponent",
+            "configuration": {
+              "knobs": {
+                "base: priority": 5,
+                "shared text color": {
+                  "Red Component": 0.63,
+                  "Color Space": "sRGB",
+                  "Blue Component": 0.8271000000000001,
+                  "Alpha Component": 1,
+                  "Green Component": 0.9
+                },
+                "base: compression resistance": 1
+              },
+              "layout advanced configuration dictionary value": {
+                "remove empty components": false,
+                "auto-rainbow style": 0,
+                "font": ".AppleSystemUIFont 12",
+                "algorithm": 0
+              }
+            }
+          },
+          {
+            "class": "iTermStatusBarNetworkUtilizationComponent",
+            "configuration": {
+              "knobs": {
+                "base: priority": 5,
+                "shared text color": {
+                  "Red Component": 0.9,
+                  "Color Space": "sRGB",
+                  "Blue Component": 0.7758,
+                  "Alpha Component": 1,
+                  "Green Component": 0.63
+                },
+                "base: compression resistance": 1
+              },
+              "layout advanced configuration dictionary value": {
+                "remove empty components": false,
+                "auto-rainbow style": 0,
+                "font": ".AppleSystemUIFont 12",
+                "algorithm": 0
+              }
+            }
+          }
+        ],
+        "advanced configuration": {
+          "remove empty components": false,
+          "auto-rainbow style": 0,
+          "font": ".AppleSystemUIFont 12",
+          "algorithm": 0
+        }
+      },
+      "Semantic History": {
+        "action": "command",
+        "editor": "",
+        "text": "\"$HOME/.local/bin/nvim-open\" \\1 \"\\2\" \"\\(semanticHistory.columnNumber)\" \\5"
+      },
+      "Triggers": [
+        {
+          "regex": "not wrapped in act\\(\\.\\.\\.\\)",
+          "action": "CaptureTrigger"
+        },
+        {
+          "regex": "ready in \\d|✓ Ready in|✓ Compiled|hmr update|page reload",
+          "action": "iTermSetTabStatusTrigger",
+          "parameter": "#3fb950\u0001\u0001ready",
+          "job": "node"
+        },
+        {
+          "regex": "Failed to compile|Internal server error|Pre-transform error|Build failed|⨯ ",
+          "action": "iTermSetTabStatusTrigger",
+          "parameter": "#f85149\u0001\u0001error",
+          "job": "node"
+        },
+        {
+          "regex": "^\\s*Tests:?\\s+(\\d+) failed",
+          "action": "iTermSetTabStatusTrigger",
+          "parameter": "#f85149\u0001\u0001\\1 failing",
+          "job": "node"
+        },
+        {
+          "regex": "^\\s*Tests:?\\s+(?!.*failed).*\\d+ passed",
+          "action": "iTermSetTabStatusTrigger",
+          "parameter": "#3fb950\u0001\u0001tests pass",
+          "job": "node"
+        }
+      ],
+      "Keyboard Map": {
+        "0x77-0x140000": {
+          "Action": 25,
+          "Text": "Frontend"
+        },
+        "0x78-0x140000": {
+          "Action": 25,
+          "Text": "Exit Workgroup"
+        }
+      }
+    },
+    {
+      "Name": "Hotkey",
+      "Guid": "3eae2f67-0614-47a6-aeab-8e11b6d3b106",
+      "Dynamic Profile Parent GUID": "eb28cae1-d910-48d3-995b-6bca4485eed1",
+      "Has Hotkey": true,
+      "HotKey Activated By Modifier": true,
+      "HotKey Modifier Activation": 0,
+      "HotKey Window AutoHides": true,
+      "HotKey Window Animates": true,
+      "HotKey Window Floats": true,
+      "Window Type": 2,
+      "Height Percentage": 40,
+      "Space": -1
+    }
+  ]
+}
