@@ -72,6 +72,8 @@ local setup = pack.once(function()
         end,
       }),
     },
+    -- the iTerm2 tab's status dot and a notification after each run (config/iterm.lua)
+    consumers = { iterm = require('config.iterm').neotest },
   })
 end)
 

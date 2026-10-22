@@ -101,6 +101,7 @@ function M.check()
   local name = vim.fn.fnamemodify(root, ':~')
   local progress = { kind = 'progress', title = 'TypeCheck', source = 'typecheck', status = 'running' }
   progress.id = vim.api.nvim_echo({ { name } }, false, progress)
+  require('config.iterm').typecheck_started()
   local started = vim.uv.hrtime()
   running = vim.system(
     { tsc, '--noEmit', '--pretty', 'false' },
@@ -113,6 +114,7 @@ function M.check()
       local problem = out.code ~= 0 and #items == 0
       progress.status = (out.code == 0 or #items > 0) and 'success' or 'failed'
       vim.api.nvim_echo({ { name } }, false, progress)
+      require('config.iterm').typecheck_finished(#items, problem)
       if problem then
         local why = vim.trim((out.stderr ~= '' and out.stderr or out.stdout) or ''):match('[^\n]*')
         vim.notify(('Type check failed to run: %s'):format(why), vim.log.levels.ERROR)

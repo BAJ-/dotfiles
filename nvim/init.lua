@@ -7,6 +7,7 @@ vim.g.maplocalleader = '\\'
 require('config.options')
 require('config.keymaps')
 require('config.autocmds')
+require('config.iterm').setup()
 
 -- One module failing (say, its plugin couldn't install offline) must not take
 -- the others down; config.pack reports what failed once startup is done
