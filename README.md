@@ -1,10 +1,10 @@
 # dotfiles
 
-My Mac setup for frontend work: zsh, plus Neovim 0.12 set up for TypeScript, React, Next.js, Vite and Electron, with tests, debugging and AI built in. One script sets up a new Mac or brings an existing one up to date.
+My Mac setup for frontend work: zsh and iTerm2, plus Neovim 0.12 set up for TypeScript, React, Next.js, Vite and Electron, with tests, debugging and AI built in. One script sets up a new Mac or brings an existing one up to date.
 
 To learn the keys while you work, [workflows.md](workflows.md) walks through everyday tasks step by step: building a component, fixing a failing test, reviewing a pull request and more.
 
-**Contents:** [Set up a Mac](#set-up-a-mac) · [Reading the keys](#reading-the-keys) · [Cheat sheet](#cheat-sheet) · Workflows: [Find](#find-files-and-text) · [Move around](#move-around) · [Code](#understand-and-change-code) · [Write](#write-code) · [Snippets](#snippets) · [Save](#save-and-format) · [Git](#git) · [Tests](#run-tests) · [Debug](#debug) · [AI](#ai) · [Shell](#terminal-and-shell) · [Updates](#keep-it-up-to-date) · [Key index](#key-index) · [Where things live](#where-things-live)
+**Contents:** [Set up a Mac](#set-up-a-mac) · [Reading the keys](#reading-the-keys) · [Cheat sheet](#cheat-sheet) · Workflows: [Find](#find-files-and-text) · [Move around](#move-around) · [Code](#understand-and-change-code) · [Write](#write-code) · [Snippets](#snippets) · [Save](#save-and-format) · [Git](#git) · [Tests](#run-tests) · [Debug](#debug) · [AI](#ai) · [Shell](#terminal-and-shell) · [iTerm2](#iterm2) · [Updates](#keep-it-up-to-date) · [Key index](#key-index) · [Where things live](#where-things-live)
 
 ## Set up a Mac
 
@@ -22,13 +22,15 @@ cd ~/projects/dotfiles
 - makes the latest Node LTS (through fnm) the default
 - removes the old setup (nvm, gvm, Rye, vim-plug, old Neovim data), moving global npm packages and npm settings (to `~/.npmrc`) across first
 - installs Neovim's plugins at the versions in [nvim/nvim-pack-lock.json](nvim/nvim-pack-lock.json), plus the Treesitter parsers and language servers
+- sets up iTerm2: the Dotfiles and Hotkey profiles, ⌘-click to open files in Neovim and the Frontend Workgroup (all in [iTerm2](#iterm2)), and installs or updates iTerm2's shell integration
 
-It ends with a summary of what changed and anything left for you, such as signing in to Copilot (in Neovim: `,al`, then `:LspCopilotSignIn`).
+It ends with a summary of what changed and anything left for you, such as signing in to Copilot (in Neovim: `,al`, then `:LspCopilotSignIn`) or making Dotfiles iTerm2's default profile.
 
 ## Reading the keys
 
 - **The leader key is `,`**: `,ff` means press `,`, then `f`, then `f`.
-- `<C-v>` is Ctrl+v, `<S-Tab>` is Shift+Tab and `<M-]>` is Option+]. Option keys need iTerm2 › Settings › Profiles › Keys › General › Left Option key set to **Esc+**.
+- `<C-v>` is Ctrl+v, `<S-Tab>` is Shift+Tab and `<M-]>` is Option+]. The Dotfiles iTerm2 profile sets both Option keys to **Esc+**, which Option keys need.
+- iTerm2's own keys are written the Mac way: ⌘ Command, ⌥ Option, ⌃ Control, ⇧ Shift.
 - Keys work in normal mode unless marked *insert*, *visual* or *terminal*.
 - **Forgot a key?** Press `,` (or `g`, `z`, `[`, `]`, `<C-w>`, `"`, `'`) and wait: a popup lists everything that can follow. Inside plugin windows, `g?` (file tree, debug view, Mason), `?` (test summary, AI chat) or `F1` (pickers) lists that window's keys.
 
@@ -56,6 +58,9 @@ It ends with a summary of what changed and anything left for you, such as signin
 | `,al` / `,an` | AI ghost text / next edit suggestions on/off (both start off) |
 | `Space` | Command line (same as `:`) |
 | `jj` *(insert)* | Back to normal mode |
+| ⌘-click `src/App.tsx:42` *(iTerm2)* | Open it in Neovim at that line |
+| ⌃⌘W, then ⌃⌘1–4 *(iTerm2)* | Frontend Workgroup, then Dev server / Tests / Git / Shell beside your code |
+| Double-tap ⌃ *(iTerm2)* | Hotkey window: a terminal that drops down from the top |
 
 ## Workflows
 
@@ -528,16 +533,69 @@ When the chat proposes edits: `g2` accepts, `g3` rejects, `g1` accepts everythin
 | `Esc Esc` *(terminal)* | Back to normal mode (a single `Esc` still reaches the program) |
 | `z <part of a path>` | Jump to a folder you use often (`z -l <part>` lists the matches) |
 | `testfile Button.test.tsx` | Run that test file with coverage for its source file; without a name it uses the clipboard |
+| `dev server` / `dev test` | The project's dev server / its tests in watch mode ([iTerm2](#iterm2)) |
 | `copilot-auto` | Copilot CLI, on the local model when available |
 | `exec zsh` | Reload the shell config |
 
 Node switches on its own: entering a folder with an `.nvmrc` or `.node-version` uses that version, installing it if needed. Everywhere else it's the latest LTS.
 
+### iTerm2
+
+The **Dotfiles** profile sets the font, both Option keys to Esc+, mouse reporting and unlimited scrollback. Its colours follow macOS: Tokyo Night Storm when the Mac is dark and Kanagawa Lotus when it's light, and Neovim switches along with it, even while it runs.
+
+| Keys | Does |
+| --- | --- |
+| ⌘-click a path | Open the file in Neovim at that line and column: `src/App.tsx:42:7` in test output, a stack trace or `tsc` errors. The Neovim working on that project gets it, even in another tab, and its pane comes forward; with none open, a new tab starts one |
+| ⌥-drag | Select text the terminal's way while Neovim, or another program, has the mouse |
+| Double-tap ⌃ | Hotkey window: a terminal that drops down from the top, on any Space; again to hide it. The first time, macOS asks you to give iTerm2 Accessibility access |
+| ⌃⌘W / ⌃⌘X | Enter / leave the Frontend Workgroup |
+| ⌃⌘1 – ⌃⌘4 | In the Workgroup: Dev server, Tests, Git or Shell in the right-hand pane |
+| ⌥⌘← / ⌥⌘→ | Pane on the left / right |
+
+**The Frontend Workgroup.** In a project folder, ⌃⌘W turns the tab into a workspace. Your session stays on the left (run `nvim .` there), and the right-hand third holds four panes that take turns: **Dev server** (`dev server`), **Tests** (`dev test`), **Git** (`tig`) and **Shell**. All four start straight away. ⌃⌘1–4, or their names in the bar above the pane, bring one forward from any pane and put the cursor in it; ⌥⌘← goes back to Neovim. A command that stops leaves a shell in its pane. `exit` in any of them, or ⌃⌘X, closes the Workgroup. To change it: Settings › Workgroups.
+
+`dev server` runs the project's `dev` script (or `start`) with the package manager its lockfile names, and `dev test` runs Vitest or Jest in watch mode, starting with the tests your changes touch. They work in any terminal, monorepo packages included.
+
+**The tab's status.** A coloured dot and a word under the tab's title say how things are going:
+
+| Where | Status |
+| --- | --- |
+| Dev server (Vite, Next.js) | *starting*, then *ready* or *error* |
+| Tests in a terminal (Vitest, Jest) | *3 failing* or *tests pass* |
+| Neovim (`,m…` tests, `,et`) | *testing* or *type-checking*, then the result: a failure stays until the next run, a pass for 10 seconds |
+
+A tab shows the status of the pane you're in, or the most important one among its other panes. ⌥⇧⌘C (Cockpit) lists every session's status, those behind other panes too. When tests or a type check in Neovim finish while you're in another app or pane, a macOS notification says how it went. React's *not wrapped in act(...)* warnings are collected in the Toolbelt's Captured Output; the first time, iTerm2 offers to show it.
+
+**Shell integration** marks every prompt (`./setup.sh` keeps it up to date):
+
+| Keys | Does |
+| --- | --- |
+| ⇧⌘↑ / ⇧⌘↓ | Previous / next command in the scrollback |
+| ⇧⌘A | Select the last command's output, to copy it |
+| ⌥⌘A | Notify me when the running command finishes |
+| ⇧⌘; / ⌥⌘/ | Recent commands / recent folders |
+
+In Neovim's terminal (`,tm`), `[[` / `]]` jump between prompts the same way.
+
+**More of iTerm2's own keys:**
+
+| Keys | Does |
+| --- | --- |
+| ⇧⌘O | Open Quickly: any session, tab or profile by name |
+| ⌘F / ⌥⇧⌘F | Find / filter: hide the lines that don't match |
+| ⇧⌘C | Copy mode: select with the keyboard, vim-style |
+| ⇧⌘H | Paste history |
+| ⇧⌘. | Composer: write a long command in an editor first |
+| ⌥⌘B | Instant replay: step back through what the screen showed |
+| ⇧⌘T | Reopen the tab or pane you just closed |
+
+To change the profiles, edit [config/iterm2/profiles.json](config/iterm2/profiles.json): iTerm2 picks up the change when you save. Changes made in Settings › Profiles are lost; if iTerm2 offers **Mark as Rewritable**, choose Cancel and edit the file instead.
+
 ### Keep it up to date
 
 | Command | Does |
 | --- | --- |
-| `./setup.sh` | Update everything: Homebrew tools, Node LTS, Neovim plugins (to the lockfile), parsers, language servers |
+| `./setup.sh` | Update everything: Homebrew tools, Node LTS, Neovim plugins (to the lockfile), parsers, language servers, iTerm2's shell integration |
 | `:lua vim.pack.update()` | Update Neovim's plugins: review, then `:w` to apply or `:q` to cancel. Commit `nvim/nvim-pack-lock.json` afterwards; `./setup.sh` gives other Macs the same versions |
 | `:Mason` | Language servers and tools: `i` install, `u` update, `U` update all, `X` uninstall, `g?` help |
 | `:TSUpdate` | Update the Treesitter parsers |
@@ -643,6 +701,10 @@ Every key this config adds. Neovim's own keys and the keys inside plugin windows
 | `<M-]>` / `<M-[>` | *Insert*: next / previous ghost text suggestion | [AI](#ai) |
 | `F5` | Remove trailing whitespace | [Write](#write-code) |
 | `Esc Esc` | *Terminal*: back to normal mode | [Shell](#terminal-and-shell) |
+| ⌘-click | *iTerm2*: open a `file:line` in Neovim | [iTerm2](#iterm2) |
+| Double-tap ⌃ | *iTerm2*: hotkey window | [iTerm2](#iterm2) |
+| ⌃⌘W / ⌃⌘X | *iTerm2*: enter / leave the Frontend Workgroup | [iTerm2](#iterm2) |
+| ⌃⌘1 – ⌃⌘4 | *iTerm2*: Dev server / Tests / Git / Shell in the Workgroup | [iTerm2](#iterm2) |
 
 ## Where things live
 
@@ -654,6 +716,10 @@ Every key this config adds. Neovim's own keys and the keys inside plugin windows
 | `~/.zshrc.local` (not in the repo) | Settings for this Mac only, such as work proxies and tokens; [zshrc](zshrc) loads it. Copy it to a new Mac yourself |
 | [z.sh](z.sh) | `z` folder jumping ([rupa/z](https://github.com/rupa/z), vendored) |
 | [bin/copilot-auto](bin/copilot-auto) | Copilot CLI, local model first |
+| [bin/dev](bin/dev) | `dev server` and `dev test` |
+| [config/iterm2/profiles.json](config/iterm2/profiles.json) | iTerm2's Dotfiles and Hotkey profiles: colours, font, keys, triggers, ⌘-click |
+| [config/iterm2/workgroup.json](config/iterm2/workgroup.json) | The Frontend Workgroup; [script/iterm-workgroup.py](script/iterm-workgroup.py) adds it to iTerm2's settings |
+| [bin/nvim-open](bin/nvim-open), [nvim/lua/config/iterm.lua](nvim/lua/config/iterm.lua) | ⌘-click to Neovim, and Neovim's tab status and notifications |
 | [nvim/init.lua](nvim/init.lua) | Loads [nvim/lua/config/](nvim/lua/config) (options, keys, autosave, statusline), then one file per area in [nvim/lua/plugins/](nvim/lua/plugins) |
 | [nvim/lua/config/keymaps.lua](nvim/lua/config/keymaps.lua) | Keys that don't belong to a plugin |
 | [nvim/lua/config/debug.lua](nvim/lua/config/debug.lua) | Debug configurations |

@@ -10,6 +10,14 @@ Everyday tasks, start to finish, with this setup's keys and snippets. Pick the o
 - [Find your way around code](#find-your-way-around-code): where something is defined, where it's used, what it returns
 - [Change something in many files](#change-something-in-many-files): search and replace, by text or by code structure
 
+**Terminal and dev server**
+
+- [Start the dev environment](#start-the-dev-environment): Neovim, the dev server, the tests and git in one tab
+- [Go from an error to the code](#go-from-an-error-to-the-code): ⌘-click a file and line in any output
+- [Run a quick command from anywhere](#run-a-quick-command-from-anywhere): a terminal that drops down over any app
+- [Know when something slow is done](#know-when-something-slow-is-done): notifications and the tab's status while you do something else
+- [Dig through a long output](#dig-through-a-long-output): jump between commands, filter, select and copy
+
 **Write React and TypeScript**
 
 - [Build a component with its styles](#build-a-component-with-its-styles): the component, its markup and its CSS Module
@@ -53,6 +61,7 @@ Everyday tasks, start to finish, with this setup's keys and snippets. Pick the o
 ## Before you start
 
 - `,` is the leader key: `,ff` is `,`, then `f`, then `f`. Keys work in normal mode unless marked *insert* or *visual*.
+- iTerm2's keys use the Mac symbols: ⌘ Command, ⌥ Option, ⌃ Control, ⇧ Shift.
 - **Snippets and the completion menu:** type the trigger (`rafc`), press `Tab` to select it in the menu and `Enter` to expand it. Type into the first field, then `Tab` goes to the next one. If the menu opened while you typed in a field, close it with `<C-e>` before that `Tab`. Only then, though: with no menu open, `<C-e>` types the character from the line below.
 - Files save themselves a second after you leave insert mode, so the steps don't say `:w`. Saving with `:w` yourself also applies ESLint's fixes.
 - Forgot what comes next? Press `,` (or `g`, `[`, `]`) and wait for the list.
@@ -63,13 +72,13 @@ Everyday tasks, start to finish, with this setup's keys and snippets. Pick the o
 
 *Start of the day, or back after a break.*
 
-1. In a terminal, `z` and part of the project's folder name goes there (`z myapp`), and `nvim .` opens it with the file tree.
+1. In a terminal, `z` and part of the project's folder name goes there (`z myapp`). ⌃⌘W starts the dev server and the tests beside it ([Start the dev environment](#start-the-dev-environment)), and `nvim .` opens the project with the file tree.
 2. `,gf` lists the files you've changed and not committed. `Tab` marks the ones you want and `Enter` opens them side by side.
 3. Everything committed already? `,gv` shows what your branch changes compared with main, one file at a time: `]q` goes to the next file. `,gv` again closes it.
 4. `,ff` and a few letters of a name open any other file. `,fb` lists the open files, and `[b` / `]b` step through them.
 5. `,tt` hides the tree when you need the room, and `,n` brings it back at the current file.
 
-**Keys:** `z` → `nvim .` → `,gf` → `,gv` → `,ff` / `,fb` → `,tt` / `,n`
+**Keys:** `z` → ⌃⌘W → `nvim .` → `,gf` → `,gv` → `,ff` / `,fb` → `,tt` / `,n`
 
 ### Find your way around code
 
@@ -97,6 +106,68 @@ Everyday tasks, start to finish, with this setup's keys and snippets. Pick the o
 6. `\c` closes it, and `,et` type-checks the project to make sure everything still fits.
 
 **Keys:** `,fs` → `Tab` → `\r` (or `\e` for ast-grep) → `\c` → `,et`
+
+## Terminal and dev server
+
+### Start the dev environment
+
+*Starting work on a project: the code, the running app, its tests and git, all in one tab.*
+
+1. In a terminal, `z myapp` goes to the project. ⌃⌘W turns the tab into the Frontend Workgroup: the right-hand third starts the dev server, and the tests, Git and a shell start behind it.
+2. `nvim .` in the pane on the left.
+3. The dev server's output stays in view on the right. The tab's dot and word say *ready*, or *error* when the app doesn't build.
+4. ⌃⌘2 brings the tests forward: they run again for every change you save, starting with the tests your changes touch. ⌃⌘3 shows Git (`tig`), ⌃⌘4 a shell for `npm install` and the like, and ⌃⌘1 the dev server again. Each puts the cursor in that pane, and ⌥⌘← takes you back to Neovim.
+5. A command in one of them stopped? Its pane drops to a shell: `dev server` or `dev test` starts it again.
+6. Done for the day? ⌃⌘X closes the Workgroup's panes; your own session, and Neovim in it, stay.
+
+**Keys:** `z` → ⌃⌘W → `nvim .` → ⌃⌘1 – ⌃⌘4 → ⌥⌘← → ⌃⌘X
+
+### Go from an error to the code
+
+*A build error, a failing test or a stack trace names a file and a line.*
+
+1. Hold ⌘ and click the path, like `src/components/UserCard.tsx:42:7`: Neovim opens the file at that line and column. The Neovim working on that project gets it, even in another tab or in the middle of typing, and its pane comes forward.
+2. No Neovim open for that project? A new tab starts one, at that line.
+3. `<C-o>` takes you back to where you were before.
+4. Web addresses open in the browser the same way.
+
+**Keys:** ⌘-click → `<C-o>`
+
+### Run a quick command from anywhere
+
+*A quick `gh pr status`, `git log` or `npm view react version` without leaving what you're doing, in any app.*
+
+1. Double-tap ⌃: a terminal drops down from the top of the screen, over whatever app you're in, on any Space.
+2. Run the command; `z` takes you to any project from there.
+3. Double-tap ⌃ again, or click outside it, and it goes away. It keeps its state, so the output is still there next time.
+4. The first time, macOS asks you to give iTerm2 Accessibility access: that's how it notices the double-tap.
+
+**Keys:** double-tap ⌃ → command → double-tap ⌃
+
+### Know when something slow is done
+
+*An install, a build or the whole test suite takes a while, and you'd rather do something else meanwhile.*
+
+1. Started something slow in a terminal? ⌥⌘A, and a notification tells you when it finishes. Go and do something else.
+2. Tests (`,ma`, `,ml`) and type checks (`,et`) in Neovim tell you by themselves: switch to another app or pane, and a notification says *2 tests failing* or *No type errors* when they're done.
+3. Meanwhile the tab's dot shows how it's going: *testing* while it runs, then the result.
+4. With several projects open, ⌥⇧⌘C (Cockpit) lists every session's status in one place, the Workgroup's hidden panes too.
+5. Clicking a notification takes you to the session it came from.
+
+**Keys:** ⌥⌘A → `,ma` / `,et` → ⌥⇧⌘C
+
+### Dig through a long output
+
+*A build or test run printed hundreds of lines, and you need one part of them.*
+
+1. ⇧⌘↑ jumps to the previous command and ⇧⌘↓ to the next: every prompt is marked.
+2. ⇧⌘A selects the last command's whole output, and ⌘C copies it, to paste into an issue or an AI chat.
+3. ⌥⇧⌘F filters: type `error` and only the lines with it stay. ⌘F finds and highlights instead.
+4. ⇧⌘C starts copy mode: move and select with the keyboard, vim-style.
+5. A `file:line` in there? ⌘-click it ([Go from an error to the code](#go-from-an-error-to-the-code)).
+6. In Neovim's terminal (`,tm`), `[[` / `]]` jump between prompts, and Neovim's own search and yank work as in any file.
+
+**Keys:** ⇧⌘↑ / ⇧⌘↓ → ⇧⌘A + ⌘C → ⌥⇧⌘F → ⇧⌘C → ⌘-click
 
 ## Write React and TypeScript
 
@@ -166,7 +237,7 @@ Everyday tasks, start to finish, with this setup's keys and snippets. Pick the o
 2. `,ed` shows the whole message, for TypeScript's long ones.
 3. `,ca` lists the fixes: add the missing import, remove what's unused, use the name it probably meant…
 4. `K` on a name shows its type, to compare with what TypeScript expected.
-5. Changed a type, or props that other files pass? `,et` type-checks the whole project in the background and puts the errors in the quickfix list. `[Q` goes to the first one and `]q` to each next one, whatever file it's in.
+5. Changed a type, or props that other files pass? `,et` type-checks the whole project in the background and puts the errors in the quickfix list. `[Q` goes to the first one and `]q` to each next one, whatever file it's in. In a big project that takes a while: the tab says *type-checking*, and if you switch to another app, a notification tells you when it's done.
 6. `:w`, instead of waiting for autosave, also applies ESLint's fixes, such as removing unused imports.
 
 **Keys:** `]d` → `,ed` → `,ca` → `K` → `,et` → `[Q` / `]q` → `:w`
@@ -176,12 +247,12 @@ Everyday tasks, start to finish, with this setup's keys and snippets. Pick the o
 *Something has the wrong value and you want to see it.*
 
 1. Type `.log` after any expression: `user.profile.log` gives `console.log(user.profile)`, and `items.filter(isOpen).log` logs the whole chain.
-2. Keep the dev server in view: `,sv`, `,tm`, `npm run dev`, then `Esc Esc` and `,h` to get back to your code. Server code logs there; browser code logs to the browser's console.
+2. Keep the dev server in view: in the Workgroup it runs on the right (⌃⌘1 brings it forward). Without the Workgroup: `,sv`, `,tm`, `dev server`, then `Esc Esc` and `,h` to get back to your code. Server code logs there; browser code logs to the browser's console. An error with a `file:line`? ⌘-click it.
 3. Change the code and look again. Files save themselves, so the dev server reloads without `:w`.
 4. Found it? Remove the logs: `,fg`, `console.log`, `<M-a>` marks every match and `Enter` puts them in the quickfix list. `[Q` goes to the first one, `dd` deletes it, `]q` goes to the next. Leave the logs that were there before you started.
 5. `,gv` shows everything your branch changes, to make sure none are left.
 
-**Keys:** `.log` → `,sv` + `,tm` → `,fg` → `<M-a>` + `Enter` → `[Q` → `dd` → `]q`
+**Keys:** `.log` → ⌃⌘1 (or `,sv` + `,tm`) → ⌘-click → `,fg` → `<M-a>` + `Enter` → `[Q` → `dd` → `]q`
 
 ### Find a bug with the debugger
 
@@ -191,7 +262,7 @@ Everyday tasks, start to finish, with this setup's keys and snippets. Pick the o
 2. `,ds` and pick what to run:
    - a script or a TypeScript file: **Node: current file**
    - Next.js: **Next.js: server (dev script)** for route handlers and server components. For client components as well, `,ds` again, **Start additional session**, then **Next.js: client in Chrome (:3000)**
-   - Vite: start the dev server (`,sv`, `,tm`, `npm run dev`), then **Vite: client in Chrome (:5173)**
+   - Vite: start the dev server (⌃⌘W for the Workgroup, or `,sv`, `,tm`, `dev server`), then **Vite: client in Chrome (:5173)**
    - Electron: **Electron: main + renderer**
 3. Use the app until it stops at your breakpoint. The debug view shows the variables (`S`), your watch expressions (`W`, where `i` adds one) and a REPL (`R`) to run code right there.
 4. `,dn` steps over, `,di` into and `,do` out of a function, and `,dc` runs on to the next breakpoint. `,dl` shows the value under the cursor.
@@ -211,14 +282,15 @@ Everyday tasks, start to finish, with this setup's keys and snippets. Pick the o
 4. `,mr` runs only the test under the cursor, `,ma` the whole file, and `,ml` the last run again from any file.
 5. `,mo` shows the output of the test under the cursor, `console.log`s included, and `,ms` a summary of every test.
 6. In a Jest project, `,fn` copies the test file's name, and `testfile` in a terminal runs it with coverage for the file it tests.
+7. In the Workgroup, the Tests pane (⌃⌘2) also runs every test your changes touch, in all files, on every save. Its status shows *3 failing* or *tests pass*, and ⌘-click on a failure opens it in Neovim.
 
-**Keys:** `a` → `,sv` + `,ff` → `,mw` → `,mr` / `,ma` → `,mo` → `,ms`
+**Keys:** `a` → `,sv` + `,ff` → `,mw` → `,mr` / `,ma` → `,mo` → `,ms` → ⌃⌘2
 
 ### Fix a failing test
 
 *A test fails, here or in CI.*
 
-1. `,ma` runs the file. `,ms` opens the summary: `J` jumps to the next failed test, `o` shows its output and `i` takes you to it.
+1. `,ma` runs the file. `,ms` opens the summary: `J` jumps to the next failed test, `o` shows its output and `i` takes you to it. Failing in the Workgroup's Tests pane, or in CI output in a terminal? ⌘-click the failure's `file:line` instead.
 2. In the file, `]d` lands on the failing line with the assertion's message, and `,ed` shows all of it, expected and received.
 3. `gd` on the function under test opens it, or `,cv` opens it in a split, to keep the test in view.
 4. Still not clear? `,db` on a line in the test or in the code, then `,md` on the test: it runs under the debugger and stops there. The keys from [Find a bug with the debugger](#find-a-bug-with-the-debugger) work from there.
@@ -278,10 +350,10 @@ For text that isn't a name in the code, like a string, a CSS class or a test id,
 1. `,gv` shows your branch the way a reviewer will see it: `]q` from file to file and `]c` from change to change. Fix what you find on the right as you go: leftover logs, commented-out code, a missed rename. `,gv` again closes it.
 2. `,et` type-checks the project, and `,ma` runs the tests in a test file.
 3. To commit only some of your changes: `]h` goes to the next change, `,gp` previews it, `,gs` stages it and `,gr` throws it away.
-4. `,sv` and `,tm` open a terminal beside your code: `git commit -m "Add user card"`, `git push`, then `gh pr create --web` opens the new pull request's page on GitHub. `Esc Esc` and `,h` take you back to the code.
+4. In the Workgroup, ⌃⌘4 opens the Shell beside your code (without it, `,sv` and `,tm`): `git commit -m "Add user card"`, `git push`, then `gh pr create --web` opens the new pull request's page on GitHub. ⌥⌘← takes you back to the code (`Esc Esc` and `,h` from Neovim's terminal).
 5. Afterwards, `,go` on any line opens it on GitHub.
 
-**Keys:** `,gv` → `]q` / `]c` → `,et` → `]h` + `,gp` + `,gs` → `,sv` + `,tm` → `gh pr create --web`
+**Keys:** `,gv` → `]q` / `]c` → `,et` → `]h` + `,gp` + `,gs` → ⌃⌘4 (or `,sv` + `,tm`) → `gh pr create --web`
 
 ## Config and docs
 
@@ -354,6 +426,7 @@ For text that isn't a name in the code, like a string, a CSS class or a test id,
 2. Still not right? `:checkhealth vim.lsp` shows which language servers run for the file, and why one doesn't.
 3. Anything else odd: `:restart` restarts Neovim with the same files open, and `:checkhealth` checks the whole setup.
 4. AI not answering: `:AIStatus`.
-5. Every week or so, `./setup.sh` in the dotfiles folder brings everything up to date.
+5. ⌘-click, the Workgroup or the Dotfiles profile missing in iTerm2: `./setup.sh` lists what's left to do, such as making Dotfiles the default profile or restarting iTerm2.
+6. Every week or so, `./setup.sh` in the dotfiles folder brings everything up to date.
 
 **Keys:** `:lsp restart` → `:checkhealth vim.lsp` → `:restart` → `./setup.sh`
