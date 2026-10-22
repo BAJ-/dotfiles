@@ -38,8 +38,48 @@ local jest_configs = {
   'jest.config.json',
 }
 
+-- neotest reads the tests out of each file in a background Neovim started without
+-- this config, which doesn't know that .tsx and .jsx files use the tsx and
+-- javascript parsers, and so finds no tests in them. Tell it as soon as it starts;
+-- drop this once nvim-neotest/neotest#631 is fixed
+local function fix_tsx_discovery()
+  local function warn(why)
+    vim.schedule(function()
+      vim.notify(
+        ('Tests in .tsx and .jsx files may not be found: %s. See fix_tsx_discovery in plugins/test.lua'):format(why),
+        vim.log.levels.WARN
+      )
+    end)
+  end
+  local ok, subprocess = pcall(require, 'neotest.lib.subprocess')
+  for _, name in ipairs({ 'init', 'call', 'enabled' }) do
+    if not ok or not vim.is_callable(subprocess[name]) then
+      warn('neotest has changed')
+      return
+    end
+  end
+  local init = subprocess.init
+  subprocess.init = function(...)
+    init(...)
+    if not subprocess.enabled() then
+      return
+    end
+    for _, ft in ipairs({ 'typescriptreact', 'javascriptreact' }) do
+      local lang = vim.treesitter.language.get_lang(ft)
+      if lang and lang ~= ft then
+        local done, err = pcall(subprocess.call, 'vim.treesitter.language.register', { lang, ft })
+        if not done then
+          warn(tostring(err):match('[^\n]*'))
+          return
+        end
+      end
+    end
+  end
+end
+
 local setup = pack.once(function()
   pack.load({ 'nvim-nio', 'neotest', 'neotest-vitest', 'neotest-jest' })
+  fix_tsx_discovery()
   local vitest = require('neotest-vitest')
   -- captured before setup: passing is_test_file replaces the adapter's own check
   local is_vitest_file = vitest.is_test_file
