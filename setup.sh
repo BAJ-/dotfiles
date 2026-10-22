@@ -105,15 +105,25 @@ homebrew() {
   fi
   $DRY_RUN && export HOMEBREW_NO_AUTO_UPDATE=1
 
-  # Official taps that are part of Homebrew itself now
-  local tap taps
+  # Official taps that are part of Homebrew itself now. Updating first empties
+  # Homebrew's old copy of them: an out-of-date copy can still hold casks that
+  # are installed (the Hack Nerd Font), and untap then asks to uninstall them.
+  local tap taps retired=()
   taps="$(brew tap)"
   for tap in homebrew/cask-fonts homebrew/bundle homebrew/services; do
     if grep -qx "$tap" <<<"$taps"; then
-      run brew untap "$tap"
-      changed "untap $tap (retired, now part of Homebrew)"
+      retired+=("$tap")
     fi
   done
+  if ((${#retired[@]})); then
+    if ! run brew update --quiet; then
+      failed "brew update failed (see above)"
+    fi
+    for tap in "${retired[@]}"; do
+      run brew untap "$tap"
+      changed "untap $tap (retired, now part of Homebrew)"
+    done
+  fi
 
   local before line name was
   before="$(brew_versions)"
