@@ -448,12 +448,30 @@ neovim() {
 
 # --- iTerm2 ---------------------------------------------------------------------------
 
+# Marks every prompt, so iTerm2 can jump between commands, select a command's
+# output and tell you when one finishes. It changes with iTerm2, so it's
+# fetched each run and replaced when it differs
+iterm_shell_integration() {
+  local dest="$HOME/.iterm2_shell_integration.zsh" latest
+  latest="$(mktemp)"
+  if ! curl -fsSL --max-time 30 https://iterm2.com/shell_integration/zsh -o "$latest"; then
+    rm -f "$latest"
+    failed "Couldn't download iTerm2's shell integration"
+    return 0
+  fi
+  if [[ ! -f "$dest" ]]; then
+    run cp "$latest" "$dest"
+    changed "install iTerm2 shell integration"
+  elif ! cmp -s "$latest" "$dest"; then
+    run cp "$latest" "$dest"
+    changed "update iTerm2 shell integration"
+  fi
+  rm -f "$latest"
+}
+
 iterm() {
   [[ -d /Applications/iTerm.app ]] || return 0
-  if [[ ! -f "$HOME/.iterm2_shell_integration.zsh" ]]; then
-    run curl -fsSL https://iterm2.com/shell_integration/zsh -o "$HOME/.iterm2_shell_integration.zsh"
-    changed "install iTerm2 shell integration"
-  fi
+  iterm_shell_integration
 }
 
 # --- Run ---------------------------------------------------------------------------------
