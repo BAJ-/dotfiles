@@ -68,3 +68,8 @@ if [ -d /opt/homebrew/opt/openjdk@17 ]; then
   export JAVA_HOME=/opt/homebrew/opt/openjdk@17
   export PATH="$JAVA_HOME/bin:$PATH"
 fi
+
+# Settings for this Mac only, such as work proxies and tokens: this repo is public
+if [[ -f ~/.zshrc.local ]]; then
+  source ~/.zshrc.local
+fi

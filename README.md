@@ -651,6 +651,7 @@ Every key this config adds. Neovim's own keys and the keys inside plugin windows
 | [setup.sh](setup.sh), [Brewfile](Brewfile) | Install and update |
 | [script/nvim-sync.lua](script/nvim-sync.lua) | The Neovim part of setup: plugins to the lockfile, parsers, language servers |
 | [zshrc](zshrc), [config/starship.toml](config/starship.toml) | Shell and prompt |
+| `~/.zshrc.local` (not in the repo) | Settings for this Mac only, such as work proxies and tokens; [zshrc](zshrc) loads it. Copy it to a new Mac yourself |
 | [z.sh](z.sh) | `z` folder jumping ([rupa/z](https://github.com/rupa/z), vendored) |
 | [bin/copilot-auto](bin/copilot-auto) | Copilot CLI, local model first |
 | [nvim/init.lua](nvim/init.lua) | Loads [nvim/lua/config/](nvim/lua/config) (options, keys, autosave, statusline), then one file per area in [nvim/lua/plugins/](nvim/lua/plugins) |
