@@ -22,6 +22,30 @@ local function highlights()
   vim.api.nvim_set_hl(0, 'StatusLineReview', { link = 'DiffText' })
 end
 
+-- Running progress messages (tests, :TypeCheck, plugin installs) by name, like
+-- "Tests: UserCard.test.tsx": Neovim's own summary only says "0%(1)"
+local running = {} ---@type table<integer, string>
+
+---@param data vim.event.progress.data
+local function track(data)
+  if not data or not data.id then
+    return
+  end
+  if data.status == 'success' or data.status == 'failed' or data.status == 'cancel' or data.percent == 100 then
+    running[data.id] = nil
+  else
+    local text = table.concat(data.text or {})
+    running[data.id] = (data.title and data.title ~= '') and (data.title .. ': ' .. text) or text
+  end
+end
+
+---@return string
+function M.progress()
+  local items = vim.tbl_values(running)
+  table.sort(items)
+  return table.concat(items, ' · ')
+end
+
 function M.render()
   -- %! expressions run in the focused window's context; this is the window being drawn
   local win = vim.g.statusline_winid
@@ -45,7 +69,7 @@ function M.render()
   end
 
   if active then
-    for _, status in ipairs({ vim.lsp.status(), vim.ui.progress_status() }) do
+    for _, status in ipairs({ vim.lsp.status(), M.progress() }) do
       if status ~= '' then
         parts[#parts + 1] = status:gsub('%%', '%%%%') .. ' '
       end
@@ -62,9 +86,16 @@ function M.setup()
   highlights()
   local group = vim.api.nvim_create_augroup('user.statusline', { clear = true })
   vim.api.nvim_create_autocmd('ColorScheme', { group = group, callback = highlights })
-  vim.api.nvim_create_autocmd({ 'DiagnosticChanged', 'LspProgress', 'Progress' }, {
+  vim.api.nvim_create_autocmd({ 'DiagnosticChanged', 'LspProgress' }, {
     group = group,
     command = 'redrawstatus',
+  })
+  vim.api.nvim_create_autocmd('Progress', {
+    group = group,
+    callback = function(ev)
+      track(ev.data)
+      vim.cmd.redrawstatus()
+    end,
   })
   vim.api.nvim_create_autocmd('User', {
     group = group,

@@ -234,7 +234,7 @@ Some kinds of files get extra help:
 | `]D` / `[D` | Go to the last / first problem in the file |
 | `,en` / `,ep` | Go to the next / previous problem, show its message and centre it on the screen |
 | `,ed` (or `<C-w>d`) | Show the whole message of the problem under the cursor, for long ones like TypeScript's |
-| `,et` (or `:TypeCheck`) | Type-check the whole project, not just the files you have open. The project's own `tsc` runs in the background, and the status line shows its progress. The errors go to the quickfix list, where `]q` and `[q` take you from one to the next |
+| `,et` (or `:TypeCheck`) | Type-check the whole project, not just the files you have open. The project's own `tsc` runs in the background, and the status line shows **TypeCheck:** and the project's folder while it runs. The errors go to the quickfix list, where `]q` and `[q` take you from one to the next |
 
 Failing tests show up as problems too, on the line that failed.
 
@@ -448,12 +448,14 @@ The same keys work for Vitest, Jest and Playwright tests. Each test runs with th
 | `,ml` | Run the last tests again, from any file |
 | `,md` | Debug the test under the cursor. It stops at your breakpoints, so set them with `,db` first |
 | `,mw` | Watch the file: its tests run again every time it's saved. Press `,mw` again, in the same file, to stop watching it |
-| `,mx` | Stop the tests that are running |
+| `,mx` | Stop every Vitest and Jest run in progress, wherever the cursor is |
 | `,mo` | Show the output of the test under the cursor, including its `console.log`s |
 | `,mO` | Open the output panel, with the output of every test run |
 | `,ms` | Open the test summary: every test in the project, with its result |
 
-Vitest and Jest results show as a sign next to each test, telling you whether it passed or failed. A failure also shows as a [problem](#words-used-here) on the line that failed, so `]d` takes you there.
+While Vitest or Jest tests run, the status line shows **Tests:** and the file's name. When they finish, the message line at the bottom of the screen says how it went: "✓ 12 tests passed in UserCard.test.tsx (1.2s)" in green, or "✗ 2 of 12 tests failed in UserCard.test.tsx (1.4s)" in red. `:messages` lists the earlier results.
+
+A sign next to each test also shows whether it passed or failed. A failure shows as a [problem](#words-used-here) on the line that failed too, so `]d` takes you there.
 
 Playwright tests (files that import `@playwright/test`) run in a terminal below your code instead, so you can follow along. Two more keys are just for them:
 
@@ -788,7 +790,7 @@ Every key this setup adds, with a link to the section that explains it. Neovim's
 | `,ms` | Open the test summary | [Tests](#run-tests) |
 | `,mu` | Open Playwright's UI mode | [Tests](#run-tests) |
 | `,mw` | Watch the file: run its tests on every save. Again, in the same file, to stop | [Tests](#run-tests) |
-| `,mx` | Stop the tests that are running | [Tests](#run-tests) |
+| `,mx` | Stop every Vitest and Jest run in progress | [Tests](#run-tests) |
 | `,sh` | Split the window horizontally | [Move around](#move-around) |
 | `,ss` | Browse the snippets for this kind of file | [Snippets](#snippets) |
 | `,sv` | Split the window vertically | [Move around](#move-around) |
@@ -834,6 +836,7 @@ Every key this setup adds, with a link to the section that explains it. Neovim's
 | [nvim/init.lua](nvim/init.lua) | Neovim's starting point. It loads the general settings in [nvim/lua/config/](nvim/lua/config) (options, keys, autosave, status line), then one file per area in [nvim/lua/plugins/](nvim/lua/plugins) |
 | [nvim/lua/config/keymaps.lua](nvim/lua/config/keymaps.lua) | The keys that don't belong to a plugin |
 | [nvim/lua/config/debug.lua](nvim/lua/config/debug.lua) | The debug configurations that `,ds` offers |
+| [nvim/lua/config/test_report.lua](nvim/lua/config/test_report.lua) | What Vitest and Jest runs show in the status line and message line, and stopping them with `,mx` |
 | [nvim/lua/config/mason.lua](nvim/lua/config/mason.lua) | The language servers and tools that Mason installs |
 | [nvim/lua/config/ai.lua](nvim/lua/config/ai.lua) | AI: choosing between the local model and Copilot, and turning suggestions on and off |
 | [nvim/lua/config/review.lua](nvim/lua/config/review.lua) | Reviewing a branch (`,gv`) |

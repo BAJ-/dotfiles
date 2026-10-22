@@ -278,7 +278,7 @@ Everyday tasks, start to finish, using this setup's keys and snippets. Pick the 
 
 1. Create the test next to `UserCard.tsx`: press `,n` to show the component in the file tree, `a` to add a file, type `UserCard.test.tsx` and press `Enter`, then `Enter` again to open it. Press `,sv` to split the window, and `,ff` to open the component in the other half, so you see both.
 2. In the test file, press `,mw` to watch it: its tests run again every time it's saved. Files save when you leave insert mode, so the results keep up as you write. Press `,mw` again, in the test file, to stop watching it.
-3. A sign next to each test shows whether it passed. A failure is also marked on the line that failed, and `]d` takes you there.
+3. While the tests run, the status line shows **Tests:** and the file's name. When they finish, the message line at the bottom says how many passed or failed, in green or red. A sign next to each test shows its result, a failure is also marked on the line that failed, and `]d` takes you there.
 4. `,mr` runs only the test under the cursor, `,ma` every test in the file, and `,ml` runs the last tests again from any file.
 5. `,mo` shows the output of the test under the cursor, including its `console.log`s, and `,ms` opens a summary of every test.
 6. In a Jest project, `,fn` copies the test file's name, and `testfile` in a terminal runs it with coverage for the file it tests.

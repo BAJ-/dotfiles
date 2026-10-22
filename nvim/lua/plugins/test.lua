@@ -72,8 +72,12 @@ local setup = pack.once(function()
         end,
       }),
     },
-    -- the iTerm2 tab's status dot and a notification after each run (config/iterm.lua)
-    consumers = { iterm = require('config.iterm').neotest },
+    consumers = {
+      -- the iTerm2 tab's status dot and a notification after each run (config/iterm.lua)
+      iterm = require('config.iterm').neotest,
+      -- "Tests: <file>" in the status line while they run, then the result (config/test_report.lua)
+      report = require('config.test_report').neotest,
+    },
   })
 end)
 
@@ -181,8 +185,10 @@ for _, map in ipairs({
   },
   {
     '<leader>mx',
-    neotest(function(nt)
-      nt.run.stop()
+    neotest(function()
+      if require('config.test_report').stop() == 0 then
+        vim.notify('No tests are running')
+      end
     end),
     'Stop tests',
   },
