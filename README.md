@@ -74,6 +74,7 @@ The keys you'll use most. Each one is explained in more detail in its section fu
 | `Tab` *(insert)* | In the completion menu: select the next item. Otherwise: accept the AI's ghost text (if it's on), or go to the next field of a snippet |
 | `gcc` | Comment or uncomment the line. `gc` does the same for selected lines |
 | `,mr` / `,ma` | Run the test under the cursor / every test in the file |
+| `,mt` | Open the test list: check off tests from any file and run them |
 | `,db`, then `,ds` | Set a breakpoint on the line, then start debugging |
 | `]h` | Go to the next change you haven't committed yet |
 | `,gp` / `,gs` | Preview that change / stage it |
@@ -445,13 +446,14 @@ The same keys work for Vitest, Jest and Playwright tests. Each test runs with th
 | --- | --- |
 | `,mr` | Run the test under the cursor |
 | `,ma` | Run every test in the file |
-| `,ml` | Run the last tests again, from any file |
+| `,ml` | Run the last tests again, from any file. After a run from the test list (`,mt`), it runs those tests again |
 | `,md` | Debug the test under the cursor. It stops at your breakpoints, so set them with `,db` first |
-| `,mw` | Watch the file: its tests run again every time it's saved. Press `,mw` again, in the same file, to stop watching it |
+| `,mw` | Watch the file: its tests run again every time it's saved. Press `,mw` again, in the same file, to stop watching it. The test list (`,mt`) shows which files are watched, and stops them too |
 | `,mx` | Stop every Vitest and Jest run in progress, wherever the cursor is |
 | `,mo` | Show the output of the test under the cursor, including its `console.log`s |
 | `,mO` | Open the output panel, with the output of every test run |
 | `,ms` | Open the test summary: every test in the project, with its result |
+| `,mt` | Open or close the test list: every Vitest, Jest and Playwright test in the project, to check off and run. It's explained below |
 
 While Vitest or Jest tests run, the status line shows **Tests:** and the file's name. When they finish, the message line at the bottom of the screen says how it went: "✓ 12 tests passed in UserCard.test.tsx (1.2s)" in green, or "✗ 2 of 12 tests failed in UserCard.test.tsx (1.4s)" in red. `:messages` lists the earlier results.
 
@@ -479,6 +481,43 @@ If the browser just sits there after `,mi`, the Inspector is probably hidden beh
 | `u` | Stop the tests that are running |
 | `Enter` / `e` | Open or close the entry under the cursor / open every entry |
 | `?` | List every summary key |
+
+**The test list** (`,mt`) shows every test in the project in a panel on the right, so you can pick tests from different files and run them without opening the files. It has an area for each kind of test: one for Vitest or Jest, and one for each Playwright folder, named after the folder, like *Playwright (tests/e2e)*. Files stay closed until you open them, an area closes and opens with `Enter` on its title, and `/` filters the list as you type.
+
+```
+ Tests  ? shows the keys
+ ▾ Jest                                452 files · 3 checked
+ ▸ ☐ src/hooks/useAuth.test.ts                               ✓
+ ▾ ◩ src/components/UserCard/UserCard.test.tsx     watching ✗
+     ☑ renders the name                                      ✓
+     ☐ shows an error when loading fails                     ✗
+
+ ▸ Playwright (tests/e2e)                               36 files
+```
+
+| Keys | Does |
+| --- | --- |
+| `Space` | Check or uncheck the test under the cursor. On a file, it checks or unchecks every test in the file, and on an area's title, every test in the area. While the list is filtered, only the tests on show. To check several lines at once, select them with `V` first |
+| `Enter` | Open or close the file or area under the cursor. On a test, go to it |
+| `/` | Filter the list as you type, at the bottom of the screen: only the tests that match stay on show. `Enter` keeps the filter, and `Esc` removes it. Press `/` again to change it |
+| `Esc` | Remove the filter |
+| `r` | Run the checked tests. A file or describe block that's checked in full runs as one |
+| `a` | Run every test in the area under the cursor. While the list is filtered, it runs only the ones on show |
+| `i` | Go to the test or file under the cursor, in the window you opened the list from |
+| `o` | Show the output of the Vitest or Jest test under the cursor |
+| `w` | Watch the Vitest or Jest file or test under the cursor: it runs once straight away, then again every time you save it or the code it tests. Press `w` again to stop watching it |
+| `c` | Uncheck everything |
+| `?` | Show or hide these keys at the top of the list |
+| `q` | Close the list. `,mt` opens and closes it too |
+
+- **Filtering:** every word you type has to appear in a test's file path, its describe blocks or its name, in any order. `login error` shows the tests with *error* in their name, in files with *login* in their path. When the words match test names, their files open to show just those tests; when they match a file's path, the whole file stays on show. Lowercase words match either case, and a capital letter makes the filter match case exactly. The area titles count the files that match, like *3 of 452 files*, and the title bar at the top shows the filter.
+- **A closed area** still counts its files, and shows ✗ when one of its tests failed, or … while some are running.
+- **The marks:** ☑ is checked, and ◩ means some of the tests in that file or describe block are checked. At the right edge, ✓ means passed, ✗ failed, ○ skipped and … running, and *watching* marks a watched file or test. When you run some of a file's tests, Vitest and Jest report its other tests as skipped, so those show ○ until they run again.
+- **Your checks stay** while Neovim is open, even after you close the list or change the filter. `r` in the list, or `,ml` from any file, runs the same tests again.
+- **Vitest and Jest tests** run the same way as with `,ma`: the status line shows **Tests:** while they run, and the result shows in the message line and in the list. **Playwright tests** run in the terminal below your code, all the checked ones in a single run.
+- **The Playwright area** comes from Playwright itself, so it lists exactly what Playwright would run. The first time, reading it takes a few seconds. After that, the list opens straight away and reads it again in the background, and again whenever you save a spec.
+- **The status line** shows which kinds of tests the project has, like **󰙨 Jest · Playwright**, next to the mode.
+- The test summary (`,ms`) is neotest's own view of the Vitest and Jest tests, with debugging and output for each test. The test list adds Playwright, check boxes, filtering and watched files.
 
 ### Debug
 
@@ -783,13 +822,14 @@ Every key this setup adds, with a link to the section that explains it. Neovim's
 | `,ma` | Run every test in the file | [Tests](#run-tests) |
 | `,md` | Debug the test under the cursor | [Tests](#run-tests) |
 | `,mi` | Run the test under the cursor in a visible browser, with the Playwright Inspector | [Tests](#run-tests) |
-| `,ml` | Run the last tests again | [Tests](#run-tests) |
+| `,ml` | Run the last tests again, including the test list's last run | [Tests](#run-tests) |
 | `,mo` | Show the output of the test under the cursor | [Tests](#run-tests) |
 | `,mO` | Open the output panel | [Tests](#run-tests) |
 | `,mr` | Run the test under the cursor | [Tests](#run-tests) |
 | `,ms` | Open the test summary | [Tests](#run-tests) |
+| `,mt` | Open or close the test list, to check off tests and run them | [Tests](#run-tests) |
 | `,mu` | Open Playwright's UI mode | [Tests](#run-tests) |
-| `,mw` | Watch the file: run its tests on every save. Again, in the same file, to stop | [Tests](#run-tests) |
+| `,mw` | Watch the file: run its tests on every save. Again, in the same file, or `w` in the test list, to stop | [Tests](#run-tests) |
 | `,mx` | Stop every Vitest and Jest run in progress | [Tests](#run-tests) |
 | `,sh` | Split the window horizontally | [Move around](#move-around) |
 | `,ss` | Browse the snippets for this kind of file | [Snippets](#snippets) |
@@ -837,6 +877,8 @@ Every key this setup adds, with a link to the section that explains it. Neovim's
 | [nvim/lua/config/keymaps.lua](nvim/lua/config/keymaps.lua) | The keys that don't belong to a plugin |
 | [nvim/lua/config/debug.lua](nvim/lua/config/debug.lua) | The debug configurations that `,ds` offers |
 | [nvim/lua/config/test_report.lua](nvim/lua/config/test_report.lua) | What Vitest and Jest runs show in the status line and message line, and stopping them with `,mx` |
+| [nvim/lua/config/test_list.lua](nvim/lua/config/test_list.lua) | The test list (`,mt`) |
+| [nvim/lua/config/project_tests.lua](nvim/lua/config/project_tests.lua) | Which kinds of tests a project has, for the status line and the test list, and where its Playwright folders are |
 | [nvim/lua/config/mason.lua](nvim/lua/config/mason.lua) | The language servers and tools that Mason installs |
 | [nvim/lua/config/ai.lua](nvim/lua/config/ai.lua) | AI: choosing between the local model and Copilot, and turning suggestions on and off |
 | [nvim/lua/config/review.lua](nvim/lua/config/review.lua) | Reviewing a branch (`,gv`) |

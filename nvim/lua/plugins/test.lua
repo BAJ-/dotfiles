@@ -117,11 +117,14 @@ local setup = pack.once(function()
       iterm = require('config.iterm').neotest,
       -- "Tests: <file>" in the status line while they run, then the result (config/test_report.lua)
       report = require('config.test_report').neotest,
+      -- the test list (,mt) follows discovery, runs and results (config/test_list.lua)
+      list = require('config.test_list').neotest,
     },
   })
 end)
 
-local last = 'neotest'
+-- What ,ml runs again: set by the last ,mr / ,ma / ,md, or by the test list (,mt)
+local rerun ---@type fun()?
 
 ---neotest discovers in the background after :cd and for new files, so a run
 ---right away would say "No tests found": give discovery a moment first
@@ -158,11 +161,13 @@ end
 local function either(pw, nt)
   return function()
     if playwright.is_spec() then
-      last = 'playwright'
+      rerun = playwright.run_last
       pw()
     else
       setup()
-      last = 'neotest'
+      rerun = function()
+        require('neotest').run.run_last()
+      end
       when_discovered(function()
         nt(require('neotest'))
       end)
@@ -207,8 +212,8 @@ for _, map in ipairs({
   {
     '<leader>ml',
     function()
-      if last == 'playwright' then
-        playwright.run_last()
+      if rerun then
+        rerun()
       else
         setup()
         require('neotest').run.run_last()
@@ -220,6 +225,7 @@ for _, map in ipairs({
     '<leader>mw',
     neotest(function(nt)
       nt.watch.toggle(file())
+      require('config.test_list').watching_changed()
     end),
     'Watch file (re-run on save)',
   },
@@ -253,10 +259,24 @@ for _, map in ipairs({
     end),
     'Test summary',
   },
+  {
+    '<leader>mt',
+    function()
+      require('config.test_list').toggle()
+    end,
+    'Test list: check tests off and run them',
+  },
   { '<leader>mu', playwright.ui, 'Playwright UI mode' },
   { '<leader>mi', playwright.inspector, 'Playwright inspector (nearest test)' },
 }) do
   vim.keymap.set('n', map[1], map[2], { desc = map[3] })
 end
 
-return { setup = setup }
+return {
+  setup = setup,
+  ---The test list (,mt) sets what ,ml runs again
+  ---@param fn fun()
+  rerun_with = function(fn)
+    rerun = fn
+  end,
+}

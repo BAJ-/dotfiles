@@ -69,7 +69,8 @@ function M.render()
   end
 
   if active then
-    for _, status in ipairs({ vim.lsp.status(), M.progress() }) do
+    -- running things first; the project's kinds of tests (󰙨 Jest · Playwright) stay put next to the mode
+    for _, status in ipairs({ vim.lsp.status(), M.progress(), require('config.project_tests').label() }) do
       if status ~= '' then
         parts[#parts + 1] = status:gsub('%%', '%%%%') .. ' '
       end

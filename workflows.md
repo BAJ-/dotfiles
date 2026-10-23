@@ -35,6 +35,7 @@ Everyday tasks, start to finish, using this setup's keys and snippets. Pick the 
 
 - [Write tests as you go](#write-tests-as-you-go): Vitest or Jest tests that run again every time you save
 - [Fix a failing test](#fix-a-failing-test): from the failure to the line, and into the debugger
+- [Run a chosen set of tests](#run-a-chosen-set-of-tests): filter a list of every test, check some off and run them, from any file
 - [Run end-to-end tests with Playwright](#run-end-to-end-tests-with-playwright): in a terminal, in the Inspector or in UI mode
 
 **Refactor**
@@ -277,7 +278,7 @@ Everyday tasks, start to finish, using this setup's keys and snippets. Pick the 
 *Tests for new code while you write it, with Vitest or Jest.*
 
 1. Create the test next to `UserCard.tsx`: press `,n` to show the component in the file tree, `a` to add a file, type `UserCard.test.tsx` and press `Enter`, then `Enter` again to open it. Press `,sv` to split the window, and `,ff` to open the component in the other half, so you see both.
-2. In the test file, press `,mw` to watch it: its tests run again every time it's saved. Files save when you leave insert mode, so the results keep up as you write. Press `,mw` again, in the test file, to stop watching it.
+2. In the test file, press `,mw` to watch it: its tests run again every time it's saved. Files save when you leave insert mode, so the results keep up as you write. Press `,mw` again, in the test file, to stop watching it. The test list (`,mt`) marks watched files *watching*, and `w` on one stops it too.
 3. While the tests run, the status line shows **Tests:** and the file's name. When they finish, the message line at the bottom says how many passed or failed, in green or red. A sign next to each test shows its result, a failure is also marked on the line that failed, and `]d` takes you there.
 4. `,mr` runs only the test under the cursor, `,ma` every test in the file, and `,ml` runs the last tests again from any file.
 5. `,mo` shows the output of the test under the cursor, including its `console.log`s, and `,ms` opens a summary of every test.
@@ -297,6 +298,20 @@ Everyday tasks, start to finish, using this setup's keys and snippets. Pick the 
 5. After the fix, `,ml` runs that test again, from whichever file you're in.
 
 **Keys:** `,ma` → `,ms` + `J` + `o` → `]d` → `,cv` → `,db` + `,md` → `,ml`
+
+### Run a chosen set of tests
+
+*Some tests from different files, Vitest or Jest and Playwright, without opening each file: for example, the tests around a feature you're changing.*
+
+1. Press `,mt`: the test list opens on the right, with an area for the Vitest or Jest tests and one for each Playwright folder. The status line shows which kinds of tests the project has, like *󰙨 Jest · Playwright*. A long area closes with `Enter` on its title, so the others come into view.
+2. Find the tests: press `/` and type a few words of what you're after, like `login error`. The list narrows as you type, to the tests with all of those words in their file path, describe blocks or name, and their files open to show them. `Enter` keeps the filter, and `Esc` removes it again. You can also press `Enter` on a file to see its tests. `?` shows the list's keys.
+3. Press `Space` to check a test. On a file, `Space` checks every test in it, and on an area's title, every test in the area. While the list is filtered, that's only the tests on show, so filtering and then `Space` on the title checks every match. To check several lines at once, select them with `V` and `j`, then press `Space`.
+4. Press `r` to run what's checked. Vitest and Jest results show in the list, as ✓ or ✗ at the right edge, and in the message line. Playwright tests run in the terminal below your code.
+5. Press `i` on a failed test to go to it. After the fix, `,ml` runs the same tests again from whichever file you're in, and so does `r` in the list.
+6. To keep a file's tests running while you work, press `w` on it in the list: it's marked *watching*, runs once straight away, and runs again every time you save. Press `w` again to stop watching it.
+7. `a` runs every test in the area under the cursor, such as all the Playwright tests, or, while the list is filtered, every test on show in it. `c` unchecks everything, and `q` or `,mt` closes the list. Your checks are still there when you open it again.
+
+**Keys:** `,mt` → `/` → `Space` → `r` → `i` → `,ml` → `w` → `a`
 
 ### Run end-to-end tests with Playwright
 

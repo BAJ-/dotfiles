@@ -52,25 +52,78 @@ function M.file_arg(line)
 end
 
 local term_buf ---@type integer?
-local last_args ---@type string[]?
+---@type {args: string[], dir: string}[]?
+local last
 
----Run the Playwright CLI in a terminal split below; the cursor stays put
----@param args string[]
-function M.run(args)
-  local root = require('config.debug').find_up(bin)
-  if not root then
-    vim.notify('Playwright not found: no ' .. bin .. ' above this file', vim.log.levels.ERROR)
-    return
+---The folder at or above `dir` that has Playwright installed
+---@param dir string
+---@return string?
+function M.installed_in(dir)
+  for parent in vim.fs.parents(vim.fs.joinpath(dir, '_')) do
+    if vim.uv.fs_stat(vim.fs.joinpath(parent, bin)) then
+      return parent
+    end
   end
-  last_args = args
+end
+
+---The Playwright command for tests in `dir`
+---@param dir string
+---@return string?
+function M.binary(dir)
+  local root = M.installed_in(dir)
+  return root and vim.fs.joinpath(root, bin)
+end
+
+---@param cmd string[]
+---@param cwd string
+local function terminal(cmd, cwd)
   if term_buf and vim.api.nvim_buf_is_valid(term_buf) then
     vim.api.nvim_buf_delete(term_buf, { force = true })
   end
   local win = vim.api.nvim_get_current_win()
   vim.cmd('botright 15new')
   term_buf = vim.api.nvim_get_current_buf()
-  vim.fn.jobstart(vim.list_extend({ vim.fs.joinpath(root, bin) }, args), { term = true, cwd = root })
+  vim.fn.jobstart(cmd, { term = true, cwd = cwd })
   vim.api.nvim_set_current_win(win)
+end
+
+---Run the Playwright CLI in a terminal split below; the cursor stays put. Each
+---group runs in its own folder, with that folder's Playwright config, one after
+---the other
+---@param groups {args: string[], dir: string}[]
+function M.run_many(groups)
+  local steps = {}
+  for _, group in ipairs(groups) do
+    local root = M.installed_in(group.dir)
+    if not root then
+      vim.notify('Playwright not found: no ' .. bin .. ' in or above ' .. group.dir, vim.log.levels.ERROR)
+      return
+    end
+    steps[#steps + 1] = { cmd = vim.list_extend({ vim.fs.joinpath(root, bin) }, group.args), dir = group.dir }
+  end
+  last = groups
+  if #steps == 1 then
+    terminal(steps[1].cmd, steps[1].dir)
+    return
+  end
+  local script = vim.tbl_map(function(step)
+    return ('cd %s && %s'):format(
+      vim.fn.shellescape(step.dir),
+      table.concat(vim.tbl_map(vim.fn.shellescape, step.cmd), ' ')
+    )
+  end, steps)
+  terminal({ 'sh', '-c', table.concat(script, '; ') }, steps[1].dir)
+end
+
+---@param args string[]
+---@param dir? string the folder to run in; by default, where Playwright is installed above this file
+function M.run(args, dir)
+  dir = dir or require('config.debug').find_up(bin)
+  if not dir then
+    vim.notify('Playwright not found: no ' .. bin .. ' above this file', vim.log.levels.ERROR)
+    return
+  end
+  M.run_many({ { args = args, dir = dir } })
 end
 
 function M.run_nearest()
@@ -82,8 +135,8 @@ function M.run_file()
 end
 
 function M.run_last()
-  if last_args then
-    M.run(last_args)
+  if last then
+    M.run_many(last)
   end
 end
 
