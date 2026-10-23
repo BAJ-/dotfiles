@@ -5,13 +5,17 @@
 #
 #   nvim-open <file> [line] [column] [folder the path was printed in]
 #
-# Without a Neovim for that project it starts one in a new iTerm2 tab.
+# Without a Neovim for that project it starts one in a new iTerm2 tab. It
+# controls iTerm2 with iTerm2's own it2 command, which needs iTerm2's Python API
+# turned on (setup.sh turns it on, or tells you how).
 set -euo pipefail
 
 file=${1:?usage: nvim-open <file> [line] [column] [folder]}
 line=${2:-} col=${3:-} dir=${4:-$PWD}
-# iTerm2 starts this outside your shell, so Homebrew isn't on PATH yet
+# iTerm2 starts this outside your shell, so Homebrew isn't on PATH yet, and it2
+# may not be either
 PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+it2=$(command -v it2 || echo /Applications/iTerm.app/Contents/Resources/utilities/it2)
 [[ "$line" =~ ^[0-9]+$ ]] || line=0
 [[ "$col" =~ ^[0-9]+$ ]] || col=0
 [[ "$file" == /* ]] || file="$dir/$file"
@@ -22,8 +26,13 @@ fi
 tmp=${TMPDIR:-$(getconf DARWIN_USER_TEMP_DIR)}
 user=${USER:-$(id -un)}
 
-# As a Vimscript string: single quotes, with ' doubled
-quoted="'${file//\'/\'\'}'"
+# As a Vimscript string: single quotes, with ' doubled. The quote is in a
+# variable because macOS's bash 3.2 keeps the backslashes of \' in ${x//\'/...}
+vim_string() {
+  local q="'"
+  printf "'%s'" "${1//$q/$q$q}"
+}
+quoted=$(vim_string "$file")
 
 # Every running Neovim listens on a socket; pick the one that has the file open,
 # else the one whose folder holds it (the deepest folder wins)
@@ -50,27 +59,18 @@ done
 if [[ -n "$best" ]]; then
   # Still switch panes if that Neovim runs without this config
   nvim --server "$best" --remote-expr "v:lua.require'config.iterm'.open($quoted, $line, $col)" >/dev/null || true
-  # ITERM_SESSION_ID is w0t1p0:<unique ID>
-  if [[ "$best_session" == *:* ]]; then
-    osascript - "${best_session#*:}" <<'APPLESCRIPT' >/dev/null
-on run argv
-  tell application "iTerm2"
-    repeat with w in windows
-      repeat with t in tabs of w
-        repeat with s in sessions of t
-          if unique ID of s is (item 1 of argv) then
-            select w
-            select t
-            select s
-            activate
-            return
-          end if
-        end repeat
-      end repeat
-    end repeat
-  end tell
-end run
-APPLESCRIPT
+  # ITERM_SESSION_ID is w0t1p0:<unique ID>, and it2 session focus wants only the
+  # unique ID. The file is open either way, so if its pane can't come to the
+  # front, Neovim says why
+  if [[ "$best_session" == *:* ]] && ! why="$("$it2" session focus "${best_session#*:}" 2>&1 >/dev/null)"; then
+    if [[ "$why" == *"Python API"* ]]; then
+      why="its Python API isn't running. In iTerm2's Settings › General › Magic, tick Enable Python API,"
+      why+=" or untick it and tick it again if it's ticked already"
+    else
+      why=${why%%$'\n'*}
+    fi
+    why="⌘-click couldn't bring this pane to the front in iTerm2: ${why#Error: }"
+    nvim --server "$best" --remote-expr "v:lua.vim.notify($(vim_string "$why"), 3)" >/dev/null 2>&1 || true
   fi
   exit 0
 fi
@@ -78,16 +78,10 @@ fi
 target=''
 ((line > 0)) && target=$(printf %q "+call cursor($line, $col)")
 command="cd $(printf %q "$dir") && nvim $target $(printf %q "$file")"
-osascript - "$command" <<'APPLESCRIPT' >/dev/null
-on run argv
-  tell application "iTerm2"
-    activate
-    if (count of windows) is 0 then
-      create window with default profile
-    else
-      tell current window to create tab with default profile
-    end if
-    tell current session of current window to write text (item 1 of argv)
-  end tell
-end run
-APPLESCRIPT
+# A new tab in the window you clicked in, or a new window if there's none. Either
+# way the command is typed into a shell, so your shell's setup loads first
+"$it2" app activate >/dev/null 2>&1 || true
+if ! "$it2" tab new --command "$command" >/dev/null 2>&1; then
+  "$it2" window new >/dev/null
+  "$it2" session run "$command" >/dev/null
+fi

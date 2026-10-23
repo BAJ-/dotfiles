@@ -479,6 +479,24 @@ iterm() {
   # The profile's Cmd-click handler: iTerm2 runs it without your shell's PATH
   link bin/nvim-open "$HOME/.local/bin/nvim-open"
 
+  # Cmd-click and Neovim's script panes (,pp) control iTerm2 with its it2 command,
+  # which needs the Python API. Like AppleScript, a program can only use it if it
+  # runs inside iTerm2 or macOS lets it control iTerm2. iTerm2 starts the API when
+  # it starts, or when you tick its box in Settings. Quitting iTerm2 ends all that
+  # runs in it, so while iTerm2 runs, ticking the box is left to you
+  local api_setting api_socket="$HOME/Library/Application Support/iTerm2/private/socket"
+  api_setting="$(defaults read com.googlecode.iterm2 EnableAPIServer 2>/dev/null || true)"
+  if ! pgrep -xq iTerm2; then
+    if [[ "$api_setting" != 1 ]]; then
+      run defaults write com.googlecode.iterm2 EnableAPIServer -bool true
+      changed "set iTerm2 to start its Python API, for ⌘-click and ,pp"
+    fi
+  elif [[ "$api_setting" != 1 ]]; then
+    MANUAL+=("Turn on iTerm2's Python API, which ⌘-click and ,pp use: in iTerm2's Settings › General › Magic, tick Enable Python API")
+  elif [[ ! -S "$api_socket" ]]; then
+    MANUAL+=("Start iTerm2's Python API, which ⌘-click and ,pp use: in iTerm2's Settings › General › Magic, untick Enable Python API and tick it again")
+  fi
+
   local args=("$DOTFILES_DIR/config/iterm2/workgroup.json") workgroup
   if $DRY_RUN; then args+=(--dry-run); fi
   if ! workgroup="$(python3 "$DOTFILES_DIR/script/iterm-workgroup.py" "${args[@]}")"; then

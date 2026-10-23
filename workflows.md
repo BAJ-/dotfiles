@@ -456,7 +456,7 @@ For text that isn't a name in the code, like a string, a CSS class or a test id,
 2. Still not right? `:checkhealth vim.lsp` shows which language servers are running for the file, and why one isn't.
 3. If anything else seems odd, `:restart` restarts Neovim with the same files open, and `:checkhealth` checks the whole setup.
 4. If the AI doesn't answer, run `:AIStatus`.
-5. If ⌘-click, the Workgroup or the Dotfiles profile is missing in iTerm2, run `./setup.sh` in the dotfiles folder. It lists what's left to do, such as making Dotfiles the default profile or restarting iTerm2.
+5. If ⌘-click doesn't work, or the Workgroup or the Dotfiles profile is missing in iTerm2, run `./setup.sh` in the dotfiles folder. It lists what's left to do, such as making Dotfiles the default profile or turning on iTerm2's Python API.
 6. Every week or so, run `./setup.sh` in the dotfiles folder to bring everything up to date.
 
 **Keys:** `:lsp restart` → `:checkhealth vim.lsp` → `:restart` → `./setup.sh`

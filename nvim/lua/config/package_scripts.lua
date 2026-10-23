@@ -3,7 +3,8 @@
 -- while the cursor stays in Neovim. One pane per script: picking a script that's
 -- still running starts nothing, and one that has finished runs again in its pane.
 -- ,pl runs the last one again, and ,px closes the script panes. Needs Neovim to
--- run in iTerm2.
+-- run in iTerm2, which it controls with iTerm2's own it2 command; that needs
+-- iTerm2's Python API turned on (setup.sh turns it on, or tells you how).
 local M = {}
 
 ---@class PackageScript
@@ -97,138 +98,121 @@ local function command(script)
   return ('%s run %s'):format(script.manager, name)
 end
 
--- argv: the command to type, the pane's name, the script's tag and Neovim's own
--- session. Each script's pane carries its tag in the iTerm2 variable user.script,
--- so iTerm2 itself knows which pane in Neovim's tab runs which script, also after
--- Neovim restarts. Prints what happened: a "new" pane, ran it "again", or it's
--- still "running". (Inside the tell block "contents" is iTerm2's word for a pane's
--- text, so the script doesn't use it.)
-local applescript = [[
-on run argv
-  set theCommand to item 1 of argv
-  set theName to item 2 of argv
-  set theTag to item 3 of argv
-  set nvimID to item 4 of argv
-  tell application "iTerm2"
-    if nvimID is "" then set nvimID to unique ID of current session of current window
-    repeat with w in windows
-      repeat with t in tabs of w
-        set nvimHere to false
-        repeat with s in sessions of t
-          if unique ID of s is nvimID then set nvimHere to true
-        end repeat
-        if nvimHere then
-          set lastScript to ""
-          repeat with s in sessions of t
-            set paneTag to ""
-            try
-              tell s to set paneTag to (variable named "user.script")
-            end try
-            if paneTag is theTag then
-              if not (is at shell prompt of s) then return "running"
-              tell s to write text theCommand
-              return "again"
-            end if
-            if paneTag is not missing value and paneTag is not "" then set lastScript to unique ID of s
-          end repeat
-          repeat with s in sessions of t
-            if lastScript is "" and unique ID of s is nvimID then
-              tell s to set newPane to (split horizontally with default profile)
-              exit repeat
-            else if unique ID of s is lastScript then
-              tell s to set newPane to (split vertically with default profile)
-              exit repeat
-            end if
-          end repeat
-          tell newPane
-            set name to theName
-            set variable named "user.script" to theTag
-            write text theCommand
-          end tell
-          repeat with s in sessions of t
-            if unique ID of s is nvimID then select s
-          end repeat
-          return "new"
-        end if
-      end repeat
-    end repeat
-  end tell
-  error "Neovim's pane wasn't found in iTerm2"
-end run
-]]
+-- iTerm2's own command for controlling it: on PATH in iTerm2's sessions, else in the app
+local function it2_path()
+  local found = vim.fn.exepath('it2')
+  if found ~= '' then
+    return found
+  end
+  local bundled = '/Applications/iTerm.app/Contents/Resources/utilities/it2'
+  return vim.fn.executable(bundled) == 1 and bundled or nil
+end
 
--- argv: Neovim's own session. Closes every pane in Neovim's tab that carries a
--- script's tag, from the last one back, so the panes still to come keep their
--- places. Prints how many it closed
-local close_applescript = [[
-on run argv
-  set nvimID to item 1 of argv
-  tell application "iTerm2"
-    if nvimID is "" then set nvimID to unique ID of current session of current window
-    repeat with w in windows
-      repeat with t in tabs of w
-        set nvimHere to false
-        repeat with s in sessions of t
-          if unique ID of s is nvimID then set nvimHere to true
-        end repeat
-        if nvimHere then
-          set closed to 0
-          repeat with i from (count of sessions of t) to 1 by -1
-            set paneTag to ""
-            try
-              tell session i of t to set paneTag to (variable named "user.script")
-            end try
-            if paneTag is not missing value and paneTag is not "" then
-              close session i of t
-              set closed to closed + 1
-            end if
-          end repeat
-          return closed as text
-        end if
-      end repeat
-    end repeat
-  end tell
-  error "Neovim's pane wasn't found in iTerm2"
-end run
-]]
+---Neovim's own pane: ITERM_SESSION_ID is w0t1p0:<its ID>
+local function own_pane()
+  return (vim.env.ITERM_SESSION_ID or ''):match(':(.+)$')
+end
 
 ---Scripts run in an iTerm2 pane below Neovim, so Neovim has to run in iTerm2
 local function in_iterm()
-  if
-    (vim.env.TERM_PROGRAM == 'iTerm.app' or vim.env.LC_TERMINAL == 'iTerm2') and vim.fn.executable('osascript') == 1
-  then
+  if not ((vim.env.TERM_PROGRAM == 'iTerm.app' or vim.env.LC_TERMINAL == 'iTerm2') and own_pane()) then
+    vim.notify('Scripts run in iTerm2 panes below Neovim: ,pp needs Neovim to run in iTerm2', vim.log.levels.WARN)
+  elseif not it2_path() then
+    vim.notify(
+      "Scripts run in iTerm2 panes through iTerm2's it2 command: ,pp needs iTerm2 3.7 or later",
+      vim.log.levels.WARN
+    )
+  else
     return true
   end
-  vim.notify('Scripts run in iTerm2 panes below Neovim: ,pp needs Neovim to run in iTerm2', vim.log.levels.WARN)
   return false
 end
 
----Runs one of the AppleScripts in the background, with Neovim's own session as
----its last value. `done` gets what it printed
----@param script string
+---@param doing string what didn't work, for the message: "run lint"
+---@param why string
+local function failed(doing, why)
+  vim.notify(("Couldn't %s in iTerm2: %s"):format(doing, why), vim.log.levels.ERROR)
+end
+
+---Runs iTerm2's it2 command in the background. `done` gets what it printed, or
+---nil and why it failed
 ---@param args string[]
----@param doing string what it does, for an error: "run lint"
----@param done fun(printed: string)
-local function osascript(script, args, doing, done)
-  local function failed(why)
-    vim.notify(("Couldn't %s in iTerm2: %s"):format(doing, why), vim.log.levels.ERROR)
-  end
-  -- ITERM_SESSION_ID is w0t1p0:<unique ID>
-  local nvim = (vim.env.ITERM_SESSION_ID or ''):match(':(.+)$') or ''
-  local cmd = vim.list_extend({ 'osascript', '-' }, args)
-  table.insert(cmd, nvim)
-  local ok, err = pcall(vim.system, cmd, { stdin = script, text = true }, function(result)
+---@param done fun(printed: string?, why: string?)
+local function it2(args, done)
+  local ok, err = pcall(vim.system, vim.list_extend({ it2_path() }, args), { text = true }, function(result)
+    local why = result.stderr or ''
+    if why:find('Python API', 1, true) then
+      why = "its Python API isn't running. In iTerm2's Settings › General › Magic, tick Enable Python API,"
+        .. " or untick it and tick it again if it's ticked already"
+    else
+      why = vim.trim(why):gsub('^Error: ', ''):match('[^\n]*')
+    end
     vim.schedule(function()
-      if result.code ~= 0 then
-        failed(vim.trim(result.stderr or ''):match('[^\n]*'))
-      else
+      if result.code == 0 then
         done(vim.trim(result.stdout or ''))
+      else
+        done(nil, why ~= '' and why or ('it2 stopped with code ' .. result.code))
       end
     end)
   end)
   if not ok then
-    failed(tostring(err))
+    vim.schedule(function()
+      done(nil, tostring(err))
+    end)
   end
+end
+
+---For an it2 call that only has something to say when it fails
+---@param doing string
+local function or_fail(doing)
+  return function(_, why)
+    if why then
+      failed(doing, why)
+    end
+  end
+end
+
+-- For each pane iTerm2 fills in what runs in it, a tab, and the script the pane
+-- was opened for: each script's pane carries its tag in the iTerm2 variable
+-- user.script, so iTerm2 itself knows which pane runs which script, also after
+-- Neovim restarts
+local list = { 'session', 'list', '--json', '--format', '\\(session.jobName)\\t\\(user.script)' }
+
+---@class ScriptPane
+---@field id string
+---@field tag string the script it runs, '' for other panes
+---@field running boolean something other than your shell runs in it
+
+---The panes in Neovim's tab, in iTerm2's order
+---@param doing string
+---@param done fun(nvim: string, panes: ScriptPane[])
+local function panes(doing, done)
+  local nvim = own_pane() --[[@as string]]
+  it2(list, function(printed, why)
+    local ok, all = pcall(vim.json.decode, printed or '')
+    if not ok or type(all) ~= 'table' then
+      return failed(doing, why or "iTerm2's list of panes couldn't be read")
+    end
+    local tab
+    for _, pane in ipairs(all) do
+      if pane.id == nvim then
+        tab = pane.tab_id
+      end
+    end
+    if not tab then
+      return failed(doing, "Neovim's pane wasn't found in iTerm2")
+    end
+    -- at its prompt, a pane runs your shell
+    local shell = vim.fs.basename(vim.env.SHELL or 'zsh')
+    local found = {}
+    for _, pane in ipairs(all) do
+      if pane.tab_id == tab then
+        local job, tag = tostring(pane.formatted or ''):match('^([^\t]*)\t(.*)$')
+        found[#found + 1] = { id = pane.id, tag = tag or '', running = job ~= shell }
+      end
+    end
+    done(nvim, found)
+  end)
 end
 
 ---@param script PackageScript
@@ -241,12 +225,45 @@ function M.run(script)
   local folder = folder_of(script, cwd)
   local name = ('%s · %s'):format(script.name, vim.fs.basename(cwd) .. (folder ~= '' and ('/' .. folder) or ''))
   -- typed into the pane's shell, so your shell setup (and fnm's Node) loads first
-  -- and the pane stays open with the output when the script ends
-  local typed = ('cd %s && %s'):format(vim.fn.shellescape(script.dir), command(script))
-  osascript(applescript, { typed, name, script.dir .. ':' .. script.name }, 'run ' .. script.name, function(printed)
-    if printed == 'running' then
-      vim.notify(script.name .. ' is still running, in its pane below')
+  -- and the pane stays open with the output when the script ends. The cd is a line
+  -- of its own: iTerm2 learns a pane's folder at each prompt, and finds the files
+  -- the script prints, for ⌘-click, from there
+  local typed = ('cd %s\r%s'):format(vim.fn.shellescape(script.dir), command(script))
+  local tag = script.dir .. ':' .. script.name
+  local doing = 'run ' .. script.name
+  panes(doing, function(nvim, found)
+    local beside -- the last script's pane: a new one goes beside it, else below Neovim
+    for _, pane in ipairs(found) do
+      if pane.tag == tag then
+        if pane.running then
+          vim.notify(script.name .. ' is still running, in its pane below')
+        else
+          it2({ 'session', 'run', typed, '--session', pane.id }, or_fail(doing))
+        end
+        return
+      end
+      if pane.tag ~= '' then
+        beside = pane.id
+      end
     end
+    local split = { 'session', 'split', '--session', beside or nvim }
+    if beside then
+      split[#split + 1] = '--vertical'
+    end
+    it2(split, function(printed, why)
+      local new = printed and printed:match('Created new pane: (%S+)')
+      if not new then
+        return failed(doing, why or printed)
+      end
+      -- splitting the pane you're in takes you to the new pane; splitting another doesn't
+      if not beside then
+        it2({ 'session', 'focus', nvim }, or_fail(doing))
+      end
+      -- iTerm2 reads the value as JSON
+      it2({ 'session', 'set-var', 'user.script', vim.json.encode(tag), '--session', new }, or_fail(doing))
+      it2({ 'session', 'set-name', name, '--session', new }, or_fail(doing))
+      it2({ 'session', 'run', typed, '--session', new }, or_fail(doing))
+    end)
   end)
 end
 
@@ -255,12 +272,30 @@ function M.close()
   if not in_iterm() then
     return
   end
-  osascript(close_applescript, {}, 'close the script panes', function(printed)
-    local closed = tonumber(printed) or 0
-    vim.notify(
-      closed == 0 and 'No script panes to close'
-        or ('Closed %d script pane%s'):format(closed, closed == 1 and '' or 's')
-    )
+  local doing = 'close the script panes'
+  panes(doing, function(_, found)
+    local scripts = vim.tbl_filter(function(pane)
+      return pane.tag ~= ''
+    end, found)
+    if #scripts == 0 then
+      return vim.notify('No script panes to close')
+    end
+    local left, closed, why = #scripts, 0, nil
+    for _, pane in ipairs(scripts) do
+      -- --force, or it2 asks first, which Neovim can't answer. iTerm2 itself still
+      -- asks about a running script if your settings say so
+      it2({ 'session', 'close', '--force', '--session', pane.id }, function(printed, failure)
+        closed, why, left = closed + (printed and 1 or 0), why or failure, left - 1
+        if left > 0 then
+          return
+        end
+        if closed == #scripts then
+          vim.notify(('Closed %d script pane%s'):format(closed, closed == 1 and '' or 's'))
+        else
+          vim.notify(('Closed %d of %d script panes: %s'):format(closed, #scripts, why), vim.log.levels.WARN)
+        end
+      end)
+    end
   end)
 end
 

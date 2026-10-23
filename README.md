@@ -24,7 +24,7 @@ What it does:
 - Installs the latest Node LTS with fnm and makes it the default.
 - Removes the tools the old setup used: nvm, gvm, Rye, vim-plug and old Neovim data. Global npm packages and npm settings move over to the new Node first; the settings go to `~/.npmrc`.
 - Installs Neovim's plugins at the versions recorded in [nvim/nvim-pack-lock.json](nvim/nvim-pack-lock.json), plus the Treesitter parsers (which Neovim uses for syntax highlighting) and the [language servers](#words-used-here).
-- Sets up iTerm2: the Dotfiles and Hotkey profiles, ⌘-click to open files in Neovim, and the Frontend Workgroup, all explained in [iTerm2](#iterm2). It also installs iTerm2's shell integration and keeps it up to date.
+- Sets up iTerm2: the Dotfiles and Hotkey profiles, ⌘-click to open files in Neovim, and the Frontend Workgroup, all explained in [iTerm2](#iterm2). It also installs iTerm2's shell integration and keeps it up to date, and makes sure iTerm2's Python API is on, which ⌘-click and the script panes (`,pp`) need.
 
 At the end it lists what changed, and anything you still need to do yourself, such as signing in to Copilot (in Neovim: press `,al`, then run `:LspCopilotSignIn`) or making Dotfiles iTerm2's default profile.
 
@@ -534,10 +534,10 @@ If the browser just sits there after `,mi`, the Inspector is probably hidden beh
 - **Each script gets its own iTerm2 pane** at the bottom of the tab, below Neovim, named after the script and project, like *build · my-app*. The first one takes half of Neovim's height, and the next ones open beside it, so Neovim keeps its size. The script runs in its package's folder, with the package manager the project uses, such as `npm run build` or `pnpm run build`.
 - **The cursor stays in Neovim.** ⌥⌘↓ takes you down into the pane and ⌥⌘↑ back up to Neovim; clicking works too. ⌘W closes the pane you're in, and `,px` closes them all from Neovim.
 - **Out of the way for a while:** ⇧⌘↩ in Neovim gives it the whole tab. The script panes are hidden, but their scripts keep running, and ⇧⌘↩ again brings them back. It's iTerm2's View › Maximize Active Pane, so in the Workgroup it hides the dev server pane too, until you press it again.
-- **The pane stays open** when the script ends, so you can read its output, or press ↑ and `Enter` there to run it again. The command is typed into the pane's shell, so your shell's setup loads first, as in any other pane, and ⌘-click and ⌥⌘A work there too.
+- **The pane stays open** when the script ends, so you can read its output, or press ↑ and `Enter` there to run it again. Neovim types into the pane's shell, as you would: a `cd` to the script's folder, then the script. So your shell's setup loads first, as in any other pane, and ⌘-click and ⌥⌘A work there too.
 - **One pane per script** in Neovim's tab: picking a script that's still running in its pane starts nothing, and Neovim tells you so. If it has finished, it runs again in the same pane. Each pane remembers which script it runs, so this also works after you restart Neovim. Close a script's pane, or all of them with `,px`, to start afresh: the next run opens a new one.
 - The Frontend Workgroup's Dev server pane already runs the dev server, so picking `dev` while the Workgroup is open would start a second one.
-- **It needs iTerm2.** When Neovim runs in another terminal, `,pp`, `,pl` and `,px` say so instead.
+- **It needs iTerm2, with its [Python API](#iterm2) turned on.** When Neovim runs in another terminal, or the Python API isn't running, `,pp`, `,pl` and `,px` say so instead, and how to turn it on.
 
 ### Debug
 
@@ -747,6 +747,8 @@ React's *not wrapped in act(...)* warnings from test runs are collected in iTerm
 | ⌥⌘/ | List the folders you've been in recently |
 
 In a terminal inside Neovim (`,tm`), `[[` / `]]` jump between commands the same way.
+
+**The Python API** is how ⌘-click and the script panes (`,pp`) control iTerm2: they bring panes to the front, and open and close them, with `it2`, the command iTerm2 comes with for that. To turn it on, tick Enable Python API in iTerm2's Settings › General › Magic, and click OK when iTerm2 asks; it starts right away. iTerm2 only starts it then, or when iTerm2 itself starts, so if the box is ticked but ⌘-click or `,pp` says the API isn't running, untick the box and tick it again. `./setup.sh` tells you when it's off, and turns it on itself if iTerm2 isn't running. It doesn't open iTerm2 up to any app: as with AppleScript, a program can only use it if it runs inside iTerm2 or macOS has allowed it to control iTerm2.
 
 **More of iTerm2's own keys:**
 
