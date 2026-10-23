@@ -15,6 +15,7 @@ Everyday tasks, start to finish, using this setup's keys and snippets. Pick the 
 - [Start the dev environment](#start-the-dev-environment): Neovim, the dev server, the tests and git in one tab
 - [Go from an error to the code](#go-from-an-error-to-the-code): ⌘-click a file and line in any output to open it in Neovim
 - [Run a quick command from anywhere](#run-a-quick-command-from-anywhere): a terminal that drops down over any app
+- [Run a package.json script](#run-a-packagejson-script): pick a script and run it in a pane below your code
 - [Know when something slow is done](#know-when-something-slow-is-done): notifications and the tab's status while you do something else
 - [Dig through a long output](#dig-through-a-long-output): jump between commands, filter, select and copy
 
@@ -144,6 +145,20 @@ Everyday tasks, start to finish, using this setup's keys and snippets. Pick the 
 4. The first time you double-tap, macOS asks you to give iTerm2 Accessibility access. iTerm2 needs it to notice the double-tap.
 
 **Keys:** double-tap ⌃ → your command → double-tap ⌃
+
+### Run a package.json script
+
+*A build, a lint or any other script from `package.json`, in a pane of its own below your code, while you go on in Neovim.*
+
+1. Press `,pp`: every script in the project's `package.json` files is listed, and scripts of packages in subfolders, like `tests/e2e`, show their folder. Type a few letters of the one you want, like `bui`, and the preview beside the list shows it in its `package.json`.
+2. Press `Enter`: a new iTerm2 pane opens below Neovim, named after the script, like *build · my-app*, and the script runs there, in its package's folder, with the project's package manager. The cursor stays in Neovim, so you can go on working while you keep an eye on it.
+3. The pane stays open when the script ends, so its output is still there to read. ⌥⌘↓ takes you down into it, to scroll or to run the script again with ↑ and `Enter`, and ⌥⌘↑ back up to Neovim.
+4. To run it again from Neovim, press `,pl`, or pick it with `,pp`: it runs again in its pane. If it's still running, it isn't started twice.
+5. A second script opens in a pane beside the first, along the bottom. Need the room for a while? ⇧⌘↩ in Neovim gives it the whole tab and hides the script panes, which keep running, and ⇧⌘↩ again brings them back.
+6. Done with them? `,px` closes all the script panes from Neovim, stopping any script that's still running. ⌘W closes just the pane you're in.
+7. For the dev server and the tests while you work, the Frontend Workgroup is usually handier: see [Start the dev environment](#start-the-dev-environment).
+
+**Keys:** `,pp` → `Enter` → ⌥⌘↓ / ⌥⌘↑ → `,pl` → ⇧⌘↩ → `,px`
 
 ### Know when something slow is done
 

@@ -35,14 +35,34 @@ function M.regex_escape(s)
   return (s:gsub('[%^%$%(%)%.%[%]%*%+%?%{%}%|\\]', '\\%0'))
 end
 
+local locks = {
+  { 'pnpm-lock.yaml', 'pnpm' },
+  { 'yarn.lock', 'yarn' },
+  { 'bun.lock', 'bun' },
+  { 'bun.lockb', 'bun' },
+  { 'package-lock.json', 'npm' },
+}
+
+---The package manager of the package in `dir` (by default the current file's):
+---package.json's packageManager, else the nearest lockfile, which in a monorepo
+---is at the root, above the package
+---@param dir? string
 ---@return 'npm'|'pnpm'|'yarn'|'bun'
-function M.package_manager()
-  local locks = { ['pnpm-lock.yaml'] = 'pnpm', ['yarn.lock'] = 'yarn', ['bun.lock'] = 'bun', ['bun.lockb'] = 'bun' }
-  local root = vim.fs.root(0, { 'pnpm-lock.yaml', 'yarn.lock', 'bun.lock', 'bun.lockb', 'package-lock.json' })
-  if root then
-    for lock, pm in pairs(locks) do
-      if vim.uv.fs_stat(vim.fs.joinpath(root, lock)) then
-        return pm
+function M.package_manager(dir)
+  dir = type(dir) == 'string' and dir or M.package_root()
+  local read, lines = pcall(vim.fn.readfile, vim.fs.joinpath(dir, 'package.json'))
+  local ok, pkg = pcall(vim.json.decode, read and table.concat(lines, '\n') or '')
+  local declared = ok
+    and type(pkg) == 'table'
+    and type(pkg.packageManager) == 'string'
+    and pkg.packageManager:match('^(%a+)@')
+  if declared then
+    return declared
+  end
+  for parent in vim.fs.parents(vim.fs.joinpath(dir, '_')) do
+    for _, lock in ipairs(locks) do
+      if vim.uv.fs_stat(vim.fs.joinpath(parent, lock[1])) then
+        return lock[2]
       end
     end
   end

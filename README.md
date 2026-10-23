@@ -4,7 +4,7 @@ My Mac setup for frontend work: zsh and iTerm2, plus Neovim 0.12 set up for Type
 
 This README explains every feature and key, area by area. To learn them while you work, [workflows.md](workflows.md) walks through everyday tasks step by step: building a component, fixing a failing test, reviewing a pull request and more.
 
-**Contents:** [Set up a Mac](#set-up-a-mac) · [Reading the keys](#reading-the-keys) · [Words used here](#words-used-here) · [Cheat sheet](#cheat-sheet) · Workflows: [Find](#find-files-and-text) · [Move around](#move-around) · [Code](#understand-and-change-code) · [Write](#write-code) · [Snippets](#snippets) · [Save](#save-and-format) · [Git](#git) · [Tests](#run-tests) · [Debug](#debug) · [AI](#ai) · [Shell](#terminal-and-shell) · [iTerm2](#iterm2) · [Updates](#keep-it-up-to-date) · [Key index](#key-index) · [Where things live](#where-things-live)
+**Contents:** [Set up a Mac](#set-up-a-mac) · [Reading the keys](#reading-the-keys) · [Words used here](#words-used-here) · [Cheat sheet](#cheat-sheet) · Workflows: [Find](#find-files-and-text) · [Move around](#move-around) · [Code](#understand-and-change-code) · [Write](#write-code) · [Snippets](#snippets) · [Save](#save-and-format) · [Git](#git) · [Tests](#run-tests) · [Scripts](#run-scripts) · [Debug](#debug) · [AI](#ai) · [Shell](#terminal-and-shell) · [iTerm2](#iterm2) · [Updates](#keep-it-up-to-date) · [Key index](#key-index) · [Where things live](#where-things-live)
 
 ## Set up a Mac
 
@@ -75,6 +75,7 @@ The keys you'll use most. Each one is explained in more detail in its section fu
 | `gcc` | Comment or uncomment the line. `gc` does the same for selected lines |
 | `,mr` / `,ma` | Run the test under the cursor / every test in the file |
 | `,mt` | Open the test list: check off tests from any file and run them |
+| `,pp` | Run a `package.json` script in its own iTerm2 pane, below Neovim |
 | `,db`, then `,ds` | Set a breakpoint on the line, then start debugging |
 | `]h` | Go to the next change you haven't committed yet |
 | `,gp` / `,gs` | Preview that change / stage it |
@@ -519,6 +520,25 @@ If the browser just sits there after `,mi`, the Inspector is probably hidden beh
 - **The status line** shows which kinds of tests the project has, like **󰙨 Jest · Playwright**, next to the mode.
 - The test summary (`,ms`) is neotest's own view of the Vitest and Jest tests, with debugging and output for each test. The test list adds Playwright, check boxes, filtering and watched files.
 
+### Run scripts
+
+`,pp` lists every script in the project's `package.json` files, including packages in subfolders, such as `tests/e2e` or the packages of a monorepo, which show their folder. Type to narrow the list down; the preview beside it shows the script in its `package.json`. `Enter` runs it.
+
+| Keys | Does |
+| --- | --- |
+| `,pp` | Pick a `package.json` script and run it in its own iTerm2 pane, below Neovim |
+| `,pl` | Run the last script again |
+| `,px` | Close the script panes below Neovim, stopping any script still running in them |
+| ⇧⌘↩ *(iTerm2)* | Give Neovim the whole tab, hiding the script panes while they keep running. Press it again to bring them back |
+
+- **Each script gets its own iTerm2 pane** at the bottom of the tab, below Neovim, named after the script and project, like *build · my-app*. The first one takes half of Neovim's height, and the next ones open beside it, so Neovim keeps its size. The script runs in its package's folder, with the package manager the project uses, such as `npm run build` or `pnpm run build`.
+- **The cursor stays in Neovim.** ⌥⌘↓ takes you down into the pane and ⌥⌘↑ back up to Neovim; clicking works too. ⌘W closes the pane you're in, and `,px` closes them all from Neovim.
+- **Out of the way for a while:** ⇧⌘↩ in Neovim gives it the whole tab. The script panes are hidden, but their scripts keep running, and ⇧⌘↩ again brings them back. It's iTerm2's View › Maximize Active Pane, so in the Workgroup it hides the dev server pane too, until you press it again.
+- **The pane stays open** when the script ends, so you can read its output, or press ↑ and `Enter` there to run it again. The command is typed into the pane's shell, so your shell's setup loads first, as in any other pane, and ⌘-click and ⌥⌘A work there too.
+- **One pane per script** in Neovim's tab: picking a script that's still running in its pane starts nothing, and Neovim tells you so. If it has finished, it runs again in the same pane. Each pane remembers which script it runs, so this also works after you restart Neovim. Close a script's pane, or all of them with `,px`, to start afresh: the next run opens a new one.
+- The Frontend Workgroup's Dev server pane already runs the dev server, so picking `dev` while the Workgroup is open would start a second one.
+- **It needs iTerm2.** When Neovim runs in another terminal, `,pp`, `,pl` and `,px` say so instead.
+
 ### Debug
 
 1. Put the cursor on the line where the code should stop, and press `,db` to set a breakpoint there. `,dB` sets one that only stops when a condition is true, like `user.id === '42'`.
@@ -688,7 +708,7 @@ To use other models, set `AI_LOCAL_MODEL` (chat and the agent) and `AI_LOCAL_FIM
 | ⌃⌘W | Start the Frontend Workgroup (see below) |
 | ⌃⌘X | Close the Frontend Workgroup |
 | ⌃⌘1 – ⌃⌘4 | In the Workgroup: show the Dev server / Tests / Git / Shell pane |
-| ⌥⌘← / ⌥⌘→ | Go to the pane on the left / right |
+| ⌥⌘← / ⌥⌘→ / ⌥⌘↑ / ⌥⌘↓ | Go to the pane on the left / right / above / below |
 
 **The Frontend Workgroup** turns an iTerm2 tab into a workspace for one project. Go to the project's folder and press ⌃⌘W:
 
@@ -740,6 +760,7 @@ In a terminal inside Neovim (`,tm`), `[[` / `]]` jump between commands the same 
 | ⇧⌘. | Composer: write a long command in a small editor before running it |
 | ⌥⌘B | Instant replay: step back through what the screen showed earlier |
 | ⇧⌘T | Reopen the tab or pane you just closed |
+| ⇧⌘↩ | Maximize the pane you're in, hiding the other panes of the tab while they keep running. Press it again to bring them back |
 
 **Changing the profiles.** The profiles live in [config/iterm2/profiles.json](config/iterm2/profiles.json), and iTerm2 picks up your changes as soon as you save that file. Make changes there, not in iTerm2's Settings › Profiles, where they'd be lost. If iTerm2 offers **Mark as Rewritable** when you try, choose Cancel.
 
@@ -831,6 +852,9 @@ Every key this setup adds, with a link to the section that explains it. Neovim's
 | `,mu` | Open Playwright's UI mode | [Tests](#run-tests) |
 | `,mw` | Watch the file: run its tests on every save. Again, in the same file, or `w` in the test list, to stop | [Tests](#run-tests) |
 | `,mx` | Stop every Vitest and Jest run in progress | [Tests](#run-tests) |
+| `,pl` | Run the last `package.json` script again | [Scripts](#run-scripts) |
+| `,pp` | Pick a `package.json` script and run it in its own iTerm2 pane, below Neovim | [Scripts](#run-scripts) |
+| `,px` | Close the script panes below Neovim | [Scripts](#run-scripts) |
 | `,sh` | Split the window horizontally | [Move around](#move-around) |
 | `,ss` | Browse the snippets for this kind of file | [Snippets](#snippets) |
 | `,sv` | Split the window vertically | [Move around](#move-around) |
@@ -878,6 +902,7 @@ Every key this setup adds, with a link to the section that explains it. Neovim's
 | [nvim/lua/config/debug.lua](nvim/lua/config/debug.lua) | The debug configurations that `,ds` offers |
 | [nvim/lua/config/test_report.lua](nvim/lua/config/test_report.lua) | What Vitest and Jest runs show in the status line and message line, and stopping them with `,mx` |
 | [nvim/lua/config/test_list.lua](nvim/lua/config/test_list.lua) | The test list (`,mt`) |
+| [nvim/lua/config/package_scripts.lua](nvim/lua/config/package_scripts.lua) | Running `package.json` scripts in their own iTerm2 panes, below Neovim (`,pp`, `,pl`, `,px`) |
 | [nvim/lua/config/project_tests.lua](nvim/lua/config/project_tests.lua) | Which kinds of tests a project has, for the status line and the test list, and where its Playwright folders are |
 | [nvim/lua/config/mason.lua](nvim/lua/config/mason.lua) | The language servers and tools that Mason installs |
 | [nvim/lua/config/ai.lua](nvim/lua/config/ai.lua) | AI: choosing between the local model and Copilot, and turning suggestions on and off |

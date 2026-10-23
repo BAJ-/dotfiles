@@ -28,6 +28,7 @@ pack.later('plugins.editor', function()
     { '<leader>f', group = 'find' },
     { '<leader>g', group = 'git' },
     { '<leader>m', group = 'tests' },
+    { '<leader>p', group = 'package.json scripts' },
     { '<leader>s', group = 'splits/snippets' },
     { '<leader>t', group = 'tree/tabs/terminal' },
   })
